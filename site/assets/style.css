@@ -236,3 +236,9 @@ table.prices { width: 100%; border-collapse: collapse; }
 .ec-level { margin: 6px 0 4px; }
 .ec-todo ul { padding-left: 1.1em; } .ec-todo li { margin: 6px 0; }
 .ec-cta { margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--line); }
+
+/* «Kontakt» в меню — иконка конверта, подпись во всплывающей подсказке */
+.menu { align-items: center; }
+.nav-icon { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); }
+.nav-icon:hover { border-color: var(--brand); }
+.ico-mail { width: 18px; height: 18px; }
