@@ -161,7 +161,7 @@ def slider(T):
                    for i, src in enumerate(imgs, 1))
     dots = "".join(f'<button type="button" aria-label="{E(T["slides_goto"].format(n=i))}"'
                    f'{" aria-current=true" if i == 1 else ""}></button>' for i in range(1, len(imgs) + 1))
-    return f"""<section id="examples" class="sec extra">
+    return f"""<section id="examples" class="sec alt extra">
 <div class="wrap">
 <h2>{E(T["slides_title"])}</h2>
 <p class="intro">{E(T["slides_intro"])}</p>
@@ -175,6 +175,12 @@ def slider(T):
 </section>
 <script src="{asset('/assets/slider.js')}" defer></script>
 """
+
+
+def yearly(price):
+    """Годовая оплата = 10 месяцев (2 месяца бесплатно): "1 490 €" → "14 900 €"."""
+    n = int("".join(ch for ch in price if ch.isdigit())) * 10
+    return f"{n:,}".replace(",", " ") + " €"
 
 
 def price_unit(T, unit, price):
@@ -232,11 +238,22 @@ def index(T, lang):
 <h2>{E(T["dach_title"])}</h2>
 <p class="intro">{E(T["dach_intro"])}</p>
 <div class="grid2">{dach}</div>
+<p class="note">{E(T["dach_note"])}</p>
+</div>
+</section>
+""")
+    impl = "".join(f'<li><span class="num">{i}</span><h3>{E(t)}</h3><p>{E(x)}</p></li>'
+                   for i, (t, x) in enumerate(T["impl"], 1))
+    s.append(f"""<section id="implementation" class="sec extra">
+<div class="wrap">
+<h2>{E(T["impl_title"])}</h2>
+<p class="intro">{E(T["impl_intro"])}</p>
+<ol class="steps impl">{impl}</ol>
 </div>
 </section>
 """)
     pts = "".join(f"<li><b>{E(a)}</b> {E(b)}</li>" for a, b in T["bot_points"])
-    s.append(f"""<section id="bot" class="sec extra">
+    s.append(f"""<section id="bot" class="sec alt extra">
 <div class="wrap bot-in">
 <div>
 <h2>{E(T["bot_title"])}</h2>
@@ -256,7 +273,7 @@ def index(T, lang):
 """)
     mon = "".join(f'<article class="card"><p class="tag mono">{E(tag)}</p><h3>{E(t)}</h3><p>{E(x)}</p></article>'
                   for tag, t, x in T["mon"])
-    s.append(f"""<section id="monitoring" class="sec alt extra">
+    s.append(f"""<section id="monitoring" class="sec extra">
 <div class="wrap">
 <h2>{E(T["mon_title"])}</h2>
 <p class="intro">{E(T["mon_intro"])}</p>
@@ -267,7 +284,7 @@ def index(T, lang):
 """)
     steps = "".join(f'<li><span class="num">{i}</span><h3>{E(t)}</h3><p>{E(x)}</p></li>'
                     for i, (t, x) in enumerate(T["process"], 1))
-    s.append(f"""<section class="sec extra">
+    s.append(f"""<section class="sec alt extra">
 <div class="wrap">
 <h2>{E(T["process_title"])}</h2>
 <ol class="steps">{steps}</ol>
@@ -282,6 +299,7 @@ def index(T, lang):
 <h3>{E(p["name"])}</h3>
 <p class="pdesc">{E(p["desc"])}</p>
 <p class="price"><b>{price}</b> <span>{E(T["per_month"])}</span></p>
+<p class="yearly">{E(T["yearly"].format(p=yearly(price)))}</p>
 <ul>
 <li>{E(T["incl_hours"].format(h=hours))}</li>
 <li>{E(T["reaction"][react])}</li>
@@ -292,7 +310,7 @@ def index(T, lang):
                    f'<td class="pr">{price_unit(T, u, p)}</td></tr>' for k, p, u in C.PRICES)
     cases = "".join(f'<article class="case"><h3>{E(t)}</h3><p>{E(x)}</p><p class="cprice">{E(pr)}</p></article>'
                     for t, x, pr in T["cases"])
-    s.append(f"""<section id="prices" class="sec alt">
+    s.append(f"""<section id="prices" class="sec">
 <div class="wrap">
 <p class="reader-intro"><b>{E(C.BRAND)} · {E(C.BRAND_SUB)}</b> — {E(T["kicker"])}</p>
 <p class="reader-intro">{E(T["sub"])}</p>
@@ -314,7 +332,7 @@ def index(T, lang):
 """)
     facts = "".join(f"<li>{E(f)}</li>" for f in T["about_facts"])
     paras = "".join(f"<p>{E(p)}</p>" for p in T["about"])
-    s.append(f"""<section id="about" class="sec extra">
+    s.append(f"""<section id="about" class="sec alt extra">
 <div class="wrap about-in">
 <div>
 <h2>{E(T["about_title"])}</h2>
@@ -325,7 +343,7 @@ def index(T, lang):
 </section>
 """)
     faq = "".join(f"<details><summary>{E(q)}</summary><p>{E(a)}</p></details>" for q, a in T["faq"])
-    s.append(f"""<section class="sec alt extra">
+    s.append(f"""<section class="sec extra">
 <div class="wrap narrow">
 <h2>{E(T["faq_title"])}</h2>
 <div class="faq">{faq}</div>

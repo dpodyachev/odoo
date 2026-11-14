@@ -205,3 +205,8 @@ table.prices { width: 100%; border-collapse: collapse; }
 
 /* вводная только для Reader View (Readability не видит стили из CSS-файла); на странице скрыта */
 .reader-intro { display: none; }
+
+/* DACH: нечётная последняя карточка — на всю ширину; этапы внедрения; годовая оплата */
+.grid2 > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+.steps.impl { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.yearly { margin: -6px 0 10px; font-size: .88rem; font-weight: 600; color: var(--ok); }

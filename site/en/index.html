@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=dad76451">
+<link rel="stylesheet" href="/assets/style.css?v=9872199b">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -66,10 +66,18 @@
 <div class="wrap">
 <h2>What Odoo needs to do in Germany, Austria and Switzerland</h2>
 <p class="intro">A standard installation is rarely enough here. I set these up for you – and keep them up to date.</p>
-<div class="grid2"><article class="feat"><p class="tag">Accounting</p><h3>DATEV export for your tax advisor</h3><p>Journal entries and documents from Odoo in DATEV format – your Steuerberater imports them directly, no retyping.</p><ul><li>Posting batches (DATEV format, EXTF) and document images</li><li>Charts of accounts SKR03 / SKR04, tax keys</li><li>Alignment with your tax office, test export before month-end closing</li></ul></article><article class="feat"><p class="tag">Mandatory from 2025</p><h3>E-invoicing: XRechnung &amp; ZUGFeRD</h3><p>Since 1 Jan 2025 companies in Germany must be able to receive e-invoices; from 2027/2028 (depending on turnover) they must also send them in B2B. Odoo can do it – when configured properly.</p><ul><li>ZUGFeRD / Factur-X (PDF with XML) and XRechnung (UBL/CII)</li><li>Leitweg-ID for public authorities, validator checks</li><li>Receiving and automatically capturing incoming e-invoices</li></ul></article><article class="feat"><p class="tag">Commerce</p><h3>E-commerce &amp; logistics</h3><p>Orders, stock and shipping flow automatically between your shop, Odoo and the carrier.</p><ul><li>Shopware, JTL-Wawi, WooCommerce</li><li>DHL, DPD, GLS: labels and tracking</li><li>Syncing prices, stock and invoices</li></ul></article><article class="feat"><p class="tag">AT · CH</p><h3>Austria &amp; Switzerland</h3><p>Local requirements without detours.</p><ul><li>Austria: e-invoices to the federal government (ebInterface / PEPPOL)</li><li>Switzerland: QR-bill, VAT (MWST), CHF and EUR side by side</li><li>Multilingual documents (DE / FR / EN)</li></ul></article></div>
+<div class="grid2"><article class="feat"><p class="tag">Accounting</p><h3>Charts of accounts, closing &amp; DATEV</h3><p>German accounting in Odoo – set up so your tax advisor can take over without rework.</p><ul><li>Charts of accounts SKR03 / SKR04, tax keys and rates</li><li>Balance sheet and P&amp;L under HGB; BWA via DATEV or as a custom report</li><li>DATEV export (EXTF) with document images, test export before month-end closing</li></ul></article><article class="feat"><p class="tag">Mandatory since 2025</p><h3>E-invoicing: XRechnung &amp; ZUGFeRD</h3><p>Since 1 Jan 2025 companies in Germany must be able to receive e-invoices; from 2027/2028 (depending on turnover) they must also send them in B2B. Odoo can do it – when configured properly.</p><ul><li>ZUGFeRD / Factur-X (PDF with XML) and XRechnung (UBL/CII)</li><li>Leitweg-ID for public authorities, validator checks</li><li>Receiving and automatically capturing incoming e-invoices</li></ul></article><article class="feat"><p class="tag">Taxes &amp; payments</p><h3>ELSTER, SEPA and direct debit</h3><p>From the VAT pre-return to the payment run – less manual work in accounting.</p><ul><li>VAT pre-return (USt-VA) from Odoo, submission to ELSTER (depending on edition via a module or via DATEV)</li><li>SEPA credit transfers and SEPA direct debit with mandate management</li><li>GiroCode (EPC QR) on invoices, bank statements in CAMT format</li></ul></article><article class="feat"><p class="tag">GoBD</p><h3>Proper bookkeeping under GoBD</h3><p>Run Odoo audit-proof: entries stay unalterable and traceable, data can be exported for tax audits.</p><ul><li>Locking of posted entries, lock dates, audit trail</li><li>Data export for tax audits (data carrier provision, Z3)</li><li>Retention periods, help with the process documentation (Verfahrensdokumentation)</li></ul></article><article class="feat"><p class="tag">GDPR</p><h3>Hosting in Germany or the EU</h3><p>Your data stays in Europe – on a server of your choice, secured and documented.</p><ul><li>Server and database in Germany or the EU (e.g. Hetzner, IONOS)</li><li>Encrypted backups within the EU, tested restores</li><li>DPA under Art. 28 GDPR, access only as needed</li></ul></article><article class="feat"><p class="tag">Commerce</p><h3>E-commerce &amp; logistics</h3><p>Orders, stock and shipping flow automatically between your shop, Odoo and the carrier.</p><ul><li>Shopware, JTL-Wawi, WooCommerce</li><li>DHL, DPD, GLS: labels and tracking</li><li>Syncing prices, stock and invoices</li></ul></article><article class="feat"><p class="tag">AT · CH</p><h3>Austria &amp; Switzerland</h3><p>Local requirements without detours.</p><ul><li>Austria: e-invoices to the federal government (ebInterface / PEPPOL)</li><li>Switzerland: QR-bill, VAT (MWST), CHF and EUR side by side</li><li>Multilingual documents (DE / FR / EN)</li></ul></article></div>
+<p class="note">Note: no software is “GoBD-certified” by itself – what matters is the setup, the processes and the process documentation. I take care of the technical part and align it with your tax advisor.</p>
 </div>
 </section>
-<section id="bot" class="sec extra">
+<section id="implementation" class="sec extra">
+<div class="wrap">
+<h2>Odoo implementation step by step</h2>
+<p class="intro">An implementation starts with a thorough analysis of your business and the design of the architecture, goes through development, testing and training your team, and ends with a phased go-live and ongoing support.</p>
+<ol class="steps impl"><li><span class="num">1</span><h3>Kick-off &amp; analysis</h3><p>Map business processes, review German accounting requirements, define goals and scope.</p></li><li><span class="num">2</span><h3>Concept &amp; architecture</h3><p>Modules, interfaces, data migration and servers – a clear plan with a fixed price or budget.</p></li><li><span class="num">3</span><h3>Setup &amp; localisation</h3><p>Installation and German localisation: taxes, SKR03/04, XRechnung/ZUGFeRD, DATEV and ELSTER.</p></li><li><span class="num">4</span><h3>Workshops &amp; development</h3><p>Tailor CRM, inventory, manufacturing, sales and accounting to your company – customising where the standard falls short.</p></li><li><span class="num">5</span><h3>Testing</h3><p>Test runs with real processes: document flow, correct postings, invoices, interfaces.</p></li><li><span class="num">6</span><h3>Training</h3><p>Training for users and key users, short guides for daily work.</p></li><li><span class="num">7</span><h3>Go-live &amp; support</h3><p>Phased start in production, then monitoring, updates and support.</p></li></ol>
+</div>
+</section>
+<section id="bot" class="sec alt extra">
 <div class="wrap bot-in">
 <div>
 <h2>Monitoring bot: your Odoo at a glance – right in Telegram</h2>
@@ -92,7 +100,7 @@
 </figure>
 </div>
 </section>
-<section id="monitoring" class="sec alt extra">
+<section id="monitoring" class="sec extra">
 <div class="wrap">
 <h2>Monitoring with Grafana &amp; Prometheus</h2>
 <p class="intro">When Telegram alerts are not enough: dashboards with history, metrics and alerts for your Odoo – on your own server, your data stays with you.</p>
@@ -100,13 +108,13 @@
 <p class="note">Runs alongside the monitoring bot or on its own. Setup at a fixed price, operation within a support plan.</p>
 </div>
 </section>
-<section class="sec extra">
+<section class="sec alt extra">
 <div class="wrap">
 <h2>How we work together</h2>
 <ol class="steps"><li><span class="num">1</span><h3>Intro call</h3><p>30 minutes by video or Telegram – free. You tell me where it hurts.</p></li><li><span class="num">2</span><h3>Health check or quote</h3><p>I review your system and give you a fixed price or a suitable plan.</p></li><li><span class="num">3</span><h3>Implementation</h3><p>First on a test copy, then in production – at a time that suits you.</p></li><li><span class="num">4</span><h3>Ongoing care</h3><p>Monitoring, updates and fast help – with predictable monthly costs.</p></li></ol>
 </div>
 </section>
-<section id="prices" class="sec alt">
+<section id="prices" class="sec">
 <div class="wrap">
 <p class="reader-intro"><b>Goldberg · Odoo Services</b> — Odoo · Germany · Austria · Switzerland</p>
 <p class="reader-intro">Installation, support, troubleshooting and integrations for Odoo Community and Enterprise – remote from Stuttgart, with fixed prices and one dedicated contact.</p>
@@ -117,6 +125,7 @@
 <h3>Basic</h3>
 <p class="pdesc">For small teams who want peace of mind.</p>
 <p class="price"><b>290 €</b> <span>/ month</span></p>
+<p class="yearly">Paid annually: 2 900 € / year – 2 months free</p>
 <ul>
 <li>3 hours of work included</li>
 <li>Response within 2 business days</li>
@@ -126,6 +135,7 @@
 <h3>Business</h3>
 <p class="pdesc">For companies that work in Odoo every day.</p>
 <p class="price"><b>690 €</b> <span>/ month</span></p>
+<p class="yearly">Paid annually: 6 900 € / year – 2 months free</p>
 <ul>
 <li>8 hours of work included</li>
 <li>Response next business day</li>
@@ -135,6 +145,7 @@
 <h3>Premium</h3>
 <p class="pdesc">For business-critical systems.</p>
 <p class="price"><b>1 490 €</b> <span>/ month</span></p>
+<p class="yearly">Paid annually: 14 900 € / year – 2 months free</p>
 <ul>
 <li>20 hours of work included</li>
 <li>Response within 4 h (Mon–Fri 9–18)</li>
@@ -152,7 +163,7 @@
 <div class="grid3"><article class="case"><h3>“Odoo is down after a server update”</h3><p>Initial diagnosis, root cause (e.g. Python package, database, proxy), fix and a short report on how to prevent it.</p><p class="cprice">usually €190 + 1–2 h × €95</p></article><article class="case"><h3>“We need e-invoices by the end of the year”</h3><p>Set up ZUGFeRD/XRechnung, check master data, validate test invoices, train the team.</p><p class="cprice">from €900 fixed price</p></article><article class="case"><h3>“Our Odoo runs – but nobody looks after it”</h3><p>Health check, then monitoring, backups and updates in the Business plan.</p><p class="cprice">€490 once + €690 / month</p></article></div>
 </div>
 </section>
-<section id="about" class="sec extra">
+<section id="about" class="sec alt extra">
 <div class="wrap about-in">
 <div>
 <h2>About me</h2>
@@ -161,13 +172,13 @@
 <ul class="facts"><li>Odoo 14 – 19, Community &amp; Enterprise</li><li>Linux · Docker · PostgreSQL · nginx</li><li>Python, OWL, XML-RPC / REST</li><li>Git-based deployments with rollback</li><li>Languages: German, English, Greek, Ukrainian, Russian</li></ul>
 </div>
 </section>
-<section class="sec alt extra">
+<section class="sec extra">
 <div class="wrap narrow">
 <h2>FAQ</h2>
 <div class="faq"><details><summary>Community or Enterprise?</summary><p>Both. I&#x27;ll also help you decide – Community with selected OCA modules is often enough.</p></details><details><summary>Do you only work remotely?</summary><p>Yes, via SSH or VPN – secure and with no travel costs. On-site in the Stuttgart area too.</p></details><details><summary>How is access to our data handled?</summary><p>With a data processing agreement (DPA) under the GDPR. Access only as far as needed, time-limited on request.</p></details><details><summary>What if an update goes wrong?</summary><p>Updates run on a copy first. In production the previous code state is saved – rolling back takes minutes.</p></details><details><summary>We already have an Odoo partner.</summary><p>No problem – I&#x27;m happy to take care of operations, servers and monitoring while your partner handles business processes.</p></details><details><summary>How do you bill?</summary><p>Monthly by time in 15-minute steps or at the agreed fixed price, by bank transfer.</p></details></div>
 </div>
 </section>
-<section id="examples" class="sec extra">
+<section id="examples" class="sec alt extra">
 <div class="wrap">
 <h2>Examples from projects</h2>
 <p class="intro">Excerpts from real implementations – customer data made unrecognisable.</p>
