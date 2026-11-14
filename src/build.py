@@ -13,6 +13,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import config as C  # noqa: E402
+import europe_map as M  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(HERE), "site")
 E = html.escape
@@ -255,6 +256,38 @@ def echeck(T):
 """
 
 
+def map_xy(lon, lat):
+    import math
+    l, p, l0, p0 = map(math.radians, (lon, lat, M.LON0, M.LAT0))
+    k = math.sqrt(2 / (1 + math.sin(p0) * math.sin(p) + math.cos(p0) * math.cos(p) * math.cos(l - l0)))
+    x = k * math.cos(p) * math.sin(l - l0)
+    y = -k * (math.cos(p0) * math.sin(p) - math.sin(p0) * math.cos(p) * math.cos(l - l0))
+    return round((x - M.CX0) * M.S, 1), round((y - M.CY0) * M.S, 1)
+
+
+def europe_map(T):
+    """Карта (Natural Earth, src/europe_map.py) с флажками городов из config.MAP_CITIES."""
+    X = T["map"]
+    hl = "".join(f'<path class="hl" d="{d}"/>' for cid, d in M.PATHS.items() if cid in M.HIGHLIGHT)
+    other = "".join(f'<path d="{d}"/>' for cid, d in M.PATHS.items() if cid not in M.HIGHLIGHT)
+    pins = []
+    for key, lon, lat, pos in C.MAP_CITIES:
+        x, y = map_xy(lon, lat)
+        tx, ty, anchor = {"e": (14, 5, "start"), "w": (-7, 5, "end"), "s": (0, 20, "middle")}[pos]
+        home = " home" if key == C.MAP_HOME else ""
+        pins.append(f'<g class="pin{home}" transform="translate({x} {y})"><circle r="3"/><path class="pole" d="M0 0V-20"/>'
+                    f'<path class="flag" d="M0-20l13 4.5-13 4.5z"/>'
+                    f'<text x="{tx}" y="{ty}" text-anchor="{anchor}">{E(X["c"][key])}</text></g>')
+    return f"""<figure class="map">
+<svg viewBox="0 0 {M.W} {M.H}" role="img" aria-label="{E(X["title"])}: {E(", ".join(X["c"][k] for k, *_ in C.MAP_CITIES))}">
+<rect class="sea" width="{M.W}" height="{M.H}"/>
+<g class="land">{hl}{other}</g>
+{"".join(pins)}
+</svg>
+<figcaption><b>{E(X["title"])}</b> · {E(X["caption"])} <span class="map-home">⚑ {E(X["home"])}</span></figcaption>
+</figure>"""
+
+
 def yearly(price):
     """Годовая оплата = 10 месяцев (2 месяца бесплатно): "1 490 €" → "14 900 €"."""
     n = int("".join(ch for ch in price if ch.isdigit())) * 10
@@ -425,6 +458,7 @@ def index(T, lang):
 </div>
 <ul class="facts">{facts}</ul>
 </div>
+<div class="wrap">{europe_map(T)}</div>
 </section>
 """)
     faq = "".join(f"<details><summary>{E(q)}</summary><p>{E(a)}</p></details>" for q, a in T["faq"])

@@ -276,3 +276,23 @@ html.lb-open { overflow: hidden; }
 .lb-prev { left: 12px; } .lb-next { right: 12px; }
 .lb button[hidden] { display: none; }
 @media (prefers-reduced-motion: reduce) { .lb-img { transition: none; } }
+
+/* карта проектов в «Über mich» (Natural Earth, inline SVG) */
+:root { --map-sea: #e6edf4; --map-land: #fbfaf8; --map-border: #cfc8d6; --map-hl: #e7d6e2; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --map-sea: #12161d; --map-land: #2a2431; --map-border: #443b4f; --map-hl: #46334f; } }
+:root[data-theme="dark"] { --map-sea: #12161d; --map-land: #2a2431; --map-border: #443b4f; --map-hl: #46334f; }
+.map { margin: 36px 0 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.map svg { display: block; width: 100%; height: auto; }
+.map .sea { fill: var(--map-sea); }
+.map .land path { fill: var(--map-land); stroke: var(--map-border); stroke-width: 1; stroke-linejoin: round; }
+.map .land path.hl { fill: var(--map-hl); stroke: var(--map-hl); }
+.map .pin circle { fill: var(--ink); }
+.map .pin .pole { stroke: var(--ink); stroke-width: 1.6; }
+.map .pin .flag { fill: var(--brand); }
+.map .pin.home .flag { fill: var(--accent); }
+.map .pin text { font-size: 15px; font-weight: 600; fill: var(--ink); paint-order: stroke; stroke: var(--map-land); stroke-width: 4px; stroke-linejoin: round; }
+.map .pin.home text { font-weight: 800; }
+.map figcaption { padding: 12px 16px; font-size: .9rem; color: var(--muted); border-top: 1px solid var(--line); }
+.map-home { white-space: nowrap; color: var(--ink); }
+.map-home::first-letter { color: var(--accent); }
+@media (max-width: 640px) { .map .pin text { font-size: 19px; stroke-width: 5px; } }
