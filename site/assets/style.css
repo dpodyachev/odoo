@@ -249,3 +249,9 @@ table.prices { width: 100%; border-collapse: collapse; }
 .radar .sweep { transform-origin: 12px 12px; animation: radar-sweep 4s linear infinite; }
 @keyframes radar-sweep { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .radar .sweep { animation: none; } }
+
+/* бот: второй ряд примеров (/users, /analyze) */
+.phones2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+@media (max-width: 860px) { .phones2 { grid-template-columns: 1fr; } }
+.bubble pre { margin: 6px 0; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .78rem; line-height: 1.4;
+  white-space: pre; overflow-x: auto; }

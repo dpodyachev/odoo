@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=efb694b2">
+<link rel="stylesheet" href="/assets/style.css?v=7209b007">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -114,7 +114,7 @@
 <div>
 <h2>Monitoring-Bot: Ihr Odoo im Blick – direkt in Telegram</h2>
 <p class="intro">Zu jedem Supportvertrag gehört mein Monitoring-Bot. Er prüft Ihren Server laufend und meldet Probleme, bevor Ihre Mitarbeiter sie bemerken. Auf Wunsch bekommen Sie den Bot auch selbst.</p>
-<ul class="checks"><li><b>Verfügbarkeit:</b> Odoo, Datenbank, Webserver, SSL-Zertifikat, Speicherplatz.</li><li><b>Fehler:</b> Odoo- und nginx-Logs zusammengefasst – nur das Wichtige, ohne Rauschen.</li><li><b>Hintergrundjobs:</b> geplante Aktionen (Cron) und Warteschlangen, hängende Jobs.</li><li><b>Backups:</b> jede Nacht – mit Kontrolle, dass sie wirklich wiederherstellbar sind.</li><li><b>Updates per Knopfdruck:</b> Code holen → Module aktualisieren → Neustart, mit Rücksprung auf den vorherigen Stand.</li></ul>
+<ul class="checks"><li><b>Verfügbarkeit:</b> Odoo, Datenbank, Webserver, SSL-Zertifikat, Speicherplatz.</li><li><b>Fehler:</b> Odoo- und nginx-Logs zusammengefasst – nur das Wichtige, ohne Rauschen.</li><li><b>Hintergrundjobs:</b> geplante Aktionen (Cron) und Warteschlangen, hängende Jobs.</li><li><b>Backups:</b> jede Nacht – mit Kontrolle, dass sie wirklich wiederherstellbar sind.</li><li><b>Updates per Knopfdruck:</b> Code holen → Module aktualisieren → Neustart, mit Rücksprung auf den vorherigen Stand.</li><li><b>Nutzer &amp; Aktivität:</b> /users zeigt, wer heute in Odoo arbeitet, wer gerade online ist und wer am aktivsten ist – Grundlage für Lizenzen und Aufräumen alter Konten.</li><li><b>KI-Analyse mit /analyze:</b> Logs, Antwortzeiten und Serverlast werden zusammengefasst, eine KI erklärt die Ursache in Klartext und schlägt die Lösung vor. Passwörter und Schlüssel werden vorher maskiert; Einsatz nur mit Ihrer Zustimmung.</li></ul>
 <p class="note">Beispieldaten – Namen und Adressen geschwärzt.</p>
 </div>
 <figure class="phone">
@@ -130,6 +130,34 @@
 </div>
 <figcaption>So sieht der Bot im Alltag aus (Beispiel).</figcaption>
 </figure>
+</div>
+<div class="wrap">
+<h3 class="sub">Dynamische Berichte, bequeme Bots</h3>
+<p class="intro">Statt Dashboards zu suchen, fragen Sie den Bot – die Antwort kommt in Sekunden, auf dem Handy wie am Rechner.</p>
+<div class="phones2"><figure class="phone">
+<div class="phone-top"><span class="logo sm">G</span><div><b>Odoo Monitor</b><small>Bot · online</small></div></div>
+<div class="chat">
+<div class="msg me"><div class="bubble">/users</div></div>
+<div class="msg bot"><div class="bubble"><b>▒▒▒ PROD: Nutzer der letzten 24 h</b><br>Im Odoo-Webclient: 88<br>Jetzt online: 37<br>Anmeldungen: 398 (47 Nutzer)<br>Aktive interne Nutzer: 147<br>Aktionen heute (seit 00:00), Nutzer: 74<pre> Änd. Chatter
+  568      9  Taras Wendel
+  534     67  Oleh Brandt
+  499     54  Lukas Feld
+  495    115  Daria Moos
+  481     60  Sofia Kern</pre>Letzte Aktion:<pre>🟢 13.11 16:43  Ivan Roth
+🟢 13.11 16:43  Marta Lind
+🟢 13.11 16:42  Olena Weiss
+🟢 13.11 16:41  Anna Berg
+🟢 13.11 16:40  Irina Falk</pre></div></div>
+</div>
+<figcaption>Wer arbeitet heute in Odoo? (Beispiel, Namen geändert)</figcaption>
+</figure><figure class="phone">
+<div class="phone-top"><span class="logo sm">G</span><div><b>Odoo Monitor</b><small>Bot · online</small></div></div>
+<div class="chat">
+<div class="msg me"><div class="bubble">/analyze shop.▒▒▒.de</div></div>
+<div class="msg bot"><div class="bubble">🔎 <b>Analyse shop.▒▒▒.de</b> · 24 h<br>✅ HTTP 200 in 0,24 s · SSL bis 14.02<br>CPU 31 % · RAM 62 % · Disk 71 %<br>Odoo-Log: ERROR 12 · WARNING 40<br>• SerializationFailure 9× – Cron „Lagerbestand“<br>• nginx 502 3× um 03:12<br>🤖 <b>KI-Fazit:</b> Die 502-Fehler fallen mit dem nächtlichen Backup zusammen – alle Worker waren belegt. Empfehlung: Backup auf 04:00 verschieben, Cron-Zeitlimit erhöhen.<div class="kb"><span>📋 Details</span><span>🛠 Ticket anlegen</span></div></div></div>
+</div>
+<figcaption>Ursache in Klartext statt 5 000 Log-Zeilen (Beispiel).</figcaption>
+</figure></div>
 </div>
 </section>
 <section id="monitoring" class="sec extra">
@@ -199,9 +227,9 @@
 <div class="wrap about-in">
 <div>
 <h2>Über mich</h2>
-<p>Ich bin DevOps-Engineer und arbeite seit vielen Jahren mit Odoo – von der Installation über eigene Module bis zum Betrieb mehrerer Produktivsysteme mit Hunderten von Modulen.</p><p>Ich betreue Odoo für Unternehmen aus Handel, Logistik, Dienstleistung und Callcenter: Server, Updates, Integrationen und Überwachung. Ich lebe in Stuttgart und arbeite remote für Kunden in ganz DACH – Termine vor Ort in der Region Stuttgart nach Absprache.</p><p>Bei mir haben Sie einen festen Ansprechpartner, der Ihr System kennt – keine Ticket-Warteschlange, keine Weiterleitung.</p>
+<p>Ich bin DevOps-Engineer und arbeite seit vielen Jahren mit Odoo – von der Installation über eigene Module bis zum Betrieb mehrerer Produktivsysteme mit Hunderten von Modulen.</p><p>Ich betreue Odoo für Unternehmen aus Handel, Logistik, Dienstleistung und Callcenter: Server, Updates, Integrationen und Überwachung. Ich lebe in Stuttgart und arbeite remote für Kunden in ganz DACH – Termine vor Ort in der Region Stuttgart nach Absprache.</p><p>Für größere Projekte habe ich ein eingespieltes Entwicklerteam: Odoo-Entwickler (Python, OWL), Analysten und Tester. Neue Module, Schnittstellen und Migrationen laufen über einen klaren Ablauf von der Anforderung bis zum Test – Ihr Ansprechpartner bleibe trotzdem ich.</p><p>Bei mir haben Sie einen festen Ansprechpartner, der Ihr System kennt – keine Ticket-Warteschlange, keine Weiterleitung.</p>
 </div>
-<ul class="facts"><li>Odoo 14 – 19, Community &amp; Enterprise</li><li>Linux · Docker · PostgreSQL · nginx</li><li>Python, OWL, XML-RPC / REST</li><li>Git-basierte Deployments mit Rollback</li><li>Kommunikation: Deutsch, Englisch, Griechisch, Ukrainisch, Russisch</li></ul>
+<ul class="facts"><li>Odoo 14 – 19, Community &amp; Enterprise</li><li>Linux · Docker · PostgreSQL · nginx</li><li>Python, OWL, XML-RPC / REST</li><li>Git-basierte Deployments mit Rollback</li><li>Kommunikation: Deutsch, Englisch, Griechisch, Ukrainisch, Russisch</li><li>Eigenes Team: Entwicklung, Analyse, QA</li></ul>
 </div>
 </section>
 <section class="sec extra">

@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=efb694b2">
+<link rel="stylesheet" href="/assets/style.css?v=7209b007">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -114,7 +114,7 @@
 <div>
 <h2>Monitoring bot: your Odoo at a glance – right in Telegram</h2>
 <p class="intro">Every support plan includes my monitoring bot. It checks your server continuously and reports problems before your team notices them. You can also get the bot for yourself.</p>
-<ul class="checks"><li><b>Availability:</b> Odoo, database, web server, SSL certificate, disk space.</li><li><b>Errors:</b> Odoo and nginx logs summarised – only what matters, no noise.</li><li><b>Background jobs:</b> scheduled actions (cron) and queues, stuck jobs.</li><li><b>Backups:</b> every night – with checks that they can really be restored.</li><li><b>Updates at the push of a button:</b> pull code → update modules → restart, with rollback to the previous state.</li></ul>
+<ul class="checks"><li><b>Availability:</b> Odoo, database, web server, SSL certificate, disk space.</li><li><b>Errors:</b> Odoo and nginx logs summarised – only what matters, no noise.</li><li><b>Background jobs:</b> scheduled actions (cron) and queues, stuck jobs.</li><li><b>Backups:</b> every night – with checks that they can really be restored.</li><li><b>Updates at the push of a button:</b> pull code → update modules → restart, with rollback to the previous state.</li><li><b>Users &amp; activity:</b> /users shows who works in Odoo today, who is online right now and who is most active – a basis for licences and cleaning up old accounts.</li><li><b>AI analysis with /analyze:</b> logs, response times and server load are summarised, and an AI explains the cause in plain words and suggests the fix. Passwords and keys are masked first; used only with your consent.</li></ul>
 <p class="note">Sample data – names and addresses redacted.</p>
 </div>
 <figure class="phone">
@@ -130,6 +130,34 @@
 </div>
 <figcaption>What the bot looks like day to day (example).</figcaption>
 </figure>
+</div>
+<div class="wrap">
+<h3 class="sub">Dynamic reports, handy bots</h3>
+<p class="intro">Instead of hunting through dashboards, ask the bot – the answer arrives in seconds, on your phone or at your desk.</p>
+<div class="phones2"><figure class="phone">
+<div class="phone-top"><span class="logo sm">G</span><div><b>Odoo Monitor</b><small>bot · online</small></div></div>
+<div class="chat">
+<div class="msg me"><div class="bubble">/users</div></div>
+<div class="msg bot"><div class="bubble"><b>▒▒▒ PROD: users in the last 24 h</b><br>In the Odoo web client: 88<br>Online now: 37<br>Logins: 398 (47 users)<br>Active internal users: 147<br>Actions today (since 00:00), users: 74<pre>edits chatter
+  568      9  Taras Wendel
+  534     67  Oleh Brandt
+  499     54  Lukas Feld
+  495    115  Daria Moos
+  481     60  Sofia Kern</pre>Last action:<pre>🟢 13.11 16:43  Ivan Roth
+🟢 13.11 16:43  Marta Lind
+🟢 13.11 16:42  Olena Weiss
+🟢 13.11 16:41  Anna Berg
+🟢 13.11 16:40  Irina Falk</pre></div></div>
+</div>
+<figcaption>Who works in Odoo today? (example, names changed)</figcaption>
+</figure><figure class="phone">
+<div class="phone-top"><span class="logo sm">G</span><div><b>Odoo Monitor</b><small>bot · online</small></div></div>
+<div class="chat">
+<div class="msg me"><div class="bubble">/analyze shop.▒▒▒.de</div></div>
+<div class="msg bot"><div class="bubble">🔎 <b>Analysis shop.▒▒▒.de</b> · 24 h<br>✅ HTTP 200 in 0.24 s · SSL until 14 Feb<br>CPU 31 % · RAM 62 % · Disk 71 %<br>Odoo log: ERROR 12 · WARNING 40<br>• SerializationFailure 9× – cron “Stock levels”<br>• nginx 502 3× at 03:12<br>🤖 <b>AI summary:</b> the 502 errors coincide with the nightly backup – all workers were busy. Recommendation: move the backup to 04:00, raise the cron time limit.<div class="kb"><span>📋 Details</span><span>🛠 Create ticket</span></div></div></div>
+</div>
+<figcaption>The cause in plain words instead of 5,000 log lines (example).</figcaption>
+</figure></div>
 </div>
 </section>
 <section id="monitoring" class="sec extra">
@@ -199,9 +227,9 @@
 <div class="wrap about-in">
 <div>
 <h2>About me</h2>
-<p>I&#x27;m a DevOps engineer and have worked with Odoo for many years – from installation and custom modules to running several production systems with hundreds of modules.</p><p>I look after Odoo for companies in trade, logistics, services and call centers: servers, updates, integrations and monitoring. I live in Stuttgart and work remotely for clients across the DACH region – on-site visits in the Stuttgart area by arrangement.</p><p>You get one dedicated contact who knows your system – no ticket queue, no hand-offs.</p>
+<p>I&#x27;m a DevOps engineer and have worked with Odoo for many years – from installation and custom modules to running several production systems with hundreds of modules.</p><p>I look after Odoo for companies in trade, logistics, services and call centers: servers, updates, integrations and monitoring. I live in Stuttgart and work remotely for clients across the DACH region – on-site visits in the Stuttgart area by arrangement.</p><p>For larger projects I have a well-practised development team: Odoo developers (Python, OWL), analysts and testers. New modules, interfaces and migrations follow a clear process from requirements to testing – and I remain your single contact.</p><p>You get one dedicated contact who knows your system – no ticket queue, no hand-offs.</p>
 </div>
-<ul class="facts"><li>Odoo 14 – 19, Community &amp; Enterprise</li><li>Linux · Docker · PostgreSQL · nginx</li><li>Python, OWL, XML-RPC / REST</li><li>Git-based deployments with rollback</li><li>Languages: German, English, Greek, Ukrainian, Russian</li></ul>
+<ul class="facts"><li>Odoo 14 – 19, Community &amp; Enterprise</li><li>Linux · Docker · PostgreSQL · nginx</li><li>Python, OWL, XML-RPC / REST</li><li>Git-based deployments with rollback</li><li>Languages: German, English, Greek, Ukrainian, Russian</li><li>Own team: development, analysis, QA</li></ul>
 </div>
 </section>
 <section class="sec extra">

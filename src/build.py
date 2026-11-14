@@ -146,9 +146,19 @@ def footer(T, lang, page):
 """
 
 
-def chat(T):
+def phone(T, msgs, caption):
+    return f"""<figure class="phone">
+<div class="phone-top"><span class="logo sm">G</span><div><b>Odoo Monitor</b><small>{E(T["bot_online"])}</small></div></div>
+<div class="chat">
+{chat(T, msgs)}
+</div>
+<figcaption>{E(caption)}</figcaption>
+</figure>"""
+
+
+def chat(T, msgs=None):
     out = []
-    for m in T["chat"]:
+    for m in (msgs if msgs is not None else T["chat"]):
         who = m.get("who", "bot")
         btns = "".join(f"<span>{E(b)}</span>" for b in m.get("buttons", []))
         kb = f'<div class="kb">{btns}</div>' if btns else ""
@@ -336,6 +346,11 @@ def index(T, lang):
 </div>
 <figcaption>{E(T["chat_caption"])}</figcaption>
 </figure>
+</div>
+<div class="wrap">
+<h3 class="sub">{E(T["bot_more_title"])}</h3>
+<p class="intro">{E(T["bot_more_intro"])}</p>
+<div class="phones2">{"".join(phone(T, c["msgs"], c["caption"]) for c in T["chat2"])}</div>
 </div>
 </section>
 """)
