@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=9872199b">
+<link rel="stylesheet" href="/assets/style.css?v=9366dc33">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -44,6 +44,7 @@
 <a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
 <a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
 </div>
+<p class="hero-check"><a href="#echeck">✅ Бесплатный E-Rechnung-Check для Odoo – 2 минуты →</a></p>
 <ul class="badges extra"><li>Фиксированные цены без сюрпризов</li><li>Мониторинг 24/7</li><li>Обновления без простоя</li><li>Odoo 14–19</li><li>GDPR и договор обработки данных</li></ul>
 </div>
 <div class="hero-card" aria-hidden="true">
@@ -70,6 +71,37 @@
 <p class="note">Примечание: ни одна программа не «сертифицирована по GoBD» сама по себе – важны настройка, процессы и документация процедур. Я беру на себя техническую часть и согласовываю её с вашим налоговым консультантом.</p>
 </div>
 </section>
+<section id="echeck" class="sec echeck-sec extra">
+<div class="wrap narrow">
+<p class="kicker">Бесплатно · 5 вопросов · 2 минуты</p>
+<h2>E-Rechnung-Check для Odoo</h2>
+<p class="intro">Готов ли ваш Odoo к обязательным электронным счетам в Германии? Ответьте на пять коротких вопросов – сразу увидите, где вы сейчас и что делать.</p>
+<form class="echeck" novalidate>
+<fieldset class="eq"><legend><span class="num">1</span><span><b>Приём:</b> Можете ли вы принимать счета XRechnung и ZUGFeRD и считывать данные XML – а не только смотреть PDF?</span></legend><p class="hint">Обязательно для всех компаний с 1.1.2025.</p><div class="opts"><label><input type="radio" name="q1" value="2" required> Да</label><label><input type="radio" name="q1" value="1" required> Частично</label><label><input type="radio" name="q1" value="0" required> Нет / не знаю</label></div></fieldset><fieldset class="eq"><legend><span class="num">2</span><span><b>Выставление:</b> Формирует ли ваш Odoo исходящие счета в формате ZUGFeRD/Factur-X или XRechnung?</span></legend><p class="hint">Обязательно с 1.1.2027 при обороте свыше 800 000 € за прошлый год, с 1.1.2028 – для всех (B2B).</p><div class="opts"><label><input type="radio" name="q2" value="2" required> Да</label><label><input type="radio" name="q2" value="1" required> Частично</label><label><input type="radio" name="q2" value="0" required> Нет / не знаю</label></div></fieldset><fieldset class="eq"><legend><span class="num">3</span><span><b>Справочники:</b> Заполнены ли у клиентов USt-IdNr., полный адрес и – для госучреждений – Leitweg-ID или референс покупателя?</span></legend><p class="hint">Отсутствующие обязательные поля – самая частая причина отклонения е-счетов.</p><div class="opts"><label><input type="radio" name="q3" value="2" required> Да</label><label><input type="radio" name="q3" value="1" required> Частично</label><label><input type="radio" name="q3" value="0" required> Нет / не знаю</label></div></fieldset><fieldset class="eq"><legend><span class="num">4</span><span><b>Проверка:</b> Проверяются ли ваши е-счета на соответствие стандарту перед отправкой (например, валидатором KoSIT)?</span></legend><p class="hint">PDF, который выглядит нормально, может оказаться невалидным е-счётом.</p><div class="opts"><label><input type="radio" name="q4" value="2" required> Да</label><label><input type="radio" name="q4" value="1" required> Частично</label><label><input type="radio" name="q4" value="0" required> Нет / не знаю</label></div></fieldset><fieldset class="eq"><legend><span class="num">5</span><span><b>Архив:</b> Хранятся ли входящие и исходящие е-счета в оригинальном XML по требованиям GoBD?</span></legend><p class="hint">Для е-счёта оригинал – это XML, а не PDF. Хранение: 8 лет.</p><div class="opts"><label><input type="radio" name="q5" value="2" required> Да</label><label><input type="radio" name="q5" value="1" required> Частично</label><label><input type="radio" name="q5" value="0" required> Нет / не знаю</label></div></fieldset>
+<p class="small">🔒 Ваши ответы остаются в браузере. Ничего не сохраняется и не передаётся – если только вы сами не отправите мне результат.</p>
+<button class="btn primary" type="submit">Показать результат</button>
+<p class="ec-err" role="alert" hidden>Пожалуйста, ответьте на все пять вопросов.</p>
+</form>
+<div class="ec-result" hidden tabindex="-1">
+<p class="ec-score"></p>
+<h3 class="ec-level"></h3>
+<p class="ec-text"></p>
+<div class="ec-todo"><p><b>Что стоит сделать:</b></p><ul></ul></div>
+<div class="ec-cta">
+<h3>🎯 Бесплатный 30-минутный аудит</h3>
+<p>Е-счета в Odoo – как раз моя тема. Я посмотрю вашу систему вместе с вами – 30 минут, бесплатно и без обязательств. Вы получите чёткий список: чего не хватает и сколько это стоит.</p>
+<div class="cta">
+<a class="btn primary ec-book" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Записаться – с результатом</a>
+<a class="btn ec-mail" href="mailto:dpodiatschev@gmail.com">Отправить результат на e-mail</a>
+<a class="btn ec-tg" href="https://t.me/podyachev" target="_blank" rel="noopener">Отправить результат в Telegram</a>
+</div>
+<p class="small ec-copied" hidden>✅ Результат скопирован – просто вставьте его в чат Telegram.</p>
+</div>
+</div>
+<script type="application/json" class="ec-data">{"answers": ["Да", "Частично", "Нет / не знаю"], "score": "Ваш результат: {s} из 10 баллов", "levels": [["Нужны срочные действия", "Ваш Odoo пока не готов к е-счетам. Хорошая новость: при правильной настройке это вопрос нескольких дней."], ["Хорошая база – с пробелами", "Часть уже работает, но открытые пункты могут привести к отклонённым счетам или проблемам на налоговой проверке."], ["Очень хорошо подготовлены", "Ваш Odoo в основном готов. Короткий взгляд со стороны всё равно полезен – по валидации и архиву."]], "mail_subject": "E-Rechnung-Check: {s}/10 – прошу бесплатный аудит", "mail_intro": "Здравствуйте, вот мой результат E-Rechnung-Check:", "mail_outro": "Версия Odoo:\nКомпания:\nУдобное время:", "q": [["Приём", "Настроить входящие: е-счета через почтовый ящик или загрузку в Odoo, XML автоматически становится счётом поставщика."], ["Выставление", "Задать формат для каждого клиента (ZUGFeRD для компаний, XRechnung для госучреждений) и включить в макете счёта."], ["Справочники", "Проверить и почистить справочники; настроить Odoo так, чтобы пропуски были видны до отправки счёта."], ["Проверка", "Провалидировать тестовые счета и исправить типичные ошибки в Odoo (налоговые категории, единицы, округление)."], ["Архив", "Хранить XML неизменяемыми в Odoo, обеспечить бэкап и выгрузку для налоговой проверки."]], "title": "E-Rechnung-Check для Odoo", "cal": "https://cal.com/dmytro-podiatschev-xvsnlm", "email": "dpodiatschev@gmail.com"}</script>
+</div>
+</section>
+<script src="/assets/echeck.js?v=5e1dc99c" defer></script>
 <section id="implementation" class="sec extra">
 <div class="wrap">
 <h2>Внедрение Odoo шаг за шагом</h2>

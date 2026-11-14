@@ -6,6 +6,7 @@ import hashlib
 import re
 import html
 import importlib
+import json
 import os
 import sys
 
@@ -177,6 +178,54 @@ def slider(T):
 """
 
 
+def echeck(T):
+    """Лид-магнит «E-Rechnung-Check»: 5 вопросов, результат считается в браузере (assets/echeck.js), ничего не отправляется."""
+    X = T["echeck"]
+    qs = []
+    for i, (tag, q, hint, _tip) in enumerate(X["q"], 1):
+        opts = "".join(f'<label><input type="radio" name="q{i}" value="{v}" required> {E(a)}</label>'
+                       for v, a in zip((2, 1, 0), X["answers"]))
+        qs.append(f'<fieldset class="eq"><legend><span class="num">{i}</span><span><b>{E(tag)}:</b> {E(q)}</span></legend>'
+                  f'<p class="hint">{E(hint)}</p><div class="opts">{opts}</div></fieldset>')
+    data = {k: X[k] for k in ("answers", "score", "levels", "mail_subject", "mail_intro", "mail_outro")}
+    data["q"] = [(tag, tip) for tag, _q, _h, tip in X["q"]]
+    data["title"] = X["title"]
+    data["cal"], data["email"] = book_url(), C.EMAIL
+    js = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    return f"""<section id="echeck" class="sec echeck-sec extra">
+<div class="wrap narrow">
+<p class="kicker">{E(X["kicker"])}</p>
+<h2>{E(X["title"])}</h2>
+<p class="intro">{E(X["intro"])}</p>
+<form class="echeck" novalidate>
+{"".join(qs)}
+<p class="small">🔒 {E(X["privacy"])}</p>
+<button class="btn primary" type="submit">{E(X["submit"])}</button>
+<p class="ec-err" role="alert" hidden>{E(X["need_all"])}</p>
+</form>
+<div class="ec-result" hidden tabindex="-1">
+<p class="ec-score"></p>
+<h3 class="ec-level"></h3>
+<p class="ec-text"></p>
+<div class="ec-todo"><p><b>{E(X["todo"])}</b></p><ul></ul></div>
+<div class="ec-cta">
+<h3>🎯 {E(X["cta_title"])}</h3>
+<p>{E(X["cta_text"])}</p>
+<div class="cta">
+<a class="btn primary ec-book" href="{E(book_url())}" target="_blank" rel="noopener">{E(X["cta_book"])}</a>
+<a class="btn ec-mail" href="mailto:{E(C.EMAIL)}">{E(X["cta_mail"])}</a>
+<a class="btn ec-tg" href="{E(C.TELEGRAM)}" target="_blank" rel="noopener">{E(X["cta_tg"])}</a>
+</div>
+<p class="small ec-copied" hidden>✅ {E(X["copied"])}</p>
+</div>
+</div>
+<script type="application/json" class="ec-data">{js}</script>
+</div>
+</section>
+<script src="{asset('/assets/echeck.js')}" defer></script>
+"""
+
+
 def yearly(price):
     """Годовая оплата = 10 месяцев (2 месяца бесплатно): "1 490 €" → "14 900 €"."""
     n = int("".join(ch for ch in price if ch.isdigit())) * 10
@@ -207,6 +256,7 @@ def index(T, lang):
 <h1>{T["h1"]}</h1>
 <p class="lead">{E(T["sub"])}</p>
 {cta(T)}
+<p class="hero-check"><a href="#echeck">✅ {E(T["echeck"]["hero_link"])} →</a></p>
 <ul class="badges extra">{badges}</ul>
 </div>
 <div class="hero-card" aria-hidden="true">
@@ -242,6 +292,7 @@ def index(T, lang):
 </div>
 </section>
 """)
+    s.append(echeck(T))
     impl = "".join(f'<li><span class="num">{i}</span><h3>{E(t)}</h3><p>{E(x)}</p></li>'
                    for i, (t, x) in enumerate(T["impl"], 1))
     s.append(f"""<section id="implementation" class="sec extra">

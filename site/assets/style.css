@@ -210,3 +210,29 @@ table.prices { width: 100%; border-collapse: collapse; }
 .grid2 > :last-child:nth-child(odd) { grid-column: 1 / -1; }
 .steps.impl { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .yearly { margin: -6px 0 10px; font-size: .88rem; font-weight: 600; color: var(--ok); }
+
+/* лид-магнит E-Rechnung-Check */
+.hero-check { margin: 14px 0 0; font-weight: 600; }
+.hero-check a { text-decoration: none; border-bottom: 1px dashed currentColor; }
+.echeck-sec { background: linear-gradient(180deg, var(--brand-soft), var(--bg) 85%); }
+.echeck { display: grid; gap: 14px; }
+.eq { margin: 0; padding: 18px 20px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+.eq legend { display: flex; gap: 12px; align-items: flex-start; padding: 0; font-weight: 500; float: left; width: 100%; }
+.eq legend + * { clear: both; }
+.eq .num { flex: none; margin: 0; }
+.eq .hint { color: var(--muted); font-size: .88rem; margin: 8px 0 10px 44px; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; margin-left: 44px; }
+.opts label { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border: 1px solid var(--line); border-radius: 99px;
+  cursor: pointer; font-size: .93rem; background: var(--bg); }
+.opts label:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); font-weight: 600; }
+.opts input { accent-color: var(--brand); margin: 0; }
+@media (max-width: 540px) { .eq .hint, .opts { margin-left: 0; } }
+.ec-err { color: #c0392b; font-weight: 600; margin: 0; }
+.ec-result { margin-top: 28px; padding: 24px; background: var(--card); border: 2px solid var(--brand); border-radius: var(--radius); box-shadow: var(--shadow); outline: none; }
+.ec-score { font-size: 1.6rem; font-weight: 800; margin: 0; }
+.ec-result[data-level="low"] .ec-score { color: #c0392b; }
+.ec-result[data-level="mid"] .ec-score { color: var(--warn); }
+.ec-result[data-level="high"] .ec-score { color: var(--ok); }
+.ec-level { margin: 6px 0 4px; }
+.ec-todo ul { padding-left: 1.1em; } .ec-todo li { margin: 6px 0; }
+.ec-cta { margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--line); }
