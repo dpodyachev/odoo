@@ -98,6 +98,8 @@ def header(T, lang, page):
                    '<g class="sweep"><path d="M12 12 18.5 5.5A9.2 9.2 0 0 1 21.2 12z" fill="currentColor" stroke="none" opacity=".28"/>'
                    '<path d="M12 12l6.5-6.5"/></g>', '<circle cx="15.6" cy="15" r="1.3" fill="currentColor" stroke="none"/>'),
         "prices": f'<span aria-hidden="true">{C.PRICE_ICON.get(lang, "€")}</span>',
+        "dach": svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5M14 3l5 5v4M14 3v5h5"/>',
+                    '<path d="M8.5 11h5M8.5 14.5h3"/>', '<path d="m14.5 18.5 2 2 4-4.5"/>'),
         "about": svg('<rect x="3" y="7" width="18" height="13" rx="2"/>', '<path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/>'),
         "contact": svg('<rect x="3" y="5" width="18" height="14" rx="2"/>', '<path d="m3.5 6.5 8.5 6.5 8.5-6.5"/>'),
     }
