@@ -47,5 +47,8 @@ SLIDE_INTERVAL_MS = 5000   # карусель site/slides/slide*.jpg|png|webp
 
 LANG_NAMES = {"de": "Deutsch", "en": "English", "fr": "Français", "el": "Ελληνικά", "uk": "Українська", "ru": "Русский"}
 # флаг в переключателе языков (site/assets/flags/<код>.svg); язык без записи — только буквы.
-# Для "ru" есть ru.svg — чтобы показывать, добавить "ru": "ru".
-FLAGS = {"de": "de", "en": "gb", "fr": "fr", "el": "gr", "uk": "ua"}
+# ru.svg — бело-сине-белый флаг (по желанию владельца).
+FLAGS = {"de": "de", "en": "gb", "fr": "fr", "el": "gr", "uk": "ua", "ru": "ru"}
+
+# верификация поисковиков: <meta name="..." content="..."> на всех страницах
+SITE_VERIFY = {"msvalidate.01": "D751EC3EE3CBDD643934E8536E0E6939"}  # Bing Webmaster Tools

@@ -16,6 +16,7 @@ import config as C  # noqa: E402
 OUT = os.path.join(os.path.dirname(HERE), "site")
 E = html.escape
 YEAR = datetime.date.today().year
+VERIFY = "".join(f'<meta name="{E(k)}" content="{E(v)}">\n' for k, v in C.SITE_VERIFY.items())
 
 ICONS = {
     "install": '<path d="M4 7h16M4 12h16M4 17h10"/><circle cx="18" cy="17" r="2"/>',
@@ -60,7 +61,7 @@ def head(T, lang, page, title, desc):
 <meta property="og:type" content="website">
 <meta property="og:url" content="{C.BASE_URL}{url(lang, page)}">
 <meta name="theme-color" content="#3b2a4a">
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+{VERIFY}<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{asset('/assets/style.css')}">
 </head>
 <body>
@@ -398,7 +399,7 @@ def main():
 <link rel="canonical" href="{C.BASE_URL}{url(C.LANGS[0])}">
 {alts}
 <link rel="alternate" hreflang="x-default" href="{C.BASE_URL}{url(C.LANGS[0])}">
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+{VERIFY}<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{asset('/assets/style.css')}">
 <script src="{asset('/assets/lang.js')}"></script>
 </head>

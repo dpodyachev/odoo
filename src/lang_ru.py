@@ -143,7 +143,7 @@ T = {
     ],
     "about_facts": ["Odoo 14 – 19, Community и Enterprise", "Linux · Docker · PostgreSQL · nginx",
                     "Python, OWL, XML-RPC / REST", "Деплой через git с откатом",
-                    "Языки: немецкий, английский, украинский, русский"],
+                    "Языки: немецкий, английский, греческий, украинский, русский"],
     "faq_title": "Частые вопросы",
     "faq": [
         ("Community или Enterprise?", "Оба. Помогу и с выбором – часто достаточно Community с нужными модулями OCA."),
