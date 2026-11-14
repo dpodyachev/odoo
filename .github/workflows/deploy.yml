@@ -1,5 +1,6 @@
 # Автодеплой на Cloudflare Pages при каждом push в main (в т.ч. новые картинки в site/slides/).
-# Нужны секреты репозитория: Settings → Secrets and variables → Actions →
+# Нужны секреты репозитория (отдельный токен: только Account → Cloudflare Pages → Edit, без IP-фильтра —
+# у GitHub-раннеров IP меняются; локальный токен из .cloudflare привязан к IP сервера и тут не работает):
 #   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID
 name: Deploy to Cloudflare Pages
 
@@ -17,7 +18,7 @@ permissions:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
 
