@@ -288,6 +288,21 @@ def europe_map(T):
 </figure>"""
 
 
+def offer(T):
+    """Плашка Einstiegsangebot; пусто, если OFFER=None или срок прошёл."""
+    o = getattr(C, "OFFER", None)
+    if not o:
+        return ""
+    until = datetime.date.fromisoformat(o["until"])
+    if datetime.date.today() > until:
+        return ""
+    X = T["offer"]
+    d = until.strftime(X["date"])
+    return (f'<aside class="offer"><b class="offer-t">{E(X["title"])}</b> '
+            f'<span>{E(X["text"].format(p=o["price"], h=o["hours"], d=d))}</span> '
+            f'<a class="btn primary small" href="{E(book_url())}" target="_blank" rel="noopener">{E(X["cta"])}</a></aside>')
+
+
 def yearly(price):
     """Годовая оплата = 10 месяцев (2 месяца бесплатно): "1 490 €" → "14 900 €"."""
     n = int("".join(ch for ch in price if ch.isdigit())) * 10
@@ -435,6 +450,7 @@ def index(T, lang):
 <p class="reader-intro">Telegram: <a href="{E(C.TELEGRAM)}">{E(C.TELEGRAM_HANDLE)}</a> · E-Mail: <a href="mailto:{E(C.EMAIL)}">{E(C.EMAIL)}</a> · <a href="{E(book_url())}">{E(T["cta_book"])}</a></p>
 <h2>{E(T["prices_title"])}</h2>
 <p class="intro">{E(T["prices_intro"])}</p>
+{offer(T)}
 <div class="plans">{"".join(plans)}</div>
 <p class="note center">{E(T["plans_note"])}</p>
 <h3 class="sub">{E(T["table_title"])}</h3>

@@ -95,6 +95,7 @@ T = {
     ],
     "prices_title": "Tarifs",
     "prices_intro": "Transparents et prévisibles. Petites tâches au temps passé, projets à prix fixe après un bilan.",
+    "offer": {"title": 'Offre de découverte', "text": 'Nouveaux clients : les {h} premières heures à {p}/h au lieu de 65 € – valable jusqu’au {d}. Idéal pour faire connaissance : petite correction, mise à jour ou bilan.', "cta": 'En profiter', "date": '%d/%m/%Y'},
     "per_month": "/ mois",
     "incl_hours": "{h} h de travail incluses",
     "reaction": {"2": "Réponse sous 2 jours ouvrés", "1": "Réponse le jour ouvré suivant",

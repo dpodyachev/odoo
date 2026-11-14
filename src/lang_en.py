@@ -92,6 +92,7 @@ T = {
     ],
     "prices_title": "Pricing",
     "prices_intro": "Transparent and predictable. Small tasks billed by time, projects at a fixed price after a health check.",
+    "offer": {"title": 'Introductory offer', "text": 'For new clients: the first {h} hours at {p}/h instead of 65 € – valid until {d}. A good way to get to know each other: a small fix, an update or a health check.', "cta": 'Book now', "date": '%d %b %Y'},
     "per_month": "/ month",
     "incl_hours": "{h} hours of work included",
     "reaction": {"2": "Response within 2 business days", "1": "Response next business day",

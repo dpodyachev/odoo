@@ -95,6 +95,7 @@ T = {
     ],
     "prices_title": "Preise",
     "prices_intro": "Transparent und planbar. Kleine Aufgaben nach Aufwand, Projekte zum Festpreis nach Health-Check.",
+    "offer": {"title": 'Einstiegsangebot', "text": 'Für Neukunden: die ersten {h} Stunden für {p}/Std. statt 65 € – gültig bis {d}. Ideal zum Kennenlernen: kleiner Fix, Update oder Health-Check.', "cta": 'Jetzt sichern', "date": '%d.%m.%Y'},
     "per_month": "/ Monat",
     "incl_hours": "{h} Std. Arbeit inklusive",
     "reaction": {"2": "Reaktion innerhalb von 2 Werktagen", "1": "Reaktion am nächsten Werktag",

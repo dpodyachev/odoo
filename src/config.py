@@ -35,6 +35,10 @@ PRICES = [
     ("monitoring",     "590 €", "from_fix"),
     ("bot",            "390 €", "from_fix"),
 ]
+# Einstiegsangebot для новых клиентов (блок над тарифами). Срок обязателен; после даты блок
+# пропадает при следующей сборке. Убрать совсем: OFFER = None
+OFFER = {"price": "49 €", "hours": 5, "until": "2027-03-31"}
+
 PLANS = [
     # key,       price/month, hours, reaction
     ("basic",    "290 €", "3",  "2"),

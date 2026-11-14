@@ -296,3 +296,13 @@ html.lb-open { overflow: hidden; }
 .map-home { white-space: nowrap; color: var(--ink); }
 .map-home::first-letter { color: var(--accent); }
 @media (max-width: 640px) { .map .pin text { font-size: 19px; stroke-width: 5px; } }
+
+/* Einstiegsangebot над тарифами */
+.offer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 0 auto 22px; max-width: 900px;
+  padding: 14px 18px; border-radius: 14px; background: var(--brand-soft); border: 2px dashed var(--accent); }
+.offer-t { color: var(--brand); white-space: nowrap; }
+.offer-t::before { content: "🎁 "; }
+.offer span { flex: 1 1 320px; }
+.offer .btn.small { min-height: 38px; padding: 0 14px; font-size: .92rem; margin-left: auto; }
+:root[data-theme="dark"] .offer-t { color: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .offer-t { color: var(--accent); } }
