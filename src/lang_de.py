@@ -153,7 +153,7 @@ T = {
         'Für größere Projekte habe ich ein eingespieltes Entwicklerteam: Odoo-Entwickler (Python, OWL), Analysten und Tester. Neue Module, Schnittstellen und Migrationen laufen über einen klaren Ablauf von der Anforderung bis zum Test – Ihr Ansprechpartner bleibe trotzdem ich.',
         "Bei mir haben Sie einen festen Ansprechpartner, der Ihr System kennt – keine Ticket-Warteschlange, keine Weiterleitung.",
     ],
-    "about_facts": ["Odoo 14 – 19, Community & Enterprise", "Linux · Docker · PostgreSQL · nginx",
+    "about_facts": ['Ingenieur-Elektromechaniker, Automatisierung technologischer Prozesse (staatliche Hochschule, Ukraine, anabin H+)', "Odoo 14 – 19, Community & Enterprise", "Linux · Docker · PostgreSQL · nginx",
                     "Python, OWL, XML-RPC / REST", "Git-basierte Deployments mit Rollback",
                     "Kommunikation: Deutsch, Englisch, Griechisch, Ukrainisch, Russisch",
                     'Eigenes Team: Entwicklung, Analyse, QA'],

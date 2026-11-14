@@ -152,7 +152,7 @@ T = {
         "Pour les projets plus importants, je m'appuie sur une équipe de développement rodée : développeurs Odoo (Python, OWL), analystes et testeurs. Nouveaux modules, interfaces et migrations suivent un processus clair, du besoin aux tests – et je reste votre interlocuteur unique.",
         "Vous avez un interlocuteur unique qui connaît votre système – pas de file de tickets, pas de transferts.",
     ],
-    "about_facts": ["Odoo 14 – 19, Community et Enterprise", "Linux · Docker · PostgreSQL · nginx",
+    "about_facts": ['Ingénieur électromécanicien, automatisation des procédés (université d’État, Ukraine ; reconnue en Allemagne, anabin H+)', "Odoo 14 – 19, Community et Enterprise", "Linux · Docker · PostgreSQL · nginx",
                     "Python, OWL, XML-RPC / REST", "Déploiements Git avec retour arrière",
                     "Langues : allemand, anglais, grec, ukrainien, russe",
                     'Équipe dédiée : développement, analyse, QA'],

@@ -149,7 +149,7 @@ T = {
         'For larger projects I have a well-practised development team: Odoo developers (Python, OWL), analysts and testers. New modules, interfaces and migrations follow a clear process from requirements to testing – and I remain your single contact.',
         "You get one dedicated contact who knows your system – no ticket queue, no hand-offs.",
     ],
-    "about_facts": ["Odoo 14 – 19, Community & Enterprise", "Linux · Docker · PostgreSQL · nginx",
+    "about_facts": ['Electromechanical engineer, process automation (state university, Ukraine; recognised in Germany, anabin H+)', "Odoo 14 – 19, Community & Enterprise", "Linux · Docker · PostgreSQL · nginx",
                     "Python, OWL, XML-RPC / REST", "Git-based deployments with rollback",
                     "Languages: German, English, Greek, Ukrainian, Russian",
                     'Own team: development, analysis, QA'],
