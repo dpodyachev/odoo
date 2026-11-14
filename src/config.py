@@ -8,15 +8,14 @@ EMAIL = "dpodiatschev@gmail.com"
 CAL_URL = "https://cal.com/dmytro-podiatschev-xvsnlm"                              # ссылка Cal.com (https://cal.com/<имя>/30min); пусто — кнопка «Termin buchen» ведёт в Telegram
 
 # Данные для Impressum — ОБЯЗАТЕЛЬНО заполнить перед публикацией (§ 5 DDG)
-OWNER_NAME = "Schwaben Odoo Service"
-OWNER_STREET = "Sindelfingen-Goldberg"
-OWNER_CITY = "Region Stuttgart, Baden-Württemberg"
+OWNER_NAME = "Dmytro Podiatschev – Schwaben Odoo Service"
+OWNER_STREET = "Weimarer Straße 47"
+OWNER_CITY = "71065 Sindelfingen"
 OWNER_COUNTRY = "Deutschland"
 # Одна из строк: USt-IdNr. / Kleinunternehmer §19 UStG / пусто
 VAT_ID = "KLEINUNTERNEHMER"   # маркер: тексты по-языкам в lang_*.py (kleinunternehmer)
 
 LANGS = ["de", "en", "fr", "el", "uk", "ru"]     # первый — язык по умолчанию
-LANG_NAMES = {"de": "Deutsch", "en": "English", "fr": "Français", "uk": "Українська", "ru": "Русский"}
 
 # Цены (EUR, netto). Названия — в lang_*.py по ключу.
 PRICES = [
