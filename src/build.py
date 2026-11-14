@@ -271,13 +271,16 @@ def europe_map(T):
     hl = "".join(f'<path class="hl" d="{d}"/>' for cid, d in M.PATHS.items() if cid in M.HIGHLIGHT)
     other = "".join(f'<path d="{d}"/>' for cid, d in M.PATHS.items() if cid not in M.HIGHLIGHT)
     pins = []
+    proj = getattr(C, "MAP_PROJECTS", {})
     for key, lon, lat, pos in C.MAP_CITIES:
         x, y = map_xy(lon, lat)
         tx, ty, anchor = {"e": (14, 5, "start"), "w": (-7, 5, "end"), "s": (0, 20, "middle")}[pos]
         home = " home" if key == C.MAP_HOME else ""
         pins.append(f'<g class="pin{home}" transform="translate({x} {y})"><circle r="3"/><path class="pole" d="M0 0V-20"/>'
                     f'<path class="flag" d="M0-20l13 4.5-13 4.5z"/>'
-                    f'<text x="{tx}" y="{ty}" text-anchor="{anchor}">{E(X["c"][key])}</text></g>')
+                    f'<text x="{tx}" y="{ty}" text-anchor="{anchor}">{E(X["c"][key])}</text>'
+                    + (f'<text class="proj" x="{tx}" y="{ty + 18}" text-anchor="{anchor}">{E(proj[key])}</text>' if key in proj else "")
+                    + '</g>')
     return f"""<figure class="map">
 <svg viewBox="0 0 {M.W} {M.H}" role="img" aria-label="{E(X["title"])}: {E(", ".join(X["c"][k] for k, *_ in C.MAP_CITIES))}">
 <rect class="sea" width="{M.W}" height="{M.H}"/>

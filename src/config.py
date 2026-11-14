@@ -67,3 +67,6 @@ MAP_CITIES = [
     ("odesa", 30.72, 46.48, "w"), ("kherson", 32.61, 46.64, "s"),
 ]
 MAP_HOME = "stuttgart"
+# подпись проекта под городом — только на широких экранах (≥1200px), см. .map .proj в style.css
+MAP_PROJECTS = {"berlin": "Teufel Raumfeld", "frankfurt": "infomir.eu", "stuttgart": "DXC · Luxoft",
+                "ulm": "BMW · Harman", "luzern": "Radio AzuraCast"}
