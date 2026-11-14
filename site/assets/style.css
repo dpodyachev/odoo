@@ -242,3 +242,4 @@ table.prices { width: 100%; border-collapse: collapse; }
 .nav-icon { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); }
 .nav-icon:hover { border-color: var(--brand); }
 .ico-mail { width: 18px; height: 18px; }
+.nav-icon.cur span { font-weight: 700; font-size: 1.05rem; line-height: 1; }

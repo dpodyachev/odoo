@@ -91,6 +91,8 @@ def header(T, lang, page):
             '<path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>')
     nav = "".join(
         f'<a class="nav-icon" href="{url(lang)}#{k}" title="{E(v)}" aria-label="{E(v)}">{mail}</a>' if k == "contact"
+        else f'<a class="nav-icon cur" href="{url(lang)}#{k}" title="{E(v)}" aria-label="{E(v)}">'
+             f'<span aria-hidden="true">{C.PRICE_ICON.get(lang, "€")}</span></a>' if k == "prices"
         else f'<a href="{url(lang)}#{k}">{E(v)}</a>' for k, v in T["nav"].items())
     return f"""<header class="top">
 <div class="wrap top-in">

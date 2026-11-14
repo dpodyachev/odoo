@@ -52,3 +52,6 @@ FLAGS = {"de": "de", "en": "gb", "fr": "fr", "el": "gr", "uk": "ua", "ru": "ru"}
 
 # верификация поисковиков: <meta name="..." content="..."> на всех страницах
 SITE_VERIFY = {"msvalidate.01": "D751EC3EE3CBDD643934E8536E0E6939"}  # Bing Webmaster Tools
+
+# значок пункта меню «Цены» (подпись — во всплывающей подсказке); по умолчанию €
+PRICE_ICON = {"en": "$", "uk": "₴", "ru": "₴"}
