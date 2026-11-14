@@ -50,4 +50,7 @@ jobs:
       - name: Deploy
         env:
           WRANGLER_SEND_METRICS: "false"
-        run: npx -y wrangler@3.114.0 pages deploy site --project-name goldberg-odoo --branch main --commit-dirty=true
+        run: |
+          set -o pipefail
+          npx -y wrangler@3.114.0 pages deploy site --project-name goldberg-odoo --branch main --commit-dirty=true 2>&1 | tee wrangler.log || {
+            echo "::error::wrangler: $(grep -v '^\s*$' wrangler.log | grep -iE 'error|fail|auth|denied|code' | head -8 | tr '\n' ' ' | cut -c1-900)"; exit 1; }
