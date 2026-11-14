@@ -31,7 +31,8 @@ def icon(name):
 
 
 def url(lang, page=""):
-    return f"/{lang}/{page}"
+    # Cloudflare Pages отдаёт /x.html по адресу /x (308 с .html) — ссылки сразу без расширения
+    return f"/{lang}/{page[:-5] if page.endswith('.html') else page}"
 
 
 def head(T, lang, page, title, desc):
