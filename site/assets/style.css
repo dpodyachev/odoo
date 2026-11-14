@@ -160,3 +160,22 @@ table.prices { width: 100%; border-collapse: collapse; }
 .foot-links a { color: var(--ink); text-decoration: none; }
 .foot .langs { margin: 0; }
 @media (max-width: 760px) { .foot-in { grid-template-columns: 1fr; } }
+
+/* monitoring */
+.tag.mono { text-transform: none; letter-spacing: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .8rem; }
+
+/* slider: site/slides/slide*.jpg, смена каждые ~5 с (assets/slider.js) */
+.slider { position: relative; max-width: 960px; margin: 0 auto; }
+.slides { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden;
+  background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.slides img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity .7s ease; }
+.slides img.on { opacity: 1; }
+.sl-prev, .sl-next { position: absolute; top: calc(50% - 32px); width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--card) 85%, transparent); color: var(--ink); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.sl-prev { left: 10px; } .sl-next { right: 10px; }
+.sl-dots { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+.sl-dots button { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: 0; background: var(--line); cursor: pointer; }
+.sl-dots button[aria-current] { background: var(--brand); }
+.sl-prev:focus-visible, .sl-next:focus-visible, .sl-dots button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 640px) { .sl-prev, .sl-next { width: 36px; height: 36px; font-size: 1.3rem; top: calc(50% - 26px); } }
+@media (prefers-reduced-motion: reduce) { .slides img { transition: none; } }

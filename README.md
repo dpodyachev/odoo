@@ -20,7 +20,14 @@ python3 src/build.py
 export CLOUDFLARE_API_TOKEN=… CLOUDFLARE_ACCOUNT_ID=…
 npx -y wrangler@3.114.0 pages deploy site --project-name goldberg-odoo --branch main
 ```
-Свой домен: Pages → goldberg-odoo → Custom domains → `goldberg.pp.ua`.
+Домены: основной `2027.pp.ua` (CNAME @ → goldberg-odoo.pages.dev; он же `BASE_URL` в config.py для canonical/sitemap).
+Зеркала: добавить в Pages → goldberg-odoo → Custom domains; canonical у всех указывает на основной домен.
+
+## Слайды (примеры внедрения)
+
+Положить картинки в `site/slides/` с именами `slide1.jpg`, `slide2.jpg`, … (также .png/.webp), лучше 16:9, ~1600×900, до 300 КБ.
+Сборка сама находит все файлы и строит карусель внизу страницы (смена каждые 5 с — `SLIDE_INTERVAL_MS` в config.py).
+Удалил файл — слайд исчез; нет файлов — блока нет. После замены: `python3 src/build.py` и деплой.
 
 ## Перед публикацией
 

@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Поддержка, установка и интеграция Odoo в DACH – Goldberg Odoo Services</title>
 <meta name="description" content="Сопровождение Odoo для компаний в Германии, Австрии и Швейцарии: установка, поддержка, устранение сбоев, обновления, DATEV, электронные счета (XRechnung/ZUGFeRD), Shopware, JTL, DHL, DPD. Фиксированные цены, удалённо из Штутгарта.">
-<link rel="canonical" href="https://goldberg.pp.ua/ru/">
-<link rel="alternate" hreflang="de" href="https://goldberg.pp.ua/de/">
-<link rel="alternate" hreflang="en" href="https://goldberg.pp.ua/en/">
-<link rel="alternate" hreflang="fr" href="https://goldberg.pp.ua/fr/">
-<link rel="alternate" hreflang="uk" href="https://goldberg.pp.ua/uk/">
-<link rel="alternate" hreflang="ru" href="https://goldberg.pp.ua/ru/">
-<link rel="alternate" hreflang="x-default" href="https://goldberg.pp.ua/de/">
+<link rel="canonical" href="https://2027.pp.ua/ru/">
+<link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/">
+<link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/">
+<link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/">
+<link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/">
+<link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/">
+<link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/">
 <meta property="og:title" content="Поддержка, установка и интеграция Odoo в DACH – Goldberg Odoo Services">
 <meta property="og:description" content="Сопровождение Odoo для компаний в Германии, Австрии и Швейцарии: установка, поддержка, устранение сбоев, обновления, DATEV, электронные счета (XRechnung/ZUGFeRD), Shopware, JTL, DHL, DPD. Фиксированные цены, удалённо из Штутгарта.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://goldberg.pp.ua/ru/">
+<meta property="og:url" content="https://2027.pp.ua/ru/">
 <meta name="theme-color" content="#3b2a4a">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/style.css">
@@ -88,13 +88,21 @@
 </figure>
 </div>
 </section>
-<section class="sec alt">
+<section id="monitoring" class="sec alt">
+<div class="wrap">
+<h2>Мониторинг с Grafana &amp; Prometheus</h2>
+<p class="intro">Когда уведомлений в Telegram мало: дашборды с историей, метриками и алертами для вашего Odoo – на вашем собственном сервере, данные остаются у вас.</p>
+<div class="grid3"><article class="card"><p class="tag mono">node_exporter</p><h3>Сервер</h3><p>CPU, память, диски, сеть и нагрузка – с историей за недели.</p></article><article class="card"><p class="tag mono">postgres_exporter</p><h3>PostgreSQL</h3><p>Соединения, медленные запросы, блокировки, размер базы, репликация.</p></article><article class="card"><p class="tag mono">cAdvisor</p><h3>Docker</h3><p>Ресурсы каждого контейнера: Odoo, воркеры, база, вспомогательные сервисы.</p></article><article class="card"><p class="tag mono">blackbox · nginx</p><h3>Доступность</h3><p>Время ответа снаружи, HTTP-ошибки, срок действия SSL-сертификатов.</p></article><article class="card"><p class="tag mono">Odoo · Loki</p><h3>Приложение</h3><p>Воркеры, длительность cron, очереди (queue_job) и ошибки из логов.</p></article><article class="card"><p class="tag mono">Alertmanager</p><h3>Алерты</h3><p>Уведомления в Telegram или на e-mail – с порогами под ваш бизнес.</p></article></div>
+<p class="note">Работает вместе с ботом мониторинга или отдельно. Настройка по фиксированной цене, сопровождение – в пакете поддержки.</p>
+</div>
+</section>
+<section class="sec">
 <div class="wrap">
 <h2>Как мы работаем</h2>
 <ol class="steps"><li><span class="num">1</span><h3>Знакомство</h3><p>30 минут по видео или в Telegram – бесплатно. Вы рассказываете, где проблема.</p></li><li><span class="num">2</span><h3>Health-Check или предложение</h3><p>Я проверяю систему и называю фиксированную цену или подходящий пакет.</p></li><li><span class="num">3</span><h3>Реализация</h3><p>Сначала на тестовой копии, затем в продакшене – в удобное для вас время.</p></li><li><span class="num">4</span><h3>Сопровождение</h3><p>Мониторинг, обновления и быстрая помощь – с предсказуемыми ежемесячными расходами.</p></li></ol>
 </div>
 </section>
-<section id="prices" class="sec">
+<section id="prices" class="sec alt">
 <div class="wrap">
 <h2>Цены</h2>
 <p class="intro">Прозрачно и предсказуемо. Мелкие задачи – по факту, проекты – по фиксированной цене после Health-Check.</p>
@@ -130,14 +138,14 @@
 <h3 class="sub">Отдельные услуги</h3>
 <div class="tablewrap"><table class="prices">
 <thead><tr><th>Услуга</th><th>Цена</th></tr></thead>
-<tbody><tr><td>Поддержка и обслуживание<small>доработки, вопросы пользователей, плановые работы – учёт по 15 минут</small></td><td class="pr"><b>65 €</b> <span>/ ч</span></td></tr><tr><td>Срочно, выходные, troubleshooting<small>сбой, простой, поиск ошибки в сжатые сроки</small></td><td class="pr"><b>95 €</b> <span>/ ч</span></td></tr><tr><td>Odoo Health-Check<small>сервер, бэкапы, модули, производительность, безопасность – письменный отчёт и план</small></td><td class="pr"><b>490 €</b> <span>фикс</span></td></tr><tr><td>Первичная диагностика сбоя<small>до 2 ч поиска, дальше по факту (95 € / ч)</small></td><td class="pr"><b>190 €</b> <span>фикс</span></td></tr><tr><td>Установка и настройка<small>Odoo + PostgreSQL в Docker, SSL, бэкапы, почта, мониторинг</small></td><td class="pr"><span>от</span> <b>990 €</b> <span>фикс</span></td></tr><tr><td>Обновление модулей с откатом<small>git pull, обновление на тестовой копии, затем в продакшене</small></td><td class="pr"><span>от</span> <b>190 €</b> <span>фикс</span></td></tr><tr><td>Миграция версии<small>например, Odoo 14 → 17, с тестовым прогоном на копии</small></td><td class="pr"><span>от</span> <b>1 500 €</b></td></tr><tr><td>Экспорт в DATEV<small>настройка, сопоставление счетов, тестовый экспорт с вашей бухгалтерией</small></td><td class="pr"><span>от</span> <b>1 200 €</b></td></tr><tr><td>Электронные счета (XRechnung / ZUGFeRD)<small>отправка и приём, валидация, Leitweg-ID</small></td><td class="pr"><span>от</span> <b>900 €</b></td></tr><tr><td>Подключение магазина<small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>от</span> <b>1 500 €</b></td></tr><tr><td>Подключение доставки<small>DHL, DPD, GLS – этикетки, трекинг</small></td><td class="pr"><span>от</span> <b>900 €</b></td></tr><tr><td>Швейцарский QR-счёт<small>QR-IBAN, референсы, MWST</small></td><td class="pr"><span>от</span> <b>600 €</b></td></tr><tr><td>Бот мониторинга для вашей команды<small>своя копия бота, настройка под ваш сервер</small></td><td class="pr"><span>от</span> <b>390 €</b> <span>фикс</span></td></tr></tbody>
+<tbody><tr><td>Поддержка и обслуживание<small>доработки, вопросы пользователей, плановые работы – учёт по 15 минут</small></td><td class="pr"><b>65 €</b> <span>/ ч</span></td></tr><tr><td>Срочно, выходные, troubleshooting<small>сбой, простой, поиск ошибки в сжатые сроки</small></td><td class="pr"><b>95 €</b> <span>/ ч</span></td></tr><tr><td>Odoo Health-Check<small>сервер, бэкапы, модули, производительность, безопасность – письменный отчёт и план</small></td><td class="pr"><b>490 €</b> <span>фикс</span></td></tr><tr><td>Первичная диагностика сбоя<small>до 2 ч поиска, дальше по факту (95 € / ч)</small></td><td class="pr"><b>190 €</b> <span>фикс</span></td></tr><tr><td>Установка и настройка<small>Odoo + PostgreSQL в Docker, SSL, бэкапы, почта, мониторинг</small></td><td class="pr"><span>от</span> <b>990 €</b> <span>фикс</span></td></tr><tr><td>Обновление модулей с откатом<small>git pull, обновление на тестовой копии, затем в продакшене</small></td><td class="pr"><span>от</span> <b>190 €</b> <span>фикс</span></td></tr><tr><td>Миграция версии<small>например, Odoo 14 → 17, с тестовым прогоном на копии</small></td><td class="pr"><span>от</span> <b>1 500 €</b></td></tr><tr><td>Экспорт в DATEV<small>настройка, сопоставление счетов, тестовый экспорт с вашей бухгалтерией</small></td><td class="pr"><span>от</span> <b>1 200 €</b></td></tr><tr><td>Электронные счета (XRechnung / ZUGFeRD)<small>отправка и приём, валидация, Leitweg-ID</small></td><td class="pr"><span>от</span> <b>900 €</b></td></tr><tr><td>Подключение магазина<small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>от</span> <b>1 500 €</b></td></tr><tr><td>Подключение доставки<small>DHL, DPD, GLS – этикетки, трекинг</small></td><td class="pr"><span>от</span> <b>900 €</b></td></tr><tr><td>Швейцарский QR-счёт<small>QR-IBAN, референсы, MWST</small></td><td class="pr"><span>от</span> <b>600 €</b></td></tr><tr><td>Настройка Grafana &amp; Prometheus<small>Exporter-ы для сервера, PostgreSQL, Docker, nginx; дашборды и алерты</small></td><td class="pr"><span>от</span> <b>590 €</b> <span>фикс</span></td></tr><tr><td>Бот мониторинга для вашей команды<small>своя копия бота, настройка под ваш сервер</small></td><td class="pr"><span>от</span> <b>390 €</b> <span>фикс</span></td></tr></tbody>
 </table></div>
 <p class="note">Все цены в EUR. Согласно § 19 UStG (режим малого предпринимателя) НДС не начисляется. Оплата ежемесячно по факту с шагом 15 минут или по согласованной фиксированной цене.</p>
 <h3 class="sub">Типичные задачи по фиксированной цене</h3>
 <div class="grid3"><article class="case"><h3>«Odoo лёг после обновления сервера»</h3><p>Диагностика, причина (Python-пакет, база, прокси), исправление и короткий отчёт, как не допустить повторения.</p><p class="cprice">обычно 190 € + 1–2 ч × 95 €</p></article><article class="case"><h3>«Нужны электронные счета до конца года»</h3><p>Настройка ZUGFeRD/XRechnung, проверка справочников, валидация тестовых счетов, обучение команды.</p><p class="cprice">от 900 € фикс</p></article><article class="case"><h3>«Odoo работает – но им никто не занимается»</h3><p>Health-Check, затем мониторинг, бэкапы и обновления в пакете Business.</p><p class="cprice">490 € разово + 690 € / мес</p></article></div>
 </div>
 </section>
-<section id="about" class="sec alt">
+<section id="about" class="sec">
 <div class="wrap about-in">
 <div>
 <h2>Обо мне</h2>
@@ -146,12 +154,25 @@
 <ul class="facts"><li>Odoo 14 – 19, Community и Enterprise</li><li>Linux · Docker · PostgreSQL · nginx</li><li>Python, OWL, XML-RPC / REST</li><li>Деплой через git с откатом</li><li>Языки: немецкий, английский, украинский, русский</li></ul>
 </div>
 </section>
-<section class="sec">
+<section class="sec alt">
 <div class="wrap narrow">
 <h2>Частые вопросы</h2>
 <div class="faq"><details><summary>Community или Enterprise?</summary><p>Оба. Помогу и с выбором – часто достаточно Community с нужными модулями OCA.</p></details><details><summary>Вы работаете только удалённо?</summary><p>Да, через SSH или VPN – безопасно и без расходов на дорогу. В регионе Штутгарта – и на месте.</p></details><details><summary>Как регулируется доступ к нашим данным?</summary><p>Договором обработки данных (AVV) по GDPR. Доступ только в нужном объёме, по желанию – ограниченный по времени.</p></details><details><summary>А если обновление пойдёт не так?</summary><p>Обновления сначала идут на копии. В продакшене сохраняется предыдущее состояние кода – откат занимает минуты.</p></details><details><summary>У нас уже есть партнёр Odoo.</summary><p>Не проблема – могу взять на себя эксплуатацию, серверы и мониторинг, а партнёр занимается бизнес-процессами.</p></details><details><summary>Как оплачивать?</summary><p>Ежемесячно по факту с шагом 15 минут или по фиксированной цене, банковским переводом.</p></details></div>
 </div>
 </section>
+<section id="examples" class="sec">
+<div class="wrap">
+<h2>Примеры из проектов</h2>
+<p class="intro">Фрагменты реальных внедрений – данные клиентов скрыты.</p>
+<div class="slider" data-interval="5000" aria-roledescription="carousel">
+<div class="slides"><img src="/slides/slide1.jpg?v=ccf15ddf" alt="Пример 1" class=on loading="eager" decoding="async"><img src="/slides/slide2.jpg?v=38e2ddcb" alt="Пример 2" loading="lazy" decoding="async"><img src="/slides/slide3.jpg?v=417078c1" alt="Пример 3" loading="lazy" decoding="async"><img src="/slides/slide4.jpg?v=52307238" alt="Пример 4" loading="lazy" decoding="async"><img src="/slides/slide5.jpg?v=72e6679f" alt="Пример 5" loading="lazy" decoding="async"></div>
+<button type="button" class="sl-prev" aria-label="Предыдущий пример">‹</button>
+<button type="button" class="sl-next" aria-label="Следующий пример">›</button>
+<div class="sl-dots"><button type="button" aria-label="Показать пример 1" aria-current=true></button><button type="button" aria-label="Показать пример 2"></button><button type="button" aria-label="Показать пример 3"></button><button type="button" aria-label="Показать пример 4"></button><button type="button" aria-label="Показать пример 5"></button></div>
+</div>
+</div>
+</section>
+<script src="/assets/slider.js" defer></script>
 <section id="contact" class="sec contact">
 <div class="wrap narrow center">
 <h2>Давайте обсудим</h2>

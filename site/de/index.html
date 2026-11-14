@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Odoo Support, Installation &amp; Integration für DACH – Goldberg Odoo Services</title>
 <meta name="description" content="Odoo-Betreuung für Unternehmen in Deutschland, Österreich und der Schweiz: Installation, Support, Fehlerbehebung, Updates, DATEV, E-Rechnung (XRechnung/ZUGFeRD), Shopware, JTL, DHL, DPD. Festpreise, remote aus Stuttgart.">
-<link rel="canonical" href="https://goldberg.pp.ua/de/">
-<link rel="alternate" hreflang="de" href="https://goldberg.pp.ua/de/">
-<link rel="alternate" hreflang="en" href="https://goldberg.pp.ua/en/">
-<link rel="alternate" hreflang="fr" href="https://goldberg.pp.ua/fr/">
-<link rel="alternate" hreflang="uk" href="https://goldberg.pp.ua/uk/">
-<link rel="alternate" hreflang="ru" href="https://goldberg.pp.ua/ru/">
-<link rel="alternate" hreflang="x-default" href="https://goldberg.pp.ua/de/">
+<link rel="canonical" href="https://2027.pp.ua/de/">
+<link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/">
+<link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/">
+<link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/">
+<link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/">
+<link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/">
+<link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/">
 <meta property="og:title" content="Odoo Support, Installation &amp; Integration für DACH – Goldberg Odoo Services">
 <meta property="og:description" content="Odoo-Betreuung für Unternehmen in Deutschland, Österreich und der Schweiz: Installation, Support, Fehlerbehebung, Updates, DATEV, E-Rechnung (XRechnung/ZUGFeRD), Shopware, JTL, DHL, DPD. Festpreise, remote aus Stuttgart.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://goldberg.pp.ua/de/">
+<meta property="og:url" content="https://2027.pp.ua/de/">
 <meta name="theme-color" content="#3b2a4a">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/style.css">
@@ -88,13 +88,21 @@
 </figure>
 </div>
 </section>
-<section class="sec alt">
+<section id="monitoring" class="sec alt">
+<div class="wrap">
+<h2>Monitoring mit Grafana &amp; Prometheus</h2>
+<p class="intro">Wenn Telegram-Meldungen nicht reichen: Dashboards mit Verlauf, Kennzahlen und Alarmen für Ihr Odoo – auf Ihrem eigenen Server, Ihre Daten bleiben bei Ihnen.</p>
+<div class="grid3"><article class="card"><p class="tag mono">node_exporter</p><h3>Server</h3><p>CPU, Arbeitsspeicher, Festplatten, Netzwerk und Last – mit Verlauf über Wochen.</p></article><article class="card"><p class="tag mono">postgres_exporter</p><h3>PostgreSQL</h3><p>Verbindungen, langsame Abfragen, Sperren, Datenbankgröße, Replikation.</p></article><article class="card"><p class="tag mono">cAdvisor</p><h3>Docker</h3><p>Ressourcen je Container: Odoo, Worker, Datenbank, Hilfsdienste.</p></article><article class="card"><p class="tag mono">blackbox · nginx</p><h3>Erreichbarkeit</h3><p>Antwortzeiten von außen, HTTP-Fehler, Ablauf der SSL-Zertifikate.</p></article><article class="card"><p class="tag mono">Odoo · Loki</p><h3>Anwendung</h3><p>Worker, Cron-Laufzeiten, Warteschlangen (queue_job) und Fehler aus den Logs.</p></article><article class="card"><p class="tag mono">Alertmanager</p><h3>Alarme</h3><p>Meldungen per Telegram oder E-Mail – mit Schwellen, die zu Ihrem Betrieb passen.</p></article></div>
+<p class="note">Läuft parallel zum Monitoring-Bot oder eigenständig. Einrichtung zum Festpreis, Betreuung im Supportpaket.</p>
+</div>
+</section>
+<section class="sec">
 <div class="wrap">
 <h2>So arbeiten wir zusammen</h2>
 <ol class="steps"><li><span class="num">1</span><h3>Erstgespräch</h3><p>30 Minuten per Video oder Telegram – kostenlos. Sie schildern, wo es hakt.</p></li><li><span class="num">2</span><h3>Health-Check oder Angebot</h3><p>Ich prüfe Ihr System und nenne einen Festpreis oder ein passendes Paket.</p></li><li><span class="num">3</span><h3>Umsetzung</h3><p>Zuerst auf einer Testkopie, dann in Produktion – zu einem Zeitpunkt, der Ihnen passt.</p></li><li><span class="num">4</span><h3>Laufende Betreuung</h3><p>Monitoring, Updates und schnelle Hilfe – mit planbaren monatlichen Kosten.</p></li></ol>
 </div>
 </section>
-<section id="prices" class="sec">
+<section id="prices" class="sec alt">
 <div class="wrap">
 <h2>Preise</h2>
 <p class="intro">Transparent und planbar. Kleine Aufgaben nach Aufwand, Projekte zum Festpreis nach Health-Check.</p>
@@ -130,14 +138,14 @@
 <h3 class="sub">Einzelleistungen</h3>
 <div class="tablewrap"><table class="prices">
 <thead><tr><th>Leistung</th><th>Preis</th></tr></thead>
-<tbody><tr><td>Support &amp; Wartung<small>Anpassungen, Benutzerfragen, geplante Arbeiten – im 15-Minuten-Takt</small></td><td class="pr"><b>65 €</b> <span>/ Std.</span></td></tr><tr><td>Dringend, Wochenende, Troubleshooting<small>Störung, Ausfall, Fehlersuche unter Zeitdruck</small></td><td class="pr"><b>95 €</b> <span>/ Std.</span></td></tr><tr><td>Odoo Health-Check<small>Server, Backups, Module, Performance, Sicherheit – mit schriftlichem Bericht und Maßnahmenplan</small></td><td class="pr"><b>490 €</b> <span>Festpreis</span></td></tr><tr><td>Erstdiagnose einer Störung<small>bis 2 Std. Fehlersuche, danach nach Aufwand (95 € / Std.)</small></td><td class="pr"><b>190 €</b> <span>Festpreis</span></td></tr><tr><td>Installation &amp; Einrichtung<small>Odoo + PostgreSQL in Docker, SSL, Backups, E-Mail, Monitoring</small></td><td class="pr"><span>ab</span> <b>990 €</b> <span>Festpreis</span></td></tr><tr><td>Modul-Update mit Rücksprung<small>git pull, Update auf Testkopie, Update in Produktion</small></td><td class="pr"><span>ab</span> <b>190 €</b> <span>Festpreis</span></td></tr><tr><td>Versions-Migration<small>z. B. Odoo 14 → 17, inkl. Testlauf auf Kopie</small></td><td class="pr"><span>ab</span> <b>1 500 €</b></td></tr><tr><td>DATEV-Export<small>Einrichtung, Kontenzuordnung, Testexport mit Ihrer Kanzlei</small></td><td class="pr"><span>ab</span> <b>1 200 €</b></td></tr><tr><td>E-Rechnung (XRechnung / ZUGFeRD)<small>Versand und Empfang, Validierung, Leitweg-ID</small></td><td class="pr"><span>ab</span> <b>900 €</b></td></tr><tr><td>Shop-Anbindung<small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>ab</span> <b>1 500 €</b></td></tr><tr><td>Versand-Anbindung<small>DHL, DPD, GLS – Etiketten, Tracking</small></td><td class="pr"><span>ab</span> <b>900 €</b></td></tr><tr><td>Schweizer QR-Rechnung<small>QR-IBAN, Referenzen, MWST</small></td><td class="pr"><span>ab</span> <b>600 €</b></td></tr><tr><td>Monitoring-Bot für Ihr Team<small>eigene Instanz, Einrichtung für Ihren Server</small></td><td class="pr"><span>ab</span> <b>390 €</b> <span>Festpreis</span></td></tr></tbody>
+<tbody><tr><td>Support &amp; Wartung<small>Anpassungen, Benutzerfragen, geplante Arbeiten – im 15-Minuten-Takt</small></td><td class="pr"><b>65 €</b> <span>/ Std.</span></td></tr><tr><td>Dringend, Wochenende, Troubleshooting<small>Störung, Ausfall, Fehlersuche unter Zeitdruck</small></td><td class="pr"><b>95 €</b> <span>/ Std.</span></td></tr><tr><td>Odoo Health-Check<small>Server, Backups, Module, Performance, Sicherheit – mit schriftlichem Bericht und Maßnahmenplan</small></td><td class="pr"><b>490 €</b> <span>Festpreis</span></td></tr><tr><td>Erstdiagnose einer Störung<small>bis 2 Std. Fehlersuche, danach nach Aufwand (95 € / Std.)</small></td><td class="pr"><b>190 €</b> <span>Festpreis</span></td></tr><tr><td>Installation &amp; Einrichtung<small>Odoo + PostgreSQL in Docker, SSL, Backups, E-Mail, Monitoring</small></td><td class="pr"><span>ab</span> <b>990 €</b> <span>Festpreis</span></td></tr><tr><td>Modul-Update mit Rücksprung<small>git pull, Update auf Testkopie, Update in Produktion</small></td><td class="pr"><span>ab</span> <b>190 €</b> <span>Festpreis</span></td></tr><tr><td>Versions-Migration<small>z. B. Odoo 14 → 17, inkl. Testlauf auf Kopie</small></td><td class="pr"><span>ab</span> <b>1 500 €</b></td></tr><tr><td>DATEV-Export<small>Einrichtung, Kontenzuordnung, Testexport mit Ihrer Kanzlei</small></td><td class="pr"><span>ab</span> <b>1 200 €</b></td></tr><tr><td>E-Rechnung (XRechnung / ZUGFeRD)<small>Versand und Empfang, Validierung, Leitweg-ID</small></td><td class="pr"><span>ab</span> <b>900 €</b></td></tr><tr><td>Shop-Anbindung<small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>ab</span> <b>1 500 €</b></td></tr><tr><td>Versand-Anbindung<small>DHL, DPD, GLS – Etiketten, Tracking</small></td><td class="pr"><span>ab</span> <b>900 €</b></td></tr><tr><td>Schweizer QR-Rechnung<small>QR-IBAN, Referenzen, MWST</small></td><td class="pr"><span>ab</span> <b>600 €</b></td></tr><tr><td>Grafana &amp; Prometheus einrichten<small>Exporter für Server, PostgreSQL, Docker, nginx; Dashboards und Alarme</small></td><td class="pr"><span>ab</span> <b>590 €</b> <span>Festpreis</span></td></tr><tr><td>Monitoring-Bot für Ihr Team<small>eigene Instanz, Einrichtung für Ihren Server</small></td><td class="pr"><span>ab</span> <b>390 €</b> <span>Festpreis</span></td></tr></tbody>
 </table></div>
 <p class="note">Alle Preise in EUR. Gemäß § 19 UStG (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet. Abrechnung monatlich nach Aufwand im 15-Minuten-Takt bzw. zum vereinbarten Festpreis.</p>
 <h3 class="sub">Typische Fälle zum Festpreis</h3>
 <div class="grid3"><article class="case"><h3>„Odoo ist nach dem Server-Update down“</h3><p>Erstdiagnose, Ursache (z. B. Python-Paket, Datenbank, Proxy), Behebung und kurzer Bericht, wie es nicht wieder passiert.</p><p class="cprice">meist 190 € + 1–2 Std. × 95 €</p></article><article class="case"><h3>„Wir brauchen E-Rechnungen bis Jahresende“</h3><p>ZUGFeRD/XRechnung einrichten, Stammdaten prüfen, Testrechnungen validieren, Team einweisen.</p><p class="cprice">ab 900 € Festpreis</p></article><article class="case"><h3>„Unser Odoo läuft – aber niemand kümmert sich“</h3><p>Health-Check, danach Monitoring, Backups und Updates im Business-Paket.</p><p class="cprice">490 € einmalig + 690 € / Monat</p></article></div>
 </div>
 </section>
-<section id="about" class="sec alt">
+<section id="about" class="sec">
 <div class="wrap about-in">
 <div>
 <h2>Über mich</h2>
@@ -146,12 +154,25 @@
 <ul class="facts"><li>Odoo 14 – 19, Community &amp; Enterprise</li><li>Linux · Docker · PostgreSQL · nginx</li><li>Python, OWL, XML-RPC / REST</li><li>Git-basierte Deployments mit Rollback</li><li>Kommunikation: Deutsch, Englisch, Ukrainisch, Russisch</li></ul>
 </div>
 </section>
-<section class="sec">
+<section class="sec alt">
 <div class="wrap narrow">
 <h2>Häufige Fragen</h2>
 <div class="faq"><details><summary>Community oder Enterprise?</summary><p>Beides. Ich helfe auch bei der Entscheidung – oft reicht Community mit gezielten OCA-Modulen.</p></details><details><summary>Arbeiten Sie nur remote?</summary><p>Ja, über SSH bzw. VPN – sicher und ohne Anfahrtskosten. In der Region Stuttgart auch vor Ort.</p></details><details><summary>Wie ist der Zugriff auf unsere Daten geregelt?</summary><p>Mit einem Auftragsverarbeitungsvertrag (AVV) nach DSGVO. Zugänge nur so weit wie nötig, auf Wunsch zeitlich begrenzt.</p></details><details><summary>Was, wenn ein Update schiefgeht?</summary><p>Updates laufen zuerst auf einer Kopie. In Produktion wird der vorherige Code-Stand gesichert – ein Rücksprung dauert Minuten.</p></details><details><summary>Wir haben schon einen Odoo-Partner.</summary><p>Kein Problem – ich übernehme gern Betrieb, Server und Monitoring, während Ihr Partner die Fachprozesse betreut.</p></details><details><summary>Wie wird abgerechnet?</summary><p>Monatlich nach Aufwand im 15-Minuten-Takt oder zum vereinbarten Festpreis, per Überweisung.</p></details></div>
 </div>
 </section>
+<section id="examples" class="sec">
+<div class="wrap">
+<h2>Beispiele aus Projekten</h2>
+<p class="intro">Ausschnitte aus echten Umsetzungen – Kundendaten unkenntlich gemacht.</p>
+<div class="slider" data-interval="5000" aria-roledescription="carousel">
+<div class="slides"><img src="/slides/slide1.jpg?v=ccf15ddf" alt="Beispiel 1" class=on loading="eager" decoding="async"><img src="/slides/slide2.jpg?v=38e2ddcb" alt="Beispiel 2" loading="lazy" decoding="async"><img src="/slides/slide3.jpg?v=417078c1" alt="Beispiel 3" loading="lazy" decoding="async"><img src="/slides/slide4.jpg?v=52307238" alt="Beispiel 4" loading="lazy" decoding="async"><img src="/slides/slide5.jpg?v=72e6679f" alt="Beispiel 5" loading="lazy" decoding="async"></div>
+<button type="button" class="sl-prev" aria-label="Vorheriges Beispiel">‹</button>
+<button type="button" class="sl-next" aria-label="Nächstes Beispiel">›</button>
+<div class="sl-dots"><button type="button" aria-label="Beispiel 1 anzeigen" aria-current=true></button><button type="button" aria-label="Beispiel 2 anzeigen"></button><button type="button" aria-label="Beispiel 3 anzeigen"></button><button type="button" aria-label="Beispiel 4 anzeigen"></button><button type="button" aria-label="Beispiel 5 anzeigen"></button></div>
+</div>
+</div>
+</section>
+<script src="/assets/slider.js" defer></script>
 <section id="contact" class="sec contact">
 <div class="wrap narrow center">
 <h2>Lassen Sie uns sprechen</h2>

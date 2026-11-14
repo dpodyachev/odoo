@@ -2,6 +2,8 @@
 """Генератор статического сайта: src/lang_<xx>.py + config.py → site/<xx>/index.html, impressum.html, datenschutz.html.
 Запуск: python3 src/build.py   (без зависимостей; результат коммитится, Cloudflare Pages отдаёт папку site/)."""
 import datetime
+import hashlib
+import re
 import html
 import importlib
 import os
@@ -120,6 +122,45 @@ def chat(T):
     return "\n".join(out)
 
 
+def slides():
+    """site/slides/slide1.jpg, slide2.jpg … (натуральная сортировка); ?v= — сброс кэша при замене файла."""
+    d = os.path.join(OUT, "slides")
+    if not os.path.isdir(d):
+        return []
+    files = [f for f in os.listdir(d) if re.fullmatch(r"slide\d+\.(jpe?g|png|webp)", f, re.I)]
+    files.sort(key=lambda f: int(re.search(r"\d+", f).group()))
+    out = []
+    for f in files:
+        with open(os.path.join(d, f), "rb") as fh:
+            out.append(f"/slides/{f}?v={hashlib.sha1(fh.read()).hexdigest()[:8]}")
+    return out
+
+
+def slider(T):
+    imgs = slides()
+    if not imgs:
+        return ""
+    pics = "".join(f'<img src="{src}" alt="{E(T["slide_alt"].format(n=i))}"{" class=on" if i == 1 else ""}'
+                   f' loading="{"eager" if i == 1 else "lazy"}" decoding="async">'
+                   for i, src in enumerate(imgs, 1))
+    dots = "".join(f'<button type="button" aria-label="{E(T["slides_goto"].format(n=i))}"'
+                   f'{" aria-current=true" if i == 1 else ""}></button>' for i in range(1, len(imgs) + 1))
+    return f"""<section id="examples" class="sec">
+<div class="wrap">
+<h2>{E(T["slides_title"])}</h2>
+<p class="intro">{E(T["slides_intro"])}</p>
+<div class="slider" data-interval="{C.SLIDE_INTERVAL_MS}" aria-roledescription="carousel">
+<div class="slides">{pics}</div>
+<button type="button" class="sl-prev" aria-label="{E(T["slides_prev"])}">‹</button>
+<button type="button" class="sl-next" aria-label="{E(T["slides_next"])}">›</button>
+<div class="sl-dots">{dots}</div>
+</div>
+</div>
+</section>
+<script src="/assets/slider.js" defer></script>
+"""
+
+
 def price_unit(T, unit, price):
     u = T["units"]
     if unit == "h":
@@ -197,9 +238,20 @@ def index(T, lang):
 </div>
 </section>
 """)
+    mon = "".join(f'<article class="card"><p class="tag mono">{E(tag)}</p><h3>{E(t)}</h3><p>{E(x)}</p></article>'
+                  for tag, t, x in T["mon"])
+    s.append(f"""<section id="monitoring" class="sec alt">
+<div class="wrap">
+<h2>{E(T["mon_title"])}</h2>
+<p class="intro">{E(T["mon_intro"])}</p>
+<div class="grid3">{mon}</div>
+<p class="note">{E(T["mon_note"])}</p>
+</div>
+</section>
+""")
     steps = "".join(f'<li><span class="num">{i}</span><h3>{E(t)}</h3><p>{E(x)}</p></li>'
                     for i, (t, x) in enumerate(T["process"], 1))
-    s.append(f"""<section class="sec alt">
+    s.append(f"""<section class="sec">
 <div class="wrap">
 <h2>{E(T["process_title"])}</h2>
 <ol class="steps">{steps}</ol>
@@ -224,7 +276,7 @@ def index(T, lang):
                    f'<td class="pr">{price_unit(T, u, p)}</td></tr>' for k, p, u in C.PRICES)
     cases = "".join(f'<article class="case"><h3>{E(t)}</h3><p>{E(x)}</p><p class="cprice">{E(pr)}</p></article>'
                     for t, x, pr in T["cases"])
-    s.append(f"""<section id="prices" class="sec">
+    s.append(f"""<section id="prices" class="sec alt">
 <div class="wrap">
 <h2>{E(T["prices_title"])}</h2>
 <p class="intro">{E(T["prices_intro"])}</p>
@@ -243,7 +295,7 @@ def index(T, lang):
 """)
     facts = "".join(f"<li>{E(f)}</li>" for f in T["about_facts"])
     paras = "".join(f"<p>{E(p)}</p>" for p in T["about"])
-    s.append(f"""<section id="about" class="sec alt">
+    s.append(f"""<section id="about" class="sec">
 <div class="wrap about-in">
 <div>
 <h2>{E(T["about_title"])}</h2>
@@ -254,13 +306,14 @@ def index(T, lang):
 </section>
 """)
     faq = "".join(f"<details><summary>{E(q)}</summary><p>{E(a)}</p></details>" for q, a in T["faq"])
-    s.append(f"""<section class="sec">
+    s.append(f"""<section class="sec alt">
 <div class="wrap narrow">
 <h2>{E(T["faq_title"])}</h2>
 <div class="faq">{faq}</div>
 </div>
 </section>
 """)
+    s.append(slider(T))
     s.append(f"""<section id="contact" class="sec contact">
 <div class="wrap narrow center">
 <h2>{E(T["contact_title"])}</h2>

@@ -1,5 +1,5 @@
 # Общие настройки сайта. Меняйте здесь, затем: python3 src/build.py
-BASE_URL = "https://goldberg.pp.ua"      # домен на Cloudflare Pages (для canonical/hreflang/sitemap)
+BASE_URL = "https://2027.pp.ua"         # основной домен (canonical/hreflang/sitemap); зеркала на других доменах ссылаются сюда
 BRAND = "Goldberg"                        # название в шапке
 BRAND_SUB = "Odoo Services"
 TELEGRAM = "https://t.me/podyachev"
@@ -33,6 +33,7 @@ PRICES = [
     ("shop",           "1 500 €", "from"),
     ("shipping",       "900 €", "from"),
     ("qrbill",         "600 €", "from"),
+    ("monitoring",     "590 €", "from_fix"),
     ("bot",            "390 €", "from_fix"),
 ]
 PLANS = [
@@ -41,3 +42,5 @@ PLANS = [
     ("business", "690 €", "8",  "1"),
     ("premium",  "1 490 €", "20", "4h"),
 ]
+
+SLIDE_INTERVAL_MS = 5000   # карусель site/slides/slide*.jpg|png|webp
