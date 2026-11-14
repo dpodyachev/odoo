@@ -241,5 +241,7 @@ table.prices { width: 100%; border-collapse: collapse; }
 .menu { align-items: center; }
 .nav-icon { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); }
 .nav-icon:hover { border-color: var(--brand); }
-.ico-mail { width: 18px; height: 18px; }
+.ico-nav { width: 18px; height: 18px; flex: none; }
+.nav-icon.multi { display: inline-flex; width: auto; padding: 0 9px; gap: 3px; border-radius: 99px; }
+.nav-icon.multi .ico-nav { width: 16px; height: 16px; }
 .nav-icon.cur span { font-weight: 700; font-size: 1.05rem; line-height: 1; }

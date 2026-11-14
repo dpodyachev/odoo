@@ -86,13 +86,20 @@ def langswitch(lang, page):
 
 
 def header(T, lang, page):
-    mail = ('<svg class="ico-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
-            'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/>'
-            '<path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>')
+    def svg(*paths):
+        return ('<svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
+                'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + "".join(paths) + '</svg>')
+    gear = svg('<circle cx="12" cy="12" r="7.8" stroke-width="3" stroke-dasharray="3 3.125" stroke-linecap="butt"/>',
+               '<circle cx="12" cy="12" r="6"/>', '<circle cx="12" cy="12" r="2"/>')
+    icons = {  # пункты меню-значки: подпись во всплывающей подсказке и aria-label
+        "services": svg(ICONS["fix"]) + gear + svg('<path d="M13 2 4 14h7l-1 8 10-13h-7z"/>'),
+        "prices": f'<span aria-hidden="true">{C.PRICE_ICON.get(lang, "€")}</span>',
+        "about": svg('<rect x="3" y="7" width="18" height="13" rx="2"/>', '<path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/>'),
+        "contact": svg('<rect x="3" y="5" width="18" height="14" rx="2"/>', '<path d="m3.5 6.5 8.5 6.5 8.5-6.5"/>'),
+    }
+    cls = {"services": "nav-icon multi", "prices": "nav-icon cur"}
     nav = "".join(
-        f'<a class="nav-icon" href="{url(lang)}#{k}" title="{E(v)}" aria-label="{E(v)}">{mail}</a>' if k == "contact"
-        else f'<a class="nav-icon cur" href="{url(lang)}#{k}" title="{E(v)}" aria-label="{E(v)}">'
-             f'<span aria-hidden="true">{C.PRICE_ICON.get(lang, "€")}</span></a>' if k == "prices"
+        f'<a class="{cls.get(k, "nav-icon")}" href="{url(lang)}#{k}" title="{E(v)}" aria-label="{E(v)}">{icons[k]}</a>' if k in icons
         else f'<a href="{url(lang)}#{k}">{E(v)}</a>' for k, v in T["nav"].items())
     return f"""<header class="top">
 <div class="wrap top-in">
