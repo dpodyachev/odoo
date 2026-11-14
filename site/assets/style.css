@@ -165,7 +165,7 @@ table.prices { width: 100%; border-collapse: collapse; }
 .tag.mono { text-transform: none; letter-spacing: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .8rem; }
 
 /* slider: site/slides/slide*.jpg, смена каждые ~5 с (assets/slider.js) */
-.slider { position: relative; max-width: 960px; margin: 0 auto; }
+.slider { position: relative; width: 100%; }
 .slides { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden;
   background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); }
 .slides img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity .7s ease; }

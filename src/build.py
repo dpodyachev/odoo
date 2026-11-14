@@ -27,6 +27,12 @@ ICONS = {
 }
 
 
+def asset(path):
+    """/assets/x?v=<hash>: браузер кэширует assets на сутки, хэш сбрасывает кэш при изменении файла."""
+    with open(os.path.join(OUT, path.lstrip("/")), "rb") as fh:
+        return f"{path}?v={hashlib.sha1(fh.read()).hexdigest()[:8]}"
+
+
 def icon(name):
     return (f'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
             f'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{ICONS[name]}</svg>')
@@ -55,7 +61,7 @@ def head(T, lang, page, title, desc):
 <meta property="og:url" content="{C.BASE_URL}{url(lang, page)}">
 <meta name="theme-color" content="#3b2a4a">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="{asset('/assets/style.css')}">
 </head>
 <body>
 """
@@ -157,7 +163,7 @@ def slider(T):
 </div>
 </div>
 </section>
-<script src="/assets/slider.js" defer></script>
+<script src="{asset('/assets/slider.js')}" defer></script>
 """
 
 
