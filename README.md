@@ -13,12 +13,16 @@
 
 ## Cloudflare Pages
 
-Workers & Pages → Create → Pages → Connect to Git → этот репозиторий.
-Framework preset: None · Build command: *(пусто)* · Build output directory: `site`.
-Потом Custom domains → `goldberg.pp.ua`.
+Проект `goldberg-odoo` (direct upload, https://goldberg-odoo.pages.dev). Ключи — в `.cloudflare` (в .gitignore, не коммитить).
+
+```bash
+python3 src/build.py
+export CLOUDFLARE_API_TOKEN=… CLOUDFLARE_ACCOUNT_ID=…
+npx -y wrangler@3.114.0 pages deploy site --project-name goldberg-odoo --branch main
+```
+Свой домен: Pages → goldberg-odoo → Custom domains → `goldberg.pp.ua`.
 
 ## Перед публикацией
 
 1. Заполнить в `src/config.py`: `OWNER_NAME`, `OWNER_STREET`, `OWNER_CITY`, `VAT_ID` (Impressum обязателен, § 5 DDG).
-2. Завести Cal.com и вписать `CAL_URL` (пока кнопка «Termin buchen» ведёт в Telegram).
 3. `python3 src/build.py`, проверить, закоммитить.
