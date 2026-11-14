@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://goldberg.pp.ua/sitemap.xml
