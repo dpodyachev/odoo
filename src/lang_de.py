@@ -155,7 +155,7 @@ T = {
     ],
     "about_facts": ['Ingenieur-Elektromechaniker, Automatisierung technologischer Prozesse (staatliche Hochschule, Ukraine, anabin H+)', "Odoo 14 – 19, Community & Enterprise", "Linux · Docker · PostgreSQL · nginx",
                     "Python, OWL, XML-RPC / REST", "Git-basierte Deployments mit Rollback",
-                    "Kommunikation: Deutsch, Englisch, Griechisch, Ukrainisch, Russisch",
+                    "Sprachen: Ukrainisch, Russisch (Muttersprache) · Englisch (B2) · Griechisch, Deutsch (Grundkenntnisse)",
                     'Eigenes Team: Entwicklung, Analyse, QA'],
     "faq_title": "Häufige Fragen",
     "faq": [
