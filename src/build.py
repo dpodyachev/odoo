@@ -193,7 +193,9 @@ def slider(T):
 <div class="wrap">
 <h2>{E(T["slides_title"])}</h2>
 <p class="intro">{E(T["slides_intro"])}</p>
-<div class="slider" data-interval="{C.SLIDE_INTERVAL_MS}" aria-roledescription="carousel">
+<div class="slider" data-interval="{C.SLIDE_INTERVAL_MS}" aria-roledescription="carousel"
+ data-l-close="{E(T["lb"]["close"])}" data-l-in="{E(T["lb"]["zoom_in"])}" data-l-out="{E(T["lb"]["zoom_out"])}"
+ data-l-full="{E(T["lb"]["full"])}" data-l-prev="{E(T["slides_prev"])}" data-l-next="{E(T["slides_next"])}">
 <div class="slides">{pics}</div>
 <button type="button" class="sl-prev" aria-label="{E(T["slides_prev"])}">‹</button>
 <button type="button" class="sl-next" aria-label="{E(T["slides_next"])}">›</button>
