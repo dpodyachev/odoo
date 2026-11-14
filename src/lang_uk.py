@@ -234,4 +234,5 @@ Cloudflare сертифіковано за EU-US Data Privacy Framework; укл�
     "slides_prev": 'Попередній приклад',
     "slides_next": 'Наступний приклад',
     "slides_goto": 'Показати приклад {n}',
+    "theme_toggle": 'Світла / темна тема',
 }

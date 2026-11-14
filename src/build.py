@@ -40,7 +40,8 @@ def icon(name):
 
 
 def url(lang, page=""):
-    # Cloudflare Pages отдаёт /x.html по адресу /x (308 с .html) — ссылки сразу без расширения
+    # Reader View (Firefox/Safari): секции с классом "extra" Readability отбрасывает — в режиме чтения остаются вводная и цены.
+# Cloudflare Pages отдаёт /x.html по адресу /x (308 с .html) — ссылки сразу без расширения
     return f"/{lang}/{page[:-5] if page.endswith('.html') else page}"
 
 
@@ -63,6 +64,7 @@ def head(T, lang, page, title, desc):
 <meta name="theme-color" content="#3b2a4a">
 {VERIFY}<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{asset('/assets/style.css')}">
+<script src="{asset('/assets/theme.js')}" defer></script>
 </head>
 <body>
 """
@@ -89,6 +91,7 @@ def header(T, lang, page):
 <a class="brand" href="{url(lang)}"><span class="logo">G</span><span>{E(C.BRAND)}<small>{E(C.BRAND_SUB)}</small></span></a>
 <nav class="menu">{nav}</nav>
 {langswitch(lang, page)}
+<button type="button" class="theme" hidden aria-label="{E(T["theme_toggle"])}" title="{E(T["theme_toggle"])}">🌙</button>
 </div>
 </header>
 """
@@ -158,7 +161,7 @@ def slider(T):
                    for i, src in enumerate(imgs, 1))
     dots = "".join(f'<button type="button" aria-label="{E(T["slides_goto"].format(n=i))}"'
                    f'{" aria-current=true" if i == 1 else ""}></button>' for i in range(1, len(imgs) + 1))
-    return f"""<section id="examples" class="sec">
+    return f"""<section id="examples" class="sec extra">
 <div class="wrap">
 <h2>{E(T["slides_title"])}</h2>
 <p class="intro">{E(T["slides_intro"])}</p>
@@ -191,14 +194,14 @@ def index(T, lang):
     s.append(header(T, lang, ""))
     badges = "".join(f"<li>{E(b)}</li>" for b in T["badges"])
     s.append(f"""<main>
-<section class="hero">
+<section class="hero extra">
 <div class="wrap hero-in">
 <div>
 <p class="kicker">{E(T["kicker"])}</p>
 <h1>{T["h1"]}</h1>
 <p class="lead">{E(T["sub"])}</p>
 {cta(T)}
-<ul class="badges">{badges}</ul>
+<ul class="badges extra">{badges}</ul>
 </div>
 <div class="hero-card" aria-hidden="true">
 <div class="hc-row"><span class="dot ok"></span>{E(T["hero_card"][0])}<em>200 · 0.18 s</em></div>
@@ -212,7 +215,7 @@ def index(T, lang):
 """)
     cards = "".join(f'<article class="card">{icon(ic)}<h3>{E(t)}</h3><p>{E(x)}</p></article>'
                     for ic, t, x in T["services"])
-    s.append(f"""<section id="services" class="sec">
+    s.append(f"""<section id="services" class="sec extra">
 <div class="wrap">
 <h2>{E(T["services_title"])}</h2>
 <p class="intro">{E(T["services_intro"])}</p>
@@ -224,7 +227,7 @@ def index(T, lang):
         f'<article class="feat"><p class="tag">{E(tag)}</p><h3>{E(t)}</h3><p>{E(x)}</p>'
         f'<ul>{"".join(f"<li>{E(b)}</li>" for b in bl)}</ul></article>'
         for tag, t, x, bl in T["dach"])
-    s.append(f"""<section id="dach" class="sec alt">
+    s.append(f"""<section id="dach" class="sec alt extra">
 <div class="wrap">
 <h2>{E(T["dach_title"])}</h2>
 <p class="intro">{E(T["dach_intro"])}</p>
@@ -233,7 +236,7 @@ def index(T, lang):
 </section>
 """)
     pts = "".join(f"<li><b>{E(a)}</b> {E(b)}</li>" for a, b in T["bot_points"])
-    s.append(f"""<section id="bot" class="sec">
+    s.append(f"""<section id="bot" class="sec extra">
 <div class="wrap bot-in">
 <div>
 <h2>{E(T["bot_title"])}</h2>
@@ -253,7 +256,7 @@ def index(T, lang):
 """)
     mon = "".join(f'<article class="card"><p class="tag mono">{E(tag)}</p><h3>{E(t)}</h3><p>{E(x)}</p></article>'
                   for tag, t, x in T["mon"])
-    s.append(f"""<section id="monitoring" class="sec alt">
+    s.append(f"""<section id="monitoring" class="sec alt extra">
 <div class="wrap">
 <h2>{E(T["mon_title"])}</h2>
 <p class="intro">{E(T["mon_intro"])}</p>
@@ -264,7 +267,7 @@ def index(T, lang):
 """)
     steps = "".join(f'<li><span class="num">{i}</span><h3>{E(t)}</h3><p>{E(x)}</p></li>'
                     for i, (t, x) in enumerate(T["process"], 1))
-    s.append(f"""<section class="sec">
+    s.append(f"""<section class="sec extra">
 <div class="wrap">
 <h2>{E(T["process_title"])}</h2>
 <ol class="steps">{steps}</ol>
@@ -285,12 +288,15 @@ def index(T, lang):
 {feats}
 </ul>
 </article>""")
-    rows = "".join(f'<tr><td>{E(T["price_names"][k][0])}<small>{E(T["price_names"][k][1])}</small></td>'
+    rows = "".join(f'<tr><td>{E(T["price_names"][k][0])}<br><small>{E(T["price_names"][k][1])}</small></td>'
                    f'<td class="pr">{price_unit(T, u, p)}</td></tr>' for k, p, u in C.PRICES)
     cases = "".join(f'<article class="case"><h3>{E(t)}</h3><p>{E(x)}</p><p class="cprice">{E(pr)}</p></article>'
                     for t, x, pr in T["cases"])
     s.append(f"""<section id="prices" class="sec alt">
 <div class="wrap">
+<p class="reader-intro"><b>{E(C.BRAND)} · {E(C.BRAND_SUB)}</b> — {E(T["kicker"])}</p>
+<p class="reader-intro">{E(T["sub"])}</p>
+<p class="reader-intro">Telegram: <a href="{E(C.TELEGRAM)}">{E(C.TELEGRAM_HANDLE)}</a> · E-Mail: <a href="mailto:{E(C.EMAIL)}">{E(C.EMAIL)}</a> · <a href="{E(book_url())}">{E(T["cta_book"])}</a></p>
 <h2>{E(T["prices_title"])}</h2>
 <p class="intro">{E(T["prices_intro"])}</p>
 <div class="plans">{"".join(plans)}</div>
@@ -308,7 +314,7 @@ def index(T, lang):
 """)
     facts = "".join(f"<li>{E(f)}</li>" for f in T["about_facts"])
     paras = "".join(f"<p>{E(p)}</p>" for p in T["about"])
-    s.append(f"""<section id="about" class="sec">
+    s.append(f"""<section id="about" class="sec extra">
 <div class="wrap about-in">
 <div>
 <h2>{E(T["about_title"])}</h2>
@@ -319,7 +325,7 @@ def index(T, lang):
 </section>
 """)
     faq = "".join(f"<details><summary>{E(q)}</summary><p>{E(a)}</p></details>" for q, a in T["faq"])
-    s.append(f"""<section class="sec alt">
+    s.append(f"""<section class="sec alt extra">
 <div class="wrap narrow">
 <h2>{E(T["faq_title"])}</h2>
 <div class="faq">{faq}</div>
@@ -327,7 +333,7 @@ def index(T, lang):
 </section>
 """)
     s.append(slider(T))
-    s.append(f"""<section id="contact" class="sec contact">
+    s.append(f"""<section id="contact" class="sec contact extra">
 <div class="wrap narrow center">
 <h2>{E(T["contact_title"])}</h2>
 <p class="intro">{E(T["contact_text"])}</p>

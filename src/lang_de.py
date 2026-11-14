@@ -242,4 +242,5 @@ einen gesonderten Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO).</p>
     "slides_prev": 'Vorheriges Beispiel',
     "slides_next": 'Nächstes Beispiel',
     "slides_goto": 'Beispiel {n} anzeigen',
+    "theme_toggle": 'Helles / dunkles Design',
 }

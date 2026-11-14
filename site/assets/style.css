@@ -5,13 +5,21 @@
   --shadow: 0 1px 2px rgba(30, 26, 36, .06), 0 8px 24px rgba(30, 26, 36, .06);
   color-scheme: light dark;
 }
+/* тёмная тема: по настройке системы, либо вручную кнопкой ☀️/🌙 (data-theme на <html>, assets/theme.js, без сохранения) */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #17141b; --bg-alt: #1f1b25; --card: #241f2b; --ink: #f1edf4; --muted: #b3aabd; --line: #352e3e;
     --brand: #b98aab; --brand-ink: #17141b; --brand-soft: #33283a; --tg-bg: #1b2530; --tg-me: #2b5136; --tg-bot: #26303a;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
   }
 }
+:root[data-theme="dark"] {
+    --bg: #17141b; --bg-alt: #1f1b25; --card: #241f2b; --ink: #f1edf4; --muted: #b3aabd; --line: #352e3e;
+    --brand: #b98aab; --brand-ink: #17141b; --brand-soft: #33283a; --tg-bg: #1b2530; --tg-me: #2b5136; --tg-bot: #26303a;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+:root[data-theme="light"] { color-scheme: light; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 76px; }
 body {
@@ -186,3 +194,14 @@ table.prices { width: 100%; border-collapse: collapse; }
 .rootlangs a { white-space: nowrap; }
 .rootlangs .flag { vertical-align: -2px; }
 @media (max-width: 560px) { .top .langs a:has(.flag) .lc { display: none; } .top .langs a { padding: 4px; } }
+
+/* кнопка темы */
+.theme { border: 1px solid var(--line); background: var(--card); color: var(--ink); width: 34px; height: 34px; border-radius: 50%;
+  display: inline-grid; place-items: center; font-size: 1rem; line-height: 1; cursor: pointer; padding: 0; flex: none; }
+.theme:hover { border-color: var(--brand); }
+.theme:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.theme[hidden] { display: none; }
+@media (max-width: 420px) { .top-in { gap: 10px; } .brand small { display: none; } .top .langs a { padding: 3px; } .top .flag { width: 18px; height: 12px; } }
+
+/* вводная только для Reader View (Readability не видит стили из CSS-файла); на странице скрыта */
+.reader-intro { display: none; }

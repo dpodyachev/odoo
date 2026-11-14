@@ -20,7 +20,8 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=cd0a993a">
+<link rel="stylesheet" href="/assets/style.css?v=dad76451">
+<script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
 <header class="top">
@@ -28,10 +29,11 @@
 <a class="brand" href="/en/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
 <nav class="menu"><a href="/en/#services">Services</a><a href="/en/#dach">DATEV &amp; e-invoicing</a><a href="/en/#bot">Monitoring</a><a href="/en/#prices">Pricing</a><a href="/en/#about">About</a><a href="/en/#contact">Contact</a></nav>
 <nav class="langs" aria-label="Language"><a href="/de/" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/" hreflang="en" lang="en" title="English" aria-label="English" aria-current="true"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<button type="button" class="theme" hidden aria-label="Light / dark theme" title="Light / dark theme">🌙</button>
 </div>
 </header>
 <main>
-<section class="hero">
+<section class="hero extra">
 <div class="wrap hero-in">
 <div>
 <p class="kicker">Odoo · Germany · Austria · Switzerland</p>
@@ -42,7 +44,7 @@
 <a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
 <a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
 </div>
-<ul class="badges"><li>Fixed prices, no surprises</li><li>24/7 monitoring</li><li>Updates without downtime</li><li>Odoo 14 to 19</li><li>GDPR-compliant with a DPA</li></ul>
+<ul class="badges extra"><li>Fixed prices, no surprises</li><li>24/7 monitoring</li><li>Updates without downtime</li><li>Odoo 14 to 19</li><li>GDPR-compliant with a DPA</li></ul>
 </div>
 <div class="hero-card" aria-hidden="true">
 <div class="hc-row"><span class="dot ok"></span>Odoo reachable<em>200 · 0.18 s</em></div>
@@ -53,21 +55,21 @@
 </div>
 </div>
 </section>
-<section id="services" class="sec">
+<section id="services" class="sec extra">
 <div class="wrap">
 <h2>Services</h2>
 <p class="intro">From the first server to ongoing operations – one person, no agency overhead.</p>
 <div class="grid3"><article class="card"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="18" cy="17" r="2"/></svg><h3>Installation &amp; setup</h3><p>Odoo on your server or in the cloud: Docker, PostgreSQL, SSL, reverse proxy, e-mail, automatic backups. Cleanly documented and handed over to you.</p></article><article class="card"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a7 7 0 0 0-7 7v4a2 2 0 0 0 2 2h1v-6H6"/><path d="M12 3a7 7 0 0 1 7 7v4a2 2 0 0 1-2 2h-1v-6h2"/><path d="M16 18a4 4 0 0 1-4 3"/></svg><h3>Support &amp; maintenance</h3><p>Security updates, backups with restore tests, monitoring, user questions and small changes – predictable every month.</p></article><article class="card"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><h3>Troubleshooting</h3><p>Odoo won&#x27;t start, is slow, an update fails, e-mails don&#x27;t go out? Fast log analysis, a clear root cause, a lasting fix.</p></article><article class="card"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><h3>Updates &amp; migration</h3><p>Module updates without downtime, version upgrades (e.g. 14 → 17) – always tested on a copy first, with a way back if something goes wrong.</p></article><article class="card"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4a3 3 0 0 1 3 3V14"/></svg><h3>Integration</h3><p>DATEV, e-invoicing, online shops, carriers, banks and custom interfaces (REST, XML-RPC).</p></article><article class="card"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/></svg><h3>Servers &amp; DevOps</h3><p>Linux, Docker, nginx, PostgreSQL: performance tuning, hardening (ports, access, certificates), disk space and log rotation.</p></article></div>
 </div>
 </section>
-<section id="dach" class="sec alt">
+<section id="dach" class="sec alt extra">
 <div class="wrap">
 <h2>What Odoo needs to do in Germany, Austria and Switzerland</h2>
 <p class="intro">A standard installation is rarely enough here. I set these up for you – and keep them up to date.</p>
 <div class="grid2"><article class="feat"><p class="tag">Accounting</p><h3>DATEV export for your tax advisor</h3><p>Journal entries and documents from Odoo in DATEV format – your Steuerberater imports them directly, no retyping.</p><ul><li>Posting batches (DATEV format, EXTF) and document images</li><li>Charts of accounts SKR03 / SKR04, tax keys</li><li>Alignment with your tax office, test export before month-end closing</li></ul></article><article class="feat"><p class="tag">Mandatory from 2025</p><h3>E-invoicing: XRechnung &amp; ZUGFeRD</h3><p>Since 1 Jan 2025 companies in Germany must be able to receive e-invoices; from 2027/2028 (depending on turnover) they must also send them in B2B. Odoo can do it – when configured properly.</p><ul><li>ZUGFeRD / Factur-X (PDF with XML) and XRechnung (UBL/CII)</li><li>Leitweg-ID for public authorities, validator checks</li><li>Receiving and automatically capturing incoming e-invoices</li></ul></article><article class="feat"><p class="tag">Commerce</p><h3>E-commerce &amp; logistics</h3><p>Orders, stock and shipping flow automatically between your shop, Odoo and the carrier.</p><ul><li>Shopware, JTL-Wawi, WooCommerce</li><li>DHL, DPD, GLS: labels and tracking</li><li>Syncing prices, stock and invoices</li></ul></article><article class="feat"><p class="tag">AT · CH</p><h3>Austria &amp; Switzerland</h3><p>Local requirements without detours.</p><ul><li>Austria: e-invoices to the federal government (ebInterface / PEPPOL)</li><li>Switzerland: QR-bill, VAT (MWST), CHF and EUR side by side</li><li>Multilingual documents (DE / FR / EN)</li></ul></article></div>
 </div>
 </section>
-<section id="bot" class="sec">
+<section id="bot" class="sec extra">
 <div class="wrap bot-in">
 <div>
 <h2>Monitoring bot: your Odoo at a glance – right in Telegram</h2>
@@ -90,7 +92,7 @@
 </figure>
 </div>
 </section>
-<section id="monitoring" class="sec alt">
+<section id="monitoring" class="sec alt extra">
 <div class="wrap">
 <h2>Monitoring with Grafana &amp; Prometheus</h2>
 <p class="intro">When Telegram alerts are not enough: dashboards with history, metrics and alerts for your Odoo – on your own server, your data stays with you.</p>
@@ -98,7 +100,7 @@
 <p class="note">Runs alongside the monitoring bot or on its own. Setup at a fixed price, operation within a support plan.</p>
 </div>
 </section>
-<section class="sec">
+<section class="sec extra">
 <div class="wrap">
 <h2>How we work together</h2>
 <ol class="steps"><li><span class="num">1</span><h3>Intro call</h3><p>30 minutes by video or Telegram – free. You tell me where it hurts.</p></li><li><span class="num">2</span><h3>Health check or quote</h3><p>I review your system and give you a fixed price or a suitable plan.</p></li><li><span class="num">3</span><h3>Implementation</h3><p>First on a test copy, then in production – at a time that suits you.</p></li><li><span class="num">4</span><h3>Ongoing care</h3><p>Monitoring, updates and fast help – with predictable monthly costs.</p></li></ol>
@@ -106,6 +108,9 @@
 </section>
 <section id="prices" class="sec alt">
 <div class="wrap">
+<p class="reader-intro"><b>Goldberg · Odoo Services</b> — Odoo · Germany · Austria · Switzerland</p>
+<p class="reader-intro">Installation, support, troubleshooting and integrations for Odoo Community and Enterprise – remote from Stuttgart, with fixed prices and one dedicated contact.</p>
+<p class="reader-intro">Telegram: <a href="https://t.me/podyachev">@podyachev</a> · E-Mail: <a href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a> · <a href="https://cal.com/dmytro-podiatschev-xvsnlm">Book a call – 30 min free</a></p>
 <h2>Pricing</h2>
 <p class="intro">Transparent and predictable. Small tasks billed by time, projects at a fixed price after a health check.</p>
 <div class="plans"><article class="plan">
@@ -140,14 +145,14 @@
 <h3 class="sub">Individual services</h3>
 <div class="tablewrap"><table class="prices">
 <thead><tr><th>Service</th><th>Price</th></tr></thead>
-<tbody><tr><td>Support &amp; maintenance<small>changes, user questions, planned work – billed in 15-minute steps</small></td><td class="pr"><b>65 €</b> <span>/ hour</span></td></tr><tr><td>Urgent, weekend, troubleshooting<small>incidents, outages, debugging under time pressure</small></td><td class="pr"><b>95 €</b> <span>/ hour</span></td></tr><tr><td>Odoo health check<small>server, backups, modules, performance, security – written report with action plan</small></td><td class="pr"><b>490 €</b> <span>fixed price</span></td></tr><tr><td>Initial incident diagnosis<small>up to 2 h of debugging, then billed by time (€95 / h)</small></td><td class="pr"><b>190 €</b> <span>fixed price</span></td></tr><tr><td>Installation &amp; setup<small>Odoo + PostgreSQL in Docker, SSL, backups, e-mail, monitoring</small></td><td class="pr"><span>from</span> <b>990 €</b> <span>fixed price</span></td></tr><tr><td>Module update with rollback<small>git pull, update on a test copy, update in production</small></td><td class="pr"><span>from</span> <b>190 €</b> <span>fixed price</span></td></tr><tr><td>Version migration<small>e.g. Odoo 14 → 17, including a test run on a copy</small></td><td class="pr"><span>from</span> <b>1 500 €</b></td></tr><tr><td>DATEV export<small>setup, account mapping, test export with your tax office</small></td><td class="pr"><span>from</span> <b>1 200 €</b></td></tr><tr><td>E-invoicing (XRechnung / ZUGFeRD)<small>sending and receiving, validation, Leitweg-ID</small></td><td class="pr"><span>from</span> <b>900 €</b></td></tr><tr><td>Shop integration<small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>from</span> <b>1 500 €</b></td></tr><tr><td>Carrier integration<small>DHL, DPD, GLS – labels, tracking</small></td><td class="pr"><span>from</span> <b>900 €</b></td></tr><tr><td>Swiss QR-bill<small>QR-IBAN, references, VAT</small></td><td class="pr"><span>from</span> <b>600 €</b></td></tr><tr><td>Grafana &amp; Prometheus setup<small>Exporters for server, PostgreSQL, Docker, nginx; dashboards and alerts</small></td><td class="pr"><span>from</span> <b>590 €</b> <span>fixed price</span></td></tr><tr><td>Monitoring bot for your team<small>your own instance, set up for your server</small></td><td class="pr"><span>from</span> <b>390 €</b> <span>fixed price</span></td></tr></tbody>
+<tbody><tr><td>Support &amp; maintenance<br><small>changes, user questions, planned work – billed in 15-minute steps</small></td><td class="pr"><b>65 €</b> <span>/ hour</span></td></tr><tr><td>Urgent, weekend, troubleshooting<br><small>incidents, outages, debugging under time pressure</small></td><td class="pr"><b>95 €</b> <span>/ hour</span></td></tr><tr><td>Odoo health check<br><small>server, backups, modules, performance, security – written report with action plan</small></td><td class="pr"><b>490 €</b> <span>fixed price</span></td></tr><tr><td>Initial incident diagnosis<br><small>up to 2 h of debugging, then billed by time (€95 / h)</small></td><td class="pr"><b>190 €</b> <span>fixed price</span></td></tr><tr><td>Installation &amp; setup<br><small>Odoo + PostgreSQL in Docker, SSL, backups, e-mail, monitoring</small></td><td class="pr"><span>from</span> <b>990 €</b> <span>fixed price</span></td></tr><tr><td>Module update with rollback<br><small>git pull, update on a test copy, update in production</small></td><td class="pr"><span>from</span> <b>190 €</b> <span>fixed price</span></td></tr><tr><td>Version migration<br><small>e.g. Odoo 14 → 17, including a test run on a copy</small></td><td class="pr"><span>from</span> <b>1 500 €</b></td></tr><tr><td>DATEV export<br><small>setup, account mapping, test export with your tax office</small></td><td class="pr"><span>from</span> <b>1 200 €</b></td></tr><tr><td>E-invoicing (XRechnung / ZUGFeRD)<br><small>sending and receiving, validation, Leitweg-ID</small></td><td class="pr"><span>from</span> <b>900 €</b></td></tr><tr><td>Shop integration<br><small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>from</span> <b>1 500 €</b></td></tr><tr><td>Carrier integration<br><small>DHL, DPD, GLS – labels, tracking</small></td><td class="pr"><span>from</span> <b>900 €</b></td></tr><tr><td>Swiss QR-bill<br><small>QR-IBAN, references, VAT</small></td><td class="pr"><span>from</span> <b>600 €</b></td></tr><tr><td>Grafana &amp; Prometheus setup<br><small>Exporters for server, PostgreSQL, Docker, nginx; dashboards and alerts</small></td><td class="pr"><span>from</span> <b>590 €</b> <span>fixed price</span></td></tr><tr><td>Monitoring bot for your team<br><small>your own instance, set up for your server</small></td><td class="pr"><span>from</span> <b>390 €</b> <span>fixed price</span></td></tr></tbody>
 </table></div>
 <p class="note">All prices in EUR. Under § 19 UStG (small business scheme) no VAT is charged. Billed monthly by time in 15-minute steps or at the agreed fixed price.</p>
 <h3 class="sub">Typical fixed-price cases</h3>
 <div class="grid3"><article class="case"><h3>“Odoo is down after a server update”</h3><p>Initial diagnosis, root cause (e.g. Python package, database, proxy), fix and a short report on how to prevent it.</p><p class="cprice">usually €190 + 1–2 h × €95</p></article><article class="case"><h3>“We need e-invoices by the end of the year”</h3><p>Set up ZUGFeRD/XRechnung, check master data, validate test invoices, train the team.</p><p class="cprice">from €900 fixed price</p></article><article class="case"><h3>“Our Odoo runs – but nobody looks after it”</h3><p>Health check, then monitoring, backups and updates in the Business plan.</p><p class="cprice">€490 once + €690 / month</p></article></div>
 </div>
 </section>
-<section id="about" class="sec">
+<section id="about" class="sec extra">
 <div class="wrap about-in">
 <div>
 <h2>About me</h2>
@@ -156,13 +161,13 @@
 <ul class="facts"><li>Odoo 14 – 19, Community &amp; Enterprise</li><li>Linux · Docker · PostgreSQL · nginx</li><li>Python, OWL, XML-RPC / REST</li><li>Git-based deployments with rollback</li><li>Languages: German, English, Greek, Ukrainian, Russian</li></ul>
 </div>
 </section>
-<section class="sec alt">
+<section class="sec alt extra">
 <div class="wrap narrow">
 <h2>FAQ</h2>
 <div class="faq"><details><summary>Community or Enterprise?</summary><p>Both. I&#x27;ll also help you decide – Community with selected OCA modules is often enough.</p></details><details><summary>Do you only work remotely?</summary><p>Yes, via SSH or VPN – secure and with no travel costs. On-site in the Stuttgart area too.</p></details><details><summary>How is access to our data handled?</summary><p>With a data processing agreement (DPA) under the GDPR. Access only as far as needed, time-limited on request.</p></details><details><summary>What if an update goes wrong?</summary><p>Updates run on a copy first. In production the previous code state is saved – rolling back takes minutes.</p></details><details><summary>We already have an Odoo partner.</summary><p>No problem – I&#x27;m happy to take care of operations, servers and monitoring while your partner handles business processes.</p></details><details><summary>How do you bill?</summary><p>Monthly by time in 15-minute steps or at the agreed fixed price, by bank transfer.</p></details></div>
 </div>
 </section>
-<section id="examples" class="sec">
+<section id="examples" class="sec extra">
 <div class="wrap">
 <h2>Examples from projects</h2>
 <p class="intro">Excerpts from real implementations – customer data made unrecognisable.</p>
@@ -175,7 +180,7 @@
 </div>
 </section>
 <script src="/assets/slider.js?v=d4c0b52b" defer></script>
-<section id="contact" class="sec contact">
+<section id="contact" class="sec contact extra">
 <div class="wrap narrow center">
 <h2>Let&#x27;s talk</h2>
 <p class="intro">Tell me briefly which Odoo version you use and where it hurts – I usually reply the same business day.</p>

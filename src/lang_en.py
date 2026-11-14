@@ -234,4 +234,5 @@ agreement (Art. 28 GDPR).</p>
     "slides_prev": 'Previous example',
     "slides_next": 'Next example',
     "slides_goto": 'Show example {n}',
+    "theme_toggle": 'Light / dark theme',
 }

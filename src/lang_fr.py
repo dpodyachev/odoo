@@ -239,4 +239,5 @@ sous-traitance distinct (art. 28 RGPD).</p>
     "slides_prev": 'Exemple précédent',
     "slides_next": 'Exemple suivant',
     "slides_goto": "Afficher l'exemple {n}",
+    "theme_toggle": 'Thème clair / sombre',
 }
