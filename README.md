@@ -13,7 +13,7 @@
 
 ## Cloudflare Pages
 
-Проект `goldberg-odoo` (direct upload, https://goldberg-odoo.pages.dev). Ключи — в `.cloudflare` (в .gitignore, не коммитить).
+Проект `goldberg-odoo` (direct upload, https://2027.pp.ua/de/ https://goldberg-odoo.pages.dev). Ключи — в `.cloudflare` (в .gitignore, не коммитить).
 
 ```bash
 python3 src/build.py
