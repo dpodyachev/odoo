@@ -245,3 +245,7 @@ table.prices { width: 100%; border-collapse: collapse; }
 .nav-icon.multi { display: inline-flex; width: auto; padding: 0 9px; gap: 3px; border-radius: 99px; }
 .nav-icon.multi .ico-nav { width: 16px; height: 16px; }
 .nav-icon.cur span { font-weight: 700; font-size: 1.05rem; line-height: 1; }
+.nav-icon.radar { color: var(--ok); }
+.radar .sweep { transform-origin: 12px 12px; animation: radar-sweep 4s linear infinite; }
+@keyframes radar-sweep { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .radar .sweep { animation: none; } }
