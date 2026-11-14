@@ -32,6 +32,8 @@ npx -y wrangler@3.114.0 pages deploy site --project-name goldberg-odoo --branch 
 ## Слайды (примеры внедрения)
 
 Положить картинки в `site/slides/` с именами `slide1.jpg`, `slide2.jpg`, … (также .png/.webp), кадр карусели 2:1 (картинка вписывается целиком), ширина ~1600–1800 px, до 300 КБ.
+Языки: `LANGS`, `LANG_NAMES`, `FLAGS` в config.py; тексты — src/lang_<код>.py (ключи как в lang_de.py). Корневая index.html, 404.html и assets/lang.js генерируются.
+
 Сборка сама находит все файлы и строит карусель внизу страницы (смена каждые 5 с — `SLIDE_INTERVAL_MS` в config.py).
 Удалил файл — слайд исчез; нет файлов — блока нет. После замены: `python3 src/build.py` и деплой.
 

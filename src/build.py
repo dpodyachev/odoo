@@ -67,10 +67,16 @@ def head(T, lang, page, title, desc):
 """
 
 
+def flag(l):
+    f = C.FLAGS.get(l)
+    return f'<img class="flag" src="{asset(f"/assets/flags/{f}.svg")}" alt="" width="20" height="14">' if f else ""
+
+
 def langswitch(lang, page):
     cur = ' aria-current="true"'
     items = "".join(
-        f'<a href="{url(l, page)}" hreflang="{l}" lang="{l}"{cur if l == lang else ""}>{l.upper()}</a>'
+        f'<a href="{url(l, page)}" hreflang="{l}" lang="{l}" title="{E(C.LANG_NAMES[l])}" aria-label="{E(C.LANG_NAMES[l])}"{cur if l == lang else ""}>'
+        f'{flag(l)}<span class="lc">{l.upper()}</span></a>'
         for l in C.LANGS)
     return f'<nav class="langs" aria-label="Language">{items}</nav>'
 
@@ -349,6 +355,21 @@ def legal_page(T, lang, page, key):
             + footer(T, lang, page))
 
 
+LANG_JS = """// Выбор языка по настройкам браузера; по умолчанию — __DEF__. Ничего не сохраняет (без cookies/localStorage).
+// Файл генерируется src/build.py из config.LANGS.
+(function () {
+  var supported = [__LANGS__], pick = "__DEF__";
+  var list = navigator.languages || [navigator.language || ""];
+  for (var i = 0; i < list.length; i++) {
+    var l = String(list[i]).toLowerCase().slice(0, 2);
+    if (l === "ua") l = "uk";
+    if (supported.indexOf(l) >= 0) { pick = l; break; }
+  }
+  location.replace("/" + pick + "/" + location.hash);
+})();
+"""
+
+
 def write(path, text):
     full = os.path.join(OUT, path)
     os.makedirs(os.path.dirname(full), exist_ok=True)
@@ -364,6 +385,37 @@ def main():
         write(f"{lang}/impressum.html", legal_page(T, lang, "impressum.html", "impressum_page"))
         write(f"{lang}/datenschutz.html", legal_page(T, lang, "datenschutz.html", "privacy_page"))
         pages += [url(lang), url(lang, "impressum.html"), url(lang, "datenschutz.html")]
+    write("assets/lang.js", LANG_JS.replace("__LANGS__", ", ".join(f'"{l}"' for l in C.LANGS)).replace("__DEF__", C.LANGS[0]))
+    alts = "\n".join(f'<link rel="alternate" hreflang="{l}" href="{C.BASE_URL}{url(l)}">' for l in C.LANGS)
+    links = " · ".join(f'<a href="{url(l)}" lang="{l}">{flag(l)} {E(C.LANG_NAMES[l])}</a>' for l in C.LANGS)
+    write("index.html", f"""<!doctype html>
+<html lang="{C.LANGS[0]}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{E(C.BRAND)} · {E(C.BRAND_SUB)}</title>
+<meta name="description" content="Odoo Support, Installation & Integration für Deutschland, Österreich und die Schweiz.">
+<link rel="canonical" href="{C.BASE_URL}{url(C.LANGS[0])}">
+{alts}
+<link rel="alternate" hreflang="x-default" href="{C.BASE_URL}{url(C.LANGS[0])}">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="{asset('/assets/style.css')}">
+<script src="{asset('/assets/lang.js')}"></script>
+</head>
+<body>
+<main class="sec"><div class="wrap narrow center">
+<h1>{E(C.BRAND)} · {E(C.BRAND_SUB)}</h1>
+<p class="rootlangs">{links}</p>
+</div></main>
+</body>
+</html>
+""")
+    write("404.html", f"""<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 · {E(C.BRAND)}</title><link rel="stylesheet" href="{asset('/assets/style.css')}"></head>
+<body><main class="sec"><div class="wrap narrow center"><h1>404</h1>
+<p>Seite nicht gefunden · Page not found</p><p><a class="btn primary" href="/">{E(C.BRAND)} · {E(C.BRAND_SUB)}</a></p></div></main></body></html>
+""")
     today = datetime.date.today().isoformat()
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
           + "".join(f"<url><loc>{C.BASE_URL}{p}</loc><lastmod>{today}</lastmod></url>\n" for p in pages) + "</urlset>\n")

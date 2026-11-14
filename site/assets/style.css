@@ -179,3 +179,10 @@ table.prices { width: 100%; border-collapse: collapse; }
 .sl-prev:focus-visible, .sl-next:focus-visible, .sl-dots button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 @media (max-width: 640px) { .sl-prev, .sl-next { width: 36px; height: 36px; font-size: 1.3rem; top: calc(50% - 26px); } }
 @media (prefers-reduced-motion: reduce) { .slides img { transition: none; } }
+
+/* флаги в переключателе языков */
+.langs a { display: inline-flex; align-items: center; gap: 4px; }
+.flag { width: 20px; height: 14px; border-radius: 2px; box-shadow: 0 0 0 1px var(--line); object-fit: cover; flex: none; }
+.rootlangs a { white-space: nowrap; }
+.rootlangs .flag { vertical-align: -2px; }
+@media (max-width: 560px) { .top .langs a:has(.flag) .lc { display: none; } .top .langs a { padding: 4px; } }

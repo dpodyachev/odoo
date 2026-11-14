@@ -15,7 +15,7 @@ OWNER_COUNTRY = "Deutschland"
 # Одна из строк: USt-IdNr. / Kleinunternehmer §19 UStG / пусто
 VAT_ID = "KLEINUNTERNEHMER"   # маркер: тексты по-языкам в lang_*.py (kleinunternehmer)
 
-LANGS = ["de", "en", "fr", "uk", "ru"]     # первый — язык по умолчанию
+LANGS = ["de", "en", "fr", "el", "uk", "ru"]     # первый — язык по умолчанию
 LANG_NAMES = {"de": "Deutsch", "en": "English", "fr": "Français", "uk": "Українська", "ru": "Русский"}
 
 # Цены (EUR, netto). Названия — в lang_*.py по ключу.
@@ -44,3 +44,8 @@ PLANS = [
 ]
 
 SLIDE_INTERVAL_MS = 5000   # карусель site/slides/slide*.jpg|png|webp
+
+LANG_NAMES = {"de": "Deutsch", "en": "English", "fr": "Français", "el": "Ελληνικά", "uk": "Українська", "ru": "Русский"}
+# флаг в переключателе языков (site/assets/flags/<код>.svg); язык без записи — только буквы.
+# Для "ru" есть ru.svg — чтобы показывать, добавить "ru": "ru".
+FLAGS = {"de": "de", "en": "gb", "fr": "fr", "el": "gr", "uk": "ua"}
