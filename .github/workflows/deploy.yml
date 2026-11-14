@@ -43,13 +43,13 @@ jobs:
           echo "token: ${#T} chars, starts '${T:0:5}' (expected 53, 'cfat_'); account id: ${#A} chars (expected 32)"
           [ -n "$T" ] && [ -n "$A" ] || { echo "::error::secret is empty or not named CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID"; exit 1; }
           api() { curl -s "https://api.cloudflare.com/client/v4/accounts/$A/$1" -H "Authorization: Bearer $T"; }
-          msg() { grep -o '"message":"[^"]*"' | head -3 | tr '\n' ' '; }
+          msg() { grep -oE '"(code|message)": *("[^"]*"|[0-9]+)' | head -3 | tr '\n' ' '; }
           # 1) токен жив и принадлежит аккаунту (IP-фильтр и права здесь НЕ проверяются)
           R=$(api tokens/verify)
-          echo "$R" | grep -q '"status":"active"' || { echo "::error::tokens/verify: FAIL $(echo "$R" | msg)"; exit 1; }
+          echo "$R" | grep -qE '"status": *"active"' || { echo "::error::tokens/verify: FAIL $(echo "$R" | msg)"; exit 1; }
           # 2) реальный доступ к Pages-проекту с этого раннера (права Pages + IP-фильтр)
           P=$(api pages/projects/goldberg-odoo)
-          echo "$P" | grep -q '"success":true' || { echo "::error::tokens/verify: OK, but Pages access: FAIL $(echo "$P" | msg) (нужно право Cloudflare Pages Edit и без IP-фильтра)"; exit 1; }
+          echo "$P" | grep -qE '"success": *true' || { echo "::error::tokens/verify: OK, but Pages access: FAIL $(echo "$P" | msg) (нужно право Cloudflare Pages Edit и без IP-фильтра)"; exit 1; }
           echo "::notice::Cloudflare: tokens/verify OK, Pages project goldberg-odoo OK"
           echo "CLOUDFLARE_API_TOKEN=$T" >> "$GITHUB_ENV"
           echo "CLOUDFLARE_ACCOUNT_ID=$A" >> "$GITHUB_ENV"
