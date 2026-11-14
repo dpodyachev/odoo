@@ -278,7 +278,8 @@ def legal_page(T, lang, page, key):
     L = T[key]
     data = {
         "name": E(C.OWNER_NAME), "street": E(C.OWNER_STREET), "city": E(C.OWNER_CITY),
-        "country": E(C.OWNER_COUNTRY), "email": E(C.EMAIL), "vat": E(C.VAT_ID),
+        "country": E(C.OWNER_COUNTRY), "email": E(C.EMAIL),
+        "vat": E(T["kleinunternehmer"] if C.VAT_ID == "KLEINUNTERNEHMER" else C.VAT_ID),
         "telegram": E(C.TELEGRAM_HANDLE), "brand": E(C.BRAND),
     }
     body = L["html"].format(**data)

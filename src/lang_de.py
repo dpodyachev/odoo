@@ -105,7 +105,7 @@ T = {
     "plans_note": "Zusätzliche Stunden im Paket: 65 € / Std. Laufzeit monatlich kündbar. "
                   "* Wochenend-Einsätze werden mit 95 € / Std. berechnet.",
     "table_title": "Einzelleistungen",
-    "table_head": ["Leistung", "Preis (netto)"],
+    "table_head": ["Leistung", "Preis"],
     "units": {"h": "/ Std.", "fix": "Festpreis", "from": "ab"},
     "price_names": {
         "hourly_support": ("Support & Wartung", "Anpassungen, Benutzerfragen, geplante Arbeiten – im 15-Minuten-Takt"),
@@ -122,7 +122,8 @@ T = {
         "qrbill": ("Schweizer QR-Rechnung", "QR-IBAN, Referenzen, MWST"),
         "bot": ("Monitoring-Bot für Ihr Team", "eigene Instanz, Einrichtung für Ihren Server"),
     },
-    "vat_note": "Alle Preise netto in EUR. Abrechnung monatlich nach Aufwand im 15-Minuten-Takt bzw. zum vereinbarten Festpreis.",
+    "vat_note": "Alle Preise in EUR. Gemäß § 19 UStG (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet. Abrechnung monatlich nach Aufwand im 15-Minuten-Takt bzw. zum vereinbarten Festpreis.",
+    "kleinunternehmer": "Kleinunternehmer gemäß § 19 UStG – es wird keine Umsatzsteuer berechnet.",
     "cases_title": "Typische Fälle zum Festpreis",
     "cases": [
         ("„Odoo ist nach dem Server-Update down“",
@@ -171,7 +172,7 @@ T = {
         "title": "Impressum",
         "html": """
 <h2>Angaben gemäß § 5 DDG</h2>
-<p>{name}<br>{brand} – Odoo Services<br>{street}<br>{city}<br>{country}</p>
+<p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Kontakt</h2>
 <p>E-Mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}</p>
 <h2>Umsatzsteuer</h2>

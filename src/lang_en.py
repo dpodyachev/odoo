@@ -100,7 +100,7 @@ T = {
     },
     "plans_note": "Extra hours within a plan: €65 / h. Cancel monthly. * Weekend work is billed at €95 / h.",
     "table_title": "Individual services",
-    "table_head": ["Service", "Price (net)"],
+    "table_head": ["Service", "Price"],
     "units": {"h": "/ hour", "fix": "fixed price", "from": "from"},
     "price_names": {
         "hourly_support": ("Support & maintenance", "changes, user questions, planned work – billed in 15-minute steps"),
@@ -117,7 +117,8 @@ T = {
         "qrbill": ("Swiss QR-bill", "QR-IBAN, references, VAT"),
         "bot": ("Monitoring bot for your team", "your own instance, set up for your server"),
     },
-    "vat_note": "All prices are net, in EUR. Billed monthly by time in 15-minute steps or at the agreed fixed price.",
+    "vat_note": "All prices in EUR. Under § 19 UStG (small business scheme) no VAT is charged. Billed monthly by time in 15-minute steps or at the agreed fixed price.",
+    "kleinunternehmer": "Small business owner under § 19 UStG (German VAT Act) – no VAT is charged.",
     "cases_title": "Typical fixed-price cases",
     "cases": [
         ("“Odoo is down after a server update”",
@@ -166,7 +167,7 @@ T = {
         "title": "Legal notice (Impressum)",
         "html": """
 <h2>Information pursuant to § 5 DDG</h2>
-<p>{name}<br>{brand} – Odoo Services<br>{street}<br>{city}<br>{country}</p>
+<p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Contact</h2>
 <p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}</p>
 <h2>VAT</h2>

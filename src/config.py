@@ -5,15 +5,15 @@ BRAND_SUB = "Odoo Services"
 TELEGRAM = "https://t.me/podyachev"
 TELEGRAM_HANDLE = "@podyachev"
 EMAIL = "dpodiatschev@gmail.com"
-CAL_URL = ""                              # ссылка Cal.com (https://cal.com/<имя>/30min); пусто — кнопка «Termin buchen» ведёт в Telegram
+CAL_URL = "https://cal.com/dmytro-podiatschev-xvsnlm"                              # ссылка Cal.com (https://cal.com/<имя>/30min); пусто — кнопка «Termin buchen» ведёт в Telegram
 
 # Данные для Impressum — ОБЯЗАТЕЛЬНО заполнить перед публикацией (§ 5 DDG)
-OWNER_NAME = "⟦Vorname Nachname⟧"
-OWNER_STREET = "⟦Straße Hausnummer⟧"
-OWNER_CITY = "⟦PLZ⟧ Stuttgart"
+OWNER_NAME = "Schwaben Odoo Service"
+OWNER_STREET = "Sindelfingen-Goldberg"
+OWNER_CITY = "Region Stuttgart, Baden-Württemberg"
 OWNER_COUNTRY = "Deutschland"
 # Одна из строк: USt-IdNr. / Kleinunternehmer §19 UStG / пусто
-VAT_ID = "⟦USt-IdNr. DE… oder: Kleinunternehmer gemäß § 19 UStG⟧"
+VAT_ID = "KLEINUNTERNEHMER"   # маркер: тексты по-языкам в lang_*.py (kleinunternehmer)
 
 LANGS = ["de", "en", "fr", "uk", "ru"]     # первый — язык по умолчанию
 LANG_NAMES = {"de": "Deutsch", "en": "English", "fr": "Français", "uk": "Українська", "ru": "Русский"}

@@ -103,7 +103,7 @@ T = {
     },
     "plans_note": "Heures supplémentaires dans une formule : 65 € / h. Résiliable chaque mois. * Interventions le week-end : 95 € / h.",
     "table_title": "Prestations à l'unité",
-    "table_head": ["Prestation", "Prix (HT)"],
+    "table_head": ["Prestation", "Prix"],
     "units": {"h": "/ h", "fix": "prix fixe", "from": "à partir de"},
     "price_names": {
         "hourly_support": ("Support et maintenance", "adaptations, questions des utilisateurs, travaux planifiés – facturé par tranche de 15 min"),
@@ -120,7 +120,8 @@ T = {
         "qrbill": ("QR-facture suisse", "QR-IBAN, références, TVA"),
         "bot": ("Bot de supervision pour votre équipe", "votre propre instance, configurée pour votre serveur"),
     },
-    "vat_note": "Tous les prix sont hors taxes, en EUR. Facturation mensuelle au temps passé par tranche de 15 min ou au prix fixe convenu.",
+    "vat_note": "Tous les prix en EUR. Selon le § 19 UStG (régime des petites entreprises), aucune TVA n'est facturée. Facturation mensuelle au temps passé par tranche de 15 min ou au prix fixe convenu.",
+    "kleinunternehmer": "Petite entreprise selon le § 19 UStG – TVA non applicable.",
     "cases_title": "Cas typiques à prix fixe",
     "cases": [
         ("« Odoo est en panne après une mise à jour du serveur »",
@@ -169,7 +170,7 @@ T = {
         "title": "Mentions légales (Impressum)",
         "html": """
 <h2>Informations selon le § 5 DDG</h2>
-<p>{name}<br>{brand} – Odoo Services<br>{street}<br>{city}<br>{country}</p>
+<p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Contact</h2>
 <p>E-mail : <a href="mailto:{email}">{email}</a><br>Telegram : {telegram}</p>
 <h2>TVA</h2>
