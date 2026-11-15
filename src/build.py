@@ -293,6 +293,20 @@ def europe_map(T):
 </figure>"""
 
 
+def lt_shots(T):
+    """Скриншоты веб-интерфейса Locust (site/img/locust-*.webp); клик — полноэкранный просмотр (slider.js)."""
+    X = T["lt_shots"]
+    items = "".join(
+        f'<figure class="shot"><button type="button" class="shot-btn" aria-label="{E(X["full"])}: {E(cap)}">'
+        f'<img src="{asset("/img/" + f)}" alt="{E(cap)}" width="{w}" height="{h}" loading="lazy" decoding="async"></button>'
+        f'<figcaption>{E(cap)}</figcaption></figure>'
+        for (f, w, h), cap in zip([("locust-stats.webp", 1600, 861), ("locust-charts.webp", 1600, 1135)], X["caps"]))
+    return (f'<div class="lb-group shots" data-l-close="{E(T["lb"]["close"])}" data-l-in="{E(T["lb"]["zoom_in"])}" '
+            f'data-l-out="{E(T["lb"]["zoom_out"])}" data-l-full="{E(T["lb"]["full"])}" '
+            f'data-l-prev="{E(T["slides_prev"])}" data-l-next="{E(T["slides_next"])}">{items}</div>'
+            f'<p class="note shots-note">{E(X["note"])}</p>')
+
+
 LOCUST_SAMPLE = """from locust import HttpUser, task, between
 
 class SalesUser(HttpUser):
@@ -451,6 +465,7 @@ def index(T, lang):
 <h2>{E(T["lt_title"])}</h2>
 <p class="intro">{E(T["lt_intro"])}</p>
 <div class="grid3">{lt}</div>
+{lt_shots(T)}
 <figure class="code"><figcaption>{E(T["lt_code"])}</figcaption><pre><code>{E(LOCUST_SAMPLE)}</code></pre></figure>
 <p class="note">{E(T["lt_note"])}</p>
 </div>

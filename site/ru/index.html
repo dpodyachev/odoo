@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=d94f713d">
+<link rel="stylesheet" href="/assets/style.css?v=5204776e">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -173,6 +173,7 @@
 <h2>Нагрузочное тестирование с Locust</h2>
 <p class="intro">Выдержит ли ваш Odoo 50, 100 или 300 одновременных пользователей – и что будет в закрытие месяца? Я моделирую реальные рабочие процессы в Locust, измеряю пределы и показываю, где узкое место. Всегда на тестовой копии, никогда на живой системе.</p>
 <div class="grid3"><article class="card"><p class="tag mono">locust</p><h3>Сценарии по вашим процессам</h3><p>Продажи создают предложения, склад проводит отгрузки, бухгалтерия выставляет счета, клиенты заказывают в интернет-магазине – с весами и реалистичными паузами.</p></article><article class="card"><p class="tag mono">JSON-RPC · HTTP</p><h3>Настоящие вызовы Odoo</h3><p>Вход, поиск, списки и формы, создание, подтверждение, PDF-отчёты – через тот же интерфейс, что и браузер. Тестовые данные генерируются автоматически.</p></article><article class="card"><p class="tag mono">ramp-up</p><h3>Ступени нагрузки и пики</h3><p>Постепенно с 10 до 50, 100, 300 пользователей; длительная нагрузка часами (утечки памяти) и пики вроде закрытия месяца или дней акций.</p></article><article class="card"><p class="tag mono">p95 · p99</p><h3>Измеримые показатели</h3><p>Время ответа (медиана, p95, p99), доля ошибок и запросы в секунду – вживую в Locust и в Grafana рядом с CPU, RAM и PostgreSQL.</p></article><article class="card"><p class="tag mono">workers · pg</p><h3>Поиск узких мест</h3><p>Количество воркеров и лимиты памяти, медленные SQL-запросы и недостающие индексы, блокировки, соединения (pgbouncer), nginx, медленные модули и вычисляемые поля.</p></article><article class="card"><p class="tag mono">report</p><h3>Отчёт «до/после»</h3><p>Сколько пользователей система держит сейчас, где предел, что даёт каждая мера – каждый раз с повторным замером. Сценарии остаются у вас для будущих обновлений.</p></article></div>
+<div class="lb-group shots" data-l-close="Закрыть" data-l-in="Увеличить" data-l-out="Уменьшить" data-l-full="На весь экран" data-l-prev="Предыдущий пример" data-l-next="Следующий пример"><figure class="shot"><button type="button" class="shot-btn" aria-label="Во весь экран: Веб-интерфейс Locust: статистика по запросам (медиана, 95 %, 99 %, ошибки)"><img src="/img/locust-stats.webp?v=8c78c4cd" alt="Веб-интерфейс Locust: статистика по запросам (медиана, 95 %, 99 %, ошибки)" width="1600" height="861" loading="lazy" decoding="async"></button><figcaption>Веб-интерфейс Locust: статистика по запросам (медиана, 95 %, 99 %, ошибки)</figcaption></figure><figure class="shot"><button type="button" class="shot-btn" aria-label="Во весь экран: Графики: запросы/с, время ответа p50/p95 и число пользователей при разгоне до 80"><img src="/img/locust-charts.webp?v=21b0c037" alt="Графики: запросы/с, время ответа p50/p95 и число пользователей при разгоне до 80" width="1600" height="1135" loading="lazy" decoding="async"></button><figcaption>Графики: запросы/с, время ответа p50/p95 и число пользователей при разгоне до 80</figcaption></figure></div><p class="note shots-note">Настоящий прогон Locust (80 виртуальных пользователей: продажи, склад, бухгалтерия) на демо-стенде – без данных клиентов. Нажмите, чтобы увеличить.</p>
 <figure class="code"><figcaption>Пример сценария (locustfile.py)</figcaption><pre><code>from locust import HttpUser, task, between
 
 class SalesUser(HttpUser):
@@ -291,7 +292,7 @@ class SalesUser(HttpUser):
 </div>
 </div>
 </section>
-<script src="/assets/slider.js?v=76d11b0b" defer></script>
+<script src="/assets/slider.js?v=02c531cd" defer></script>
 <section id="contact" class="sec contact extra">
 <div class="wrap narrow center">
 <h2>Давайте обсудим</h2>

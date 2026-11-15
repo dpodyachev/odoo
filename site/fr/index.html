@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=d94f713d">
+<link rel="stylesheet" href="/assets/style.css?v=5204776e">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -173,6 +173,7 @@
 <h2>Tests de charge avec Locust</h2>
 <p class="intro">Votre Odoo tient-il 50, 100 ou 300 utilisateurs simultanés – et que se passe-t-il à la clôture du mois ? Je simule des processus réels avec Locust, je mesure les limites et je montre où ça bloque. Toujours sur une copie de test, jamais en production.</p>
 <div class="grid3"><article class="card"><p class="tag mono">locust</p><h3>Scénarios selon vos processus</h3><p>Les commerciaux créent des devis, l’entrepôt valide des livraisons, la comptabilité émet des factures, les clients commandent en ligne – pondérés, avec des pauses réalistes.</p></article><article class="card"><p class="tag mono">JSON-RPC · HTTP</p><h3>De vrais appels Odoo</h3><p>Connexion, recherche, listes et formulaires, création, confirmation, rapports PDF – via la même interface que le navigateur. Données de test générées automatiquement.</p></article><article class="card"><p class="tag mono">ramp-up</p><h3>Paliers &amp; pics de charge</h3><p>Progressivement de 10 à 50, 100, 300 utilisateurs ; charge continue sur des heures (fuites mémoire) et pics comme la clôture ou les jours de promotion.</p></article><article class="card"><p class="tag mono">p95 · p99</p><h3>Indicateurs mesurables</h3><p>Temps de réponse (médiane, p95, p99), taux d’erreurs et requêtes par seconde – en direct dans Locust et dans Grafana, à côté du CPU, de la RAM et de PostgreSQL.</p></article><article class="card"><p class="tag mono">workers · pg</p><h3>Trouver les goulots</h3><p>Nombre de workers et limites mémoire, requêtes SQL lentes et index manquants, verrous, connexions (pgbouncer), nginx, modules et champs calculés lents.</p></article><article class="card"><p class="tag mono">report</p><h3>Rapport avant/après</h3><p>Combien d’utilisateurs le système supporte aujourd’hui, où est la limite, ce que chaque mesure apporte – à chaque fois remesuré. Vous gardez les scénarios pour les futures mises à jour.</p></article></div>
+<div class="lb-group shots" data-l-close="Fermer" data-l-in="Agrandir" data-l-out="Réduire" data-l-full="Plein écran" data-l-prev="Exemple précédent" data-l-next="Exemple suivant"><figure class="shot"><button type="button" class="shot-btn" aria-label="Plein écran: Interface web Locust : statistiques par requête (médiane, 95 %, 99 %, erreurs)"><img src="/img/locust-stats.webp?v=8c78c4cd" alt="Interface web Locust : statistiques par requête (médiane, 95 %, 99 %, erreurs)" width="1600" height="861" loading="lazy" decoding="async"></button><figcaption>Interface web Locust : statistiques par requête (médiane, 95 %, 99 %, erreurs)</figcaption></figure><figure class="shot"><button type="button" class="shot-btn" aria-label="Plein écran: Graphiques : requêtes/s, temps de réponse p50/p95 et nombre d’utilisateurs en montée jusqu’à 80"><img src="/img/locust-charts.webp?v=21b0c037" alt="Graphiques : requêtes/s, temps de réponse p50/p95 et nombre d’utilisateurs en montée jusqu’à 80" width="1600" height="1135" loading="lazy" decoding="async"></button><figcaption>Graphiques : requêtes/s, temps de réponse p50/p95 et nombre d’utilisateurs en montée jusqu’à 80</figcaption></figure></div><p class="note shots-note">Un vrai test Locust (80 utilisateurs virtuels : ventes, entrepôt, comptabilité) sur un environnement de démo – aucune donnée client. Cliquez pour agrandir.</p>
 <figure class="code"><figcaption>Exemple de scénario (locustfile.py)</figcaption><pre><code>from locust import HttpUser, task, between
 
 class SalesUser(HttpUser):
@@ -291,7 +292,7 @@ class SalesUser(HttpUser):
 </div>
 </div>
 </section>
-<script src="/assets/slider.js?v=76d11b0b" defer></script>
+<script src="/assets/slider.js?v=02c531cd" defer></script>
 <section id="contact" class="sec contact extra">
 <div class="wrap narrow center">
 <h2>Parlons-en</h2>

@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=d94f713d">
+<link rel="stylesheet" href="/assets/style.css?v=5204776e">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -173,6 +173,7 @@
 <h2>Δοκιμές φόρτου με Locust</h2>
 <p class="intro">Αντέχει το Odoo σας 50, 100 ή 300 ταυτόχρονους χρήστες – και τι γίνεται στο κλείσιμο του μήνα; Προσομοιώνω πραγματικές ροές εργασίας με Locust, μετρώ τα όρια και δείχνω πού κολλάει. Πάντα σε αντίγραφο δοκιμών, ποτέ στο ζωντανό σύστημα.</p>
 <div class="grid3"><article class="card"><p class="tag mono">locust</p><h3>Σενάρια με βάση τις ροές σας</h3><p>Οι πωλήσεις δημιουργούν προσφορές, η αποθήκη επικυρώνει παραδόσεις, το λογιστήριο εκδίδει τιμολόγια, οι πελάτες παραγγέλνουν στο e-shop – με βάρη και ρεαλιστικές παύσεις.</p></article><article class="card"><p class="tag mono">JSON-RPC · HTTP</p><h3>Πραγματικές κλήσεις Odoo</h3><p>Σύνδεση, αναζήτηση, λίστες και φόρμες, δημιουργία, επιβεβαίωση, αναφορές PDF – μέσω της ίδιας διεπαφής με τον browser. Τα δεδομένα δοκιμών δημιουργούνται αυτόματα.</p></article><article class="card"><p class="tag mono">ramp-up</p><h3>Βαθμίδες φόρτου &amp; αιχμές</h3><p>Σταδιακά από 10 σε 50, 100, 300 χρήστες· συνεχής φόρτος για ώρες (διαρροές μνήμης) και αιχμές όπως κλείσιμο μήνα ή ημέρες προσφορών.</p></article><article class="card"><p class="tag mono">p95 · p99</p><h3>Μετρήσιμοι δείκτες</h3><p>Χρόνοι απόκρισης (διάμεσος, p95, p99), ποσοστό σφαλμάτων και αιτήματα ανά δευτερόλεπτο – ζωντανά στο Locust και στο Grafana δίπλα σε CPU, RAM και PostgreSQL.</p></article><article class="card"><p class="tag mono">workers · pg</p><h3>Εντοπισμός σημείων συμφόρησης</h3><p>Αριθμός workers και όρια μνήμης, αργά ερωτήματα SQL και ελλείποντα ευρετήρια, κλειδώματα, συνδέσεις (pgbouncer), nginx, αργά modules και υπολογιζόμενα πεδία.</p></article><article class="card"><p class="tag mono">report</p><h3>Αναφορά πριν/μετά</h3><p>Πόσους χρήστες αντέχει σήμερα το σύστημα, πού είναι το όριο, τι κερδίζει κάθε μέτρο – με νέα μέτρηση κάθε φορά. Τα σενάρια μένουν σε εσάς για μελλοντικές αναβαθμίσεις.</p></article></div>
+<div class="lb-group shots" data-l-close="Κλείσιμο" data-l-in="Μεγέθυνση" data-l-out="Σμίκρυνση" data-l-full="Πλήρης οθόνη" data-l-prev="Προηγούμενο παράδειγμα" data-l-next="Επόμενο παράδειγμα"><figure class="shot"><button type="button" class="shot-btn" aria-label="Πλήρης οθόνη: Διεπαφή Locust: στατιστικά ανά αίτημα (διάμεσος, 95%, 99%, σφάλματα)"><img src="/img/locust-stats.webp?v=8c78c4cd" alt="Διεπαφή Locust: στατιστικά ανά αίτημα (διάμεσος, 95%, 99%, σφάλματα)" width="1600" height="861" loading="lazy" decoding="async"></button><figcaption>Διεπαφή Locust: στατιστικά ανά αίτημα (διάμεσος, 95%, 99%, σφάλματα)</figcaption></figure><figure class="shot"><button type="button" class="shot-btn" aria-label="Πλήρης οθόνη: Γραφήματα: αιτήματα/δευτ., χρόνοι απόκρισης p50/p95 και αριθμός χρηστών μέχρι τους 80"><img src="/img/locust-charts.webp?v=21b0c037" alt="Γραφήματα: αιτήματα/δευτ., χρόνοι απόκρισης p50/p95 και αριθμός χρηστών μέχρι τους 80" width="1600" height="1135" loading="lazy" decoding="async"></button><figcaption>Γραφήματα: αιτήματα/δευτ., χρόνοι απόκρισης p50/p95 και αριθμός χρηστών μέχρι τους 80</figcaption></figure></div><p class="note shots-note">Πραγματική εκτέλεση Locust (80 εικονικοί χρήστες: πωλήσεις, αποθήκη, λογιστήριο) σε περιβάλλον επίδειξης – χωρίς δεδομένα πελατών. Κάντε κλικ για μεγέθυνση.</p>
 <figure class="code"><figcaption>Παράδειγμα σεναρίου (locustfile.py)</figcaption><pre><code>from locust import HttpUser, task, between
 
 class SalesUser(HttpUser):
@@ -291,7 +292,7 @@ class SalesUser(HttpUser):
 </div>
 </div>
 </section>
-<script src="/assets/slider.js?v=76d11b0b" defer></script>
+<script src="/assets/slider.js?v=02c531cd" defer></script>
 <section id="contact" class="sec contact extra">
 <div class="wrap narrow center">
 <h2>Ας μιλήσουμε</h2>

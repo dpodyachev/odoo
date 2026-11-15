@@ -30,8 +30,10 @@
 // Полноэкранный просмотр: клик по слайду → весь экран; ←/→ и свайп — листать; +/−, колесо, щипок, двойной клик — зум;
 // при зуме изображение двигается мышью/пальцем; Esc, ✕ или клик по фону — выход.
 (function () {
-  document.querySelectorAll(".slider").forEach(function (root) {
-    var imgs = [].slice.call(root.querySelectorAll(".slides img")), n = imgs.length, d = root.dataset;
+  // .slider — карусель; .lb-group — набор картинок-кнопок (напр. скриншоты Locust), тот же просмотр
+  document.querySelectorAll(".slider, .lb-group").forEach(function (root) {
+    var isSlider = root.classList.contains("slider");
+    var imgs = [].slice.call(root.querySelectorAll(isSlider ? ".slides img" : "img")), n = imgs.length, d = root.dataset;
     if (!n) return;
     var lb = document.createElement("div");
     lb.className = "lb"; lb.hidden = true;
@@ -67,8 +69,9 @@
       lb.hidden = true; document.documentElement.classList.remove("lb-open"); root.dispatchEvent(new CustomEvent("lb:close"));
       if (back && back.focus) back.focus();
     }
-    root.querySelector(".slides").addEventListener("click", function () {
+    if (isSlider) root.querySelector(".slides").addEventListener("click", function () {
       var on = imgs.findIndex(function (x) { return x.classList.contains("on"); }); open(on < 0 ? 0 : on); });
+    else imgs.forEach(function (x, k) { (x.closest("button") || x).addEventListener("click", function () { open(k); }); });
     q(".lb-x").addEventListener("click", close);
     q(".lb-in").addEventListener("click", function () { zoom(1.5); });
     q(".lb-out").addEventListener("click", function () { zoom(1 / 1.5); });

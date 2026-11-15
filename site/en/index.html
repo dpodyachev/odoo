@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=d94f713d">
+<link rel="stylesheet" href="/assets/style.css?v=5204776e">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -173,6 +173,7 @@
 <h2>Load testing with Locust</h2>
 <p class="intro">Can your Odoo handle 50, 100 or 300 concurrent users – and what happens at month-end closing? I simulate real workflows with Locust, measure the limits and show where it gets stuck. Always on a test copy, never on the live system.</p>
 <div class="grid3"><article class="card"><p class="tag mono">locust</p><h3>Scenarios based on your workflows</h3><p>Sales create quotations, the warehouse validates deliveries, accounting issues invoices, customers order in the web shop – weighted, with realistic pauses.</p></article><article class="card"><p class="tag mono">JSON-RPC · HTTP</p><h3>Real Odoo calls</h3><p>Login, search, list and form views, create, confirm, PDF reports – via the same interface the browser uses. Test data is generated automatically.</p></article><article class="card"><p class="tag mono">ramp-up</p><h3>Load stages &amp; peaks</h3><p>Step by step from 10 to 50, 100, 300 users; sustained load over hours (memory leaks) and peaks such as month-end or sales days.</p></article><article class="card"><p class="tag mono">p95 · p99</p><h3>Measurable metrics</h3><p>Response times (median, p95, p99), error rate and requests per second – live in the Locust UI and in Grafana next to CPU, RAM and PostgreSQL.</p></article><article class="card"><p class="tag mono">workers · pg</p><h3>Finding bottlenecks</h3><p>Number of workers and memory limits, slow SQL queries and missing indexes, locks, connections (pgbouncer), nginx, slow modules and computed fields.</p></article><article class="card"><p class="tag mono">report</p><h3>Report with before/after</h3><p>How many users the system handles today, where the limit is, what each measure gains – re-measured every time. You keep the scenarios for future upgrades.</p></article></div>
+<div class="lb-group shots" data-l-close="Close" data-l-in="Zoom in" data-l-out="Zoom out" data-l-full="Full screen" data-l-prev="Previous example" data-l-next="Next example"><figure class="shot"><button type="button" class="shot-btn" aria-label="Full screen: Locust web UI: statistics per request (median, 95%, 99%, failures)"><img src="/img/locust-stats.webp?v=8c78c4cd" alt="Locust web UI: statistics per request (median, 95%, 99%, failures)" width="1600" height="861" loading="lazy" decoding="async"></button><figcaption>Locust web UI: statistics per request (median, 95%, 99%, failures)</figcaption></figure><figure class="shot"><button type="button" class="shot-btn" aria-label="Full screen: Charts: requests/s, response times p50/p95 and user count while ramping up to 80 users"><img src="/img/locust-charts.webp?v=21b0c037" alt="Charts: requests/s, response times p50/p95 and user count while ramping up to 80 users" width="1600" height="1135" loading="lazy" decoding="async"></button><figcaption>Charts: requests/s, response times p50/p95 and user count while ramping up to 80 users</figcaption></figure></div><p class="note shots-note">A real Locust run (80 virtual users: sales, warehouse, accounting) against a demo environment – no client data. Click to enlarge.</p>
 <figure class="code"><figcaption>Example scenario (locustfile.py)</figcaption><pre><code>from locust import HttpUser, task, between
 
 class SalesUser(HttpUser):
@@ -291,7 +292,7 @@ class SalesUser(HttpUser):
 </div>
 </div>
 </section>
-<script src="/assets/slider.js?v=76d11b0b" defer></script>
+<script src="/assets/slider.js?v=02c531cd" defer></script>
 <section id="contact" class="sec contact extra">
 <div class="wrap narrow center">
 <h2>Let&#x27;s talk</h2>
