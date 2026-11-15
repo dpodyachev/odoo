@@ -18,9 +18,23 @@
           f_text: "Лог / опис", mask_note: "Паролі, токени й ключі в тексті маскуються автоматично під час збереження. Скриншоти – ні, перевірте їх самі.",
           save: "Зберегти", saving: "Зберігаю…", saved: "Збережено", masked: "замасковано", confirm: "Видалити цей запис?", noimg: "без картинки", open: "Відкрити оригінал", err: "Помилка" },
   };
-  var lang = (navigator.language || "en").slice(0, 2).toLowerCase();
-  var T = L[lang] || L.en;
-  document.documentElement.lang = L[lang] ? lang : "en";
+  var saved = ""; try { saved = localStorage.getItem("st-lang") || ""; } catch (e) {}
+  var lang = L[saved] ? saved : (navigator.language || "en").slice(0, 2).toLowerCase();
+  if (!L[lang]) lang = "en";
+  var T = L[lang];
+  document.documentElement.lang = lang;
+  // language switch (choice is remembered per browser)
+  var bar = document.querySelector(".st-actions");
+  if (bar) {
+    var sw = document.createElement("nav"); sw.className = "langs st-langs"; sw.setAttribute("aria-label", "Language");
+    Object.keys(L).forEach(function (k) {
+      var a = document.createElement("a"); a.href = "#"; a.textContent = k.toUpperCase(); a.lang = k;
+      if (k === lang) a.setAttribute("aria-current", "true");
+      a.addEventListener("click", function (ev) { ev.preventDefault(); try { localStorage.setItem("st-lang", k); } catch (e) {} location.reload(); });
+      sw.appendChild(a);
+    });
+    bar.insertBefore(sw, bar.firstChild);
+  }
   document.querySelectorAll("[data-t]").forEach(function (el) { if (T[el.dataset.t]) el.textContent = T[el.dataset.t]; });
   function $(id) { return document.getElementById(id); }
   function fmt(ts) { try { return new Date(ts).toLocaleString(lang); } catch (e) { return ""; } }

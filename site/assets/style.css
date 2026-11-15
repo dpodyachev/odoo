@@ -431,3 +431,4 @@ html.lb-open { overflow: hidden; }
 .st-result { margin-top: 12px; font-weight: 600; }
 @media (max-width: 860px) { .st-view { grid-template-columns: 1fr; } .st-text { border-left: 0; border-top: 1px solid var(--line); max-height: none; }
   .st-img img { max-height: 60vh; } }
+.st-langs { margin-right: 4px; }
