@@ -97,7 +97,7 @@ export async function onRequest({ request, env, params, data }) {
     try { src = new URL(String(body.url || "").trim()); } catch { return json({ error: "bad url" }, 400); }
     if (!/^https?:$/.test(src.protocol)) return json({ error: "only http/https" }, 400);
     const r = await fetch(src.toString(), { redirect: "follow", headers: { "User-Agent": "goldberg-backup/1.0" } });
-    if (!r.ok || !r.body) return json({ error: `source HTTP ${r.status}` }, 502);
+    if (!r.ok || !r.body) return json({ error: `source HTTP ${r.status}` }, 422);
     const cd = r.headers.get("content-disposition") || "";
     const fromCd = (cd.match(/filename\*=UTF-8''([^;]+)/i) || [])[1];
     let name = fromCd ? decodeURIComponent(fromCd) : (cd.match(/filename="?([^";]+)"?/i) || [])[1];
@@ -134,7 +134,7 @@ export async function onRequest({ request, env, params, data }) {
         }
         if (fill || !n) { done.push(await up.uploadPart(++n, buf.subarray(0, fill))); size += fill; }
         await up.complete(done);
-      } catch (e) { await up.abort().catch(() => {}); return json({ error: "transfer failed: " + e.message }, 502); }
+      } catch (e) { await up.abort().catch(() => {}); return json({ error: "transfer failed: " + e.message }, 422); }
     }
     const meta = { id, key, name, type, size, src: src.toString().replace(/\/\/[^/@]*@/, "//"),
                    title: String(body.title || "").trim().slice(0, 200) || name,
