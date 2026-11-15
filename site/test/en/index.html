@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Protected area – how it works · Goldberg</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=c063d726">
+<link rel="stylesheet" href="/assets/style.css?v=2fb3b82d">
 <script src="/assets/theme.js?v=eec31096" defer></script>
 </head>
 <body>
@@ -59,7 +59,12 @@ export async function onRequest({ request, env, next }) {
 }</code></pre></figure>
 <figure class="code"><figcaption>site/_routes.json</figcaption><pre><code>{
   &quot;version&quot;: 1,
-  &quot;include&quot;: [&quot;/test&quot;, &quot;/test/*&quot;],
+  &quot;include&quot;: [
+    &quot;/test&quot;,
+    &quot;/test/*&quot;,
+    &quot;/status&quot;,
+    &quot;/status/*&quot;
+  ],
   &quot;exclude&quot;: []
 }</code></pre></figure>
 <h2>Setting or changing the password</h2>

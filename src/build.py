@@ -881,7 +881,7 @@ def main():
           + "</urlset>\n")
     if getattr(C, "INDEXNOW_KEY", ""):
         write(f"{C.INDEXNOW_KEY}.txt", C.INDEXNOW_KEY)
-    write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /test/\nSitemap: {C.BASE_URL}/sitemap.xml\n")
+    write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /test/\nDisallow: /test2/\nDisallow: /status/\nSitemap: {C.BASE_URL}/sitemap.xml\n")
     print("ok:", len(pages), "pages →", OUT)
 
 

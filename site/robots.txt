@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /test/
+Disallow: /test2/
+Disallow: /status/
 Sitemap: https://2027.pp.ua/sitemap.xml

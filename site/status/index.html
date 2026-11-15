@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Status · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/theme.js" defer></script>
+<script src="/assets/status.js" defer></script>
+</head>
+<body class="st-body">
+<header class="st-top">
+  <a class="brand" href="/"><span class="logo">G</span><span>Goldberg<small>Status</small></span></a>
+  <div class="st-nav">
+    <button type="button" class="st-btn" id="st-prev" data-i="prev">←</button>
+    <span id="st-count" class="st-count">–</span>
+    <button type="button" class="st-btn" id="st-next" data-i="next">→</button>
+  </div>
+  <div class="st-actions">
+    <a class="btn primary small" href="/status/upload/" data-t="upload">+ Upload</a>
+    <button type="button" class="st-btn danger" id="st-del" data-t="delete">Delete</button>
+  </div>
+</header>
+<main id="st-view" class="st-view" data-view="1">
+  <section class="st-img" id="st-img"><p class="st-empty" data-t="loading">…</p></section>
+  <section class="st-text">
+    <h1 id="st-title"></h1>
+    <p id="st-meta" class="st-meta"></p>
+    <pre id="st-log" class="st-log"></pre>
+  </section>
+</main>
+<nav class="st-list" id="st-list" aria-label="Entries"></nav>
+<p class="st-foot" data-t="foot">Entries are deleted automatically after 30 days.</p>
+</body>
+</html>

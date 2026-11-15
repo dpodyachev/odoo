@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Status · Upload · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/theme.js" defer></script>
+<script src="/assets/status.js" defer></script>
+</head>
+<body class="st-body">
+<header class="st-top">
+  <a class="brand" href="/status/"><span class="logo">G</span><span>Goldberg<small>Status</small></span></a>
+  <div class="st-actions"><a class="btn ghost small" href="/status/" data-t="back">← Overview</a></div>
+</header>
+<main class="wrap narrow st-upload" data-upload="1">
+  <h1 data-t="up_title">New entry</h1>
+  <form id="st-form" novalidate>
+    <label class="st-drop" id="st-drop">
+      <input type="file" id="st-file" accept="image/png,image/jpeg,image/webp,image/gif">
+      <span data-t="drop">Choose a screenshot, drop it here or paste it with Ctrl+V</span>
+      <img id="st-preview" alt="" hidden>
+    </label>
+    <label class="st-field"><span data-t="f_title">Title</span><input type="text" id="st-title-in" maxlength="160"></label>
+    <label class="st-field"><span data-t="f_text">Log / description</span><textarea id="st-text-in" rows="12" spellcheck="false"></textarea></label>
+    <p class="note" data-t="mask_note">Passwords, tokens and keys in the text are masked automatically when saving. Screenshots are not – check them yourself.</p>
+    <button type="submit" class="btn primary" id="st-save" data-t="save">Save</button>
+    <p id="st-result" class="st-result" role="status"></p>
+  </form>
+</main>
+</body>
+</html>
