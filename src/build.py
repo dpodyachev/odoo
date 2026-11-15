@@ -655,6 +655,9 @@ def blog_post(T, lang, post):
         elif kind == "code":
             cap, code = post["code"][b[1]]
             out.append(f'<figure class="code"><figcaption>{E(cap)}</figcaption><pre><code>{E(code)}</code></pre></figure>')
+        elif kind == "links":
+            out.append(f"<h2>{inline(b[1])}</h2><ul class=\"post-links\">" + "".join(
+                f'<li><a href="{E(u)}" target="_blank" rel="noopener">{E(t)}</a></li>' for t, u in post.get("links", [])) + "</ul>")
         elif kind == "table":
             hd, *rows = b[1]
             out.append('<div class="tablewrap"><table class="post-table"><thead><tr>' + "".join(f"<th>{inline(c)}</th>" for c in hd)

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>When does the SSL certificate expire? Tools for Linux and Windows – and what eMudhra has to do with it · Goldberg</title>
+<meta name="description" content="TLS in one minute, online checks, openssl/dig/curl on Linux, PowerShell on Windows, what the verify codes mean, lessons from history and the current eMudhra case.">
+<link rel="canonical" href="https://2027.pp.ua/en/blog/ssl-certificate-expiry-check-tools">
+<link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/ssl-certificate-expiry-check-tools">
+<link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/ssl-certificate-expiry-check-tools">
+<link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/blog/ssl-certificate-expiry-check-tools">
+<link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/blog/ssl-certificate-expiry-check-tools">
+<link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/ssl-certificate-expiry-check-tools">
+<link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/ssl-certificate-expiry-check-tools">
+<link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/ssl-certificate-expiry-check-tools">
+<meta property="og:title" content="When does the SSL certificate expire? Tools for Linux and Windows – and what eMudhra has to do with it · Goldberg">
+<meta property="og:description" content="TLS in one minute, online checks, openssl/dig/curl on Linux, PowerShell on Windows, what the verify codes mean, lessons from history and the current eMudhra case.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2027.pp.ua/en/blog/ssl-certificate-expiry-check-tools">
+<meta name="theme-color" content="#3b2a4a">
+<meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "When does the SSL certificate expire? Tools for Linux and Windows – and what eMudhra has to do with it", "description": "TLS in one minute, online checks, openssl/dig/curl on Linux, PowerShell on Windows, what the verify codes mean, lessons from history and the current eMudhra case.", "datePublished": "2026-11-15", "inLanguage": "en", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua", "sameAs": ["https://www.linkedin.com/in/dpodyachev"]}, "mainEntityOfPage": "https://2027.pp.ua/en/blog/ssl-certificate-expiry-check-tools"}</script>
+</head>
+<body>
+<header class="top">
+<div class="wrap top-in">
+<a class="brand" href="/en/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="menu"><a class="nav-icon multi" href="/en/#services" title="Services" aria-label="Services"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7.8" stroke-width="3" stroke-dasharray="3 3.125" stroke-linecap="butt"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7z"/></svg></a><a class="nav-icon" href="/en/#dach" title="DATEV &amp; e-invoicing" aria-label="DATEV &amp; e-invoicing"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5M14 3l5 5v4M14 3v5h5"/><path d="M8.5 11h5M8.5 14.5h3"/><path d="m14.5 18.5 2 2 4-4.5"/></svg></a><a class="nav-icon radar" href="/en/#bot" title="Monitoring" aria-label="Monitoring"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.2" opacity=".55"/><g class="sweep"><path d="M12 12 18.5 5.5A9.2 9.2 0 0 1 21.2 12z" fill="currentColor" stroke="none" opacity=".28"/><path d="M12 12l6.5-6.5"/></g><circle cx="15.6" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon cur" href="/en/#prices" title="Pricing" aria-label="Pricing"><span aria-hidden="true">$</span></a><a class="nav-icon" href="/en/#about" title="About" aria-label="About"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/></svg></a><a class="nav-icon" href="/en/blog/" title="Blog &amp; how-tos" aria-label="Blog &amp; how-tos" aria-current=page><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon" href="/en/#contact" title="Contact" aria-label="Contact"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a></nav>
+<nav class="langs" aria-label="Language"><a href="/de/blog/ssl-certificate-expiry-check-tools" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/ssl-certificate-expiry-check-tools" hreflang="en" lang="en" title="English" aria-label="English" aria-current="true"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/ssl-certificate-expiry-check-tools" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/ssl-certificate-expiry-check-tools" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/ssl-certificate-expiry-check-tools" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/ssl-certificate-expiry-check-tools" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<button type="button" class="theme" hidden aria-label="Light / dark theme" title="Light / dark theme">🌙</button>
+</div>
+</header>
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/en/blog/">← All articles</a></p><p class="post-meta">2026-11-15 · 4 min read · <span class="post-tag">TLS</span><span class="post-tag">SSL</span><span class="post-tag">openssl</span><span class="post-tag">PowerShell</span><span class="post-tag">eMudhra</span></p><h1>When does the SSL certificate expire? Tools for Linux and Windows – and what eMudhra has to do with it</h1><p class="intro">TLS in one minute, online checks, openssl/dig/curl on Linux, PowerShell on Windows, what the verify codes mean, lessons from history and the current eMudhra case.</p><h2>TLS in one minute</h2><p>TLS (formerly SSL) does two things: it <b>encrypts</b> the connection between browser and server, and it <b>proves</b> that the server really belongs to that domain. The proof is the certificate: domain + public key + the signature of a certificate authority (CA).</p><p>What gets verified is a <b>chain</b>: server certificate → intermediate → root. Only the roots are stored in browsers and operating systems. If the intermediate is missing, or a browser stops trusting the root, even a &quot;valid&quot; certificate is suddenly worthless. And every certificate has a fixed expiry date (<code>notAfter</code>).</p><h2>Checking online</h2><ul><li><b>SSL Labs Server Test</b> – chain, expiry, protocols, grade A–F. Thorough, takes 1–2 minutes.</li><li><b>crt.sh</b> – every certificate ever issued for your domain, from the Certificate Transparency logs. Ideal for finding forgotten subdomains and unexpected issuers.</li><li><b>badssl.com</b> – test sites with deliberately broken certificates to practise on.</li></ul><h2>Linux: name and DNS first</h2><p>Half of all &quot;certificate problems&quot; are DNS problems: the domain points to the wrong server, or a forgotten IPv6 record leads somewhere else.</p><figure class="code"><figcaption>bash · Linux – where am I, where does the name point</figcaption><pre><code>hostname -f                       # full name of THIS server
+hostname -I                       # its IP addresses
+dig +short A    odoo.example.com  # where the domain points (IPv4)
+dig +short AAAA odoo.example.com  # IPv6 - often forgotten, often the culprit
+dig +short CAA  example.com       # which CAs may issue for the domain
+nslookup odoo.example.com         # the same, available almost everywhere</code></pre></figure><h2>Linux: openssl s_client</h2><p><code>-servername</code> matters: it sends SNI. Without SNI, a server hosting several domains often returns a completely different certificate – and you check the wrong one.</p><figure class="code"><figcaption>bash · Linux – openssl</figcaption><pre><code>H=odoo.example.com
+
+# validity, subject, issuer of the certificate actually served
+openssl s_client -connect $H:443 -servername $H &lt;/dev/null 2&gt;/dev/null \
+  | openssl x509 -noout -dates -subject -issuer
+
+# is the chain valid? 0 (ok) is the only good answer
+openssl s_client -connect $H:443 -servername $H &lt;/dev/null 2&gt;&amp;1 | grep &quot;Verify return code&quot;
+
+# does it expire within 14 days? (exit code 1 = yes)
+openssl s_client -connect $H:443 -servername $H &lt;/dev/null 2&gt;/dev/null \
+  | openssl x509 -noout -checkend $((14*86400)) &amp;&amp; echo &quot;ok for 14+ days&quot;
+
+# the whole chain, one certificate after another
+openssl s_client -connect $H:443 -servername $H -showcerts &lt;/dev/null 2&gt;/dev/null \
+  | grep -E &quot;^ *[0-9] s:|^ *i:&quot;
+
+# mail server with STARTTLS
+openssl s_client -connect mail.example.com:587 -starttls smtp &lt;/dev/null 2&gt;/dev/null \
+  | openssl x509 -noout -enddate</code></pre></figure><div class="tablewrap"><table class="post-table"><thead><tr><th>Verify return code</th><th>Meaning</th></tr></thead><tbody><tr><td><code>0</code></td><td>all good</td></tr><tr><td><code>10</code></td><td>certificate has expired</td></tr><tr><td><code>18</code></td><td>self-signed</td></tr><tr><td><code>19</code></td><td>self-signed certificate in the chain (unknown root)</td></tr><tr><td><code>20</code></td><td>issuer not found – intermediate missing or root not trusted</td></tr><tr><td><code>21</code></td><td>incomplete chain (server does not send the intermediate)</td></tr><tr><td><code>62</code></td><td>hostname mismatch (with -verify_hostname)</td></tr></tbody></table></div><figure class="code"><figcaption>bash · Linux – curl, nmap, local file</figcaption><pre><code>curl -svI https://odoo.example.com 2&gt;&amp;1 | grep -E &quot;expire date|subject:|issuer:|SSL certificate verify&quot;
+nmap -p 443 --script ssl-cert odoo.example.com
+openssl x509 -in /etc/letsencrypt/live/odoo.example.com/cert.pem -noout -enddate   # file on disk</code></pre></figure><figure class="code"><figcaption>bash · practise on broken certificates</figcaption><pre><code>for h in expired self-signed untrusted-root wrong.host incomplete-chain; do
+  printf &quot;%-20s &quot; $h
+  openssl s_client -connect $h.badssl.com:443 -servername $h.badssl.com -verify_hostname $h.badssl.com \
+    &lt;/dev/null 2&gt;&amp;1 | grep &quot;Verify return code&quot;
+done</code></pre></figure><h2>Windows: PowerShell</h2><p>No extra software needed: DNS, port and certificate straight from PowerShell. If Git for Windows is installed, Git Bash also has <code>openssl</code>, so the Linux commands above work too.</p><figure class="code"><figcaption>PowerShell · Windows</figcaption><pre><code>Resolve-DnsName odoo.example.com                      # DNS (like dig)
+nslookup odoo.example.com
+Test-NetConnection odoo.example.com -Port 443         # is 443 reachable at all?
+
+# read the certificate - even an invalid one (the callback accepts everything)
+$h   = &quot;odoo.example.com&quot;
+$tcp = [Net.Sockets.TcpClient]::new($h, 443)
+$ssl = [Net.Security.SslStream]::new($tcp.GetStream(), $false, { $true })
+$ssl.AuthenticateAsClient($h)
+$c = [Security.Cryptography.X509Certificates.X509Certificate2]$ssl.RemoteCertificate
+&quot;{0}`nIssuer:  {1}`nValid to: {2}  ({3} days)&quot; -f $c.Subject, $c.Issuer, $c.NotAfter, ($c.NotAfter - (Get-Date)).Days
+$ssl.Dispose(); $tcp.Dispose()
+
+# is the chain trusted by Windows itself?
+$chain = [Security.Cryptography.X509Certificates.X509Chain]::new()
+$chain.Build($c); $chain.ChainStatus | Select-Object Status, StatusInformation</code></pre></figure><h2>What has already happened to certificates</h2><ul><li><b>2018 – Symantec:</b> after repeated failures, Chrome and Firefox distrusted all Symantec certificates. Millions of sites had to switch.</li><li><b>30 Sep 2021 – DST Root CA X3:</b> the old Let&#x27;s Encrypt root expired. Modern browsers didn&#x27;t notice, but old Android devices, OpenSSL 1.0.x and many scripts and integrations broke.</li><li><b>2024 – Entrust:</b> Chrome and others stopped trusting new Entrust certificates.</li><li><b>Shorter lifetimes:</b> under CA/Browser Forum ballot SC-081 the maximum lifetime drops step by step: 200 days from March 2026, 100 days from March 2027, 47 days from March 2029. Let&#x27;s Encrypt stopped sending expiry e-mails in 2025.</li></ul><h2>Right now: eMudhra (October–November 2026)</h2><p>On 17 October 2026 it became known that eight intermediate certificates of the Indian CA eMudhra had been generated with weak, recoverable keys (key ceremony in April 2025). Mozilla distrusted the root <b>emSign ECC Root CA – G3</b> on 20 October, Chrome on 27 October. On 22 October eMudhra announced its exit from the public TLS business. According to eMudhra and industry reports, the RSA root <b>emSign Root CA – G1</b> follows: Microsoft removes it on 16 November, Apple on 30 November.</p><figure class="code"><figcaption>bash · does my certificate chain to eMudhra?</figcaption><pre><code>H=odoo.example.com
+openssl s_client -connect $H:443 -servername $H -showcerts &lt;/dev/null 2&gt;/dev/null \
+  | grep -iE &quot;emSign|eMudhra&quot; &amp;&amp; echo &quot;eMudhra in the chain -&gt; replace&quot; || echo &quot;no eMudhra&quot;
+dig +short CAA example.com      # only &quot;emsign.com&quot; here? -&gt; add the new CA first</code></pre></figure><ul><li>If eMudhra/emSign appears in the chain: reissue the certificate with another CA – RSA certificates from eMudhra are no long-term fix either.</li><li>Check CAA records: if the domain only allows <code>emsign.com</code>, no other CA can issue.</li><li>Not just web servers: load balancers, VPN, mail servers and appliances with manually imported certificates too.</li></ul><h2>General tips</h2><ul><li>Check from outside what is <b>actually served</b> – not the file on disk.</li><li>Always use SNI (<code>-servername</code>) and always check the <b>whole chain</b>.</li><li>Alert at 21, 14 and 7 days – not on the expiry day.</li><li>Keep an inventory of all certificates: domains, subdomains, mail, VPN, appliances; crt.sh helps to find them.</li><li>Automate renewal (see the certbot article) – with 47-day certificates there is no other way.</li></ul><h2>Sources and tools</h2><ul class="post-links"><li><a href="https://www.ssllabs.com/ssltest/" target="_blank" rel="noopener">SSL Labs Server Test</a></li><li><a href="https://crt.sh/" target="_blank" rel="noopener">crt.sh – Certificate Transparency</a></li><li><a href="https://badssl.com/" target="_blank" rel="noopener">badssl.com – test hosts</a></li><li><a href="https://www.certkit.io/blog/emudhra-internet2-incommon-distrust" target="_blank" rel="noopener">certkit: eMudhra / InCommon distrust (timeline)</a></li><li><a href="https://thehackernews.com/2026/10/eight-emudhra-ca-keys-compromised.html" target="_blank" rel="noopener">The Hacker News: Eight eMudhra CA keys compromised</a></li><li><a href="https://blog.qualys.com/product-tech/2026/10/23/how-to-identify-compromised-emudhra-certificates-with-qualys-cve-2026-111943-and-cve-2026-111944" target="_blank" rel="noopener">Qualys: identifying compromised eMudhra certificates</a></li></ul><aside class="post-cta"><h2>Want me to do this for you?</h2><p>I&#x27;ll implement it in your system – on a test copy first, with rollback and a written record.</p><div class="cta ">
+<a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Book a call – 30 min free</a>
+<a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
+<a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
+<a class="btn ghost" href="https://www.linkedin.com/in/dpodyachev" target="_blank" rel="noopener me">LinkedIn</a>
+</div></aside><nav class="post-nav" aria-label="Blog &amp; how-tos"><a class="prev" href="/en/blog/odoo-17-python-3-14-docker" rel="prev"><small>← Previous article</small><span>Moving Odoo 17 to Python 3.14 – with docker-compose</span></a><a class="all" href="/en/blog/"><small>← All articles</small></a><a class="next" href="/en/blog/certbot-nginx-auto-renewal" rel="next"><small>Next article →</small><span>Certbot for nginx – and how renewal is never forgotten</span></a></nav></article></main><footer class="foot">
+<div class="wrap foot-in">
+<div><strong>Goldberg · Odoo Services</strong><br>Odoo support, installation and integration for Germany, Austria and Switzerland.</div>
+<div class="foot-links">
+<a href="/en/blog/">Blog &amp; how-tos</a>
+<a href="/en/impressum">Legal notice</a>
+<a href="/en/datenschutz">Privacy</a>
+<a href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
+<a href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram</a>
+<a href="https://www.linkedin.com/in/dpodyachev" target="_blank" rel="noopener me">LinkedIn</a>
+</div>
+<nav class="langs" aria-label="Language"><a href="/de/blog/ssl-certificate-expiry-check-tools" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/ssl-certificate-expiry-check-tools" hreflang="en" lang="en" title="English" aria-label="English" aria-current="true"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/ssl-certificate-expiry-check-tools" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/ssl-certificate-expiry-check-tools" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/ssl-certificate-expiry-check-tools" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/ssl-certificate-expiry-check-tools" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<div class="small">© 2026 Goldberg. This website uses no cookies and no tracking.</div>
+</div>
+</footer>
+</body>
+</html>
