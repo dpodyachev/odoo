@@ -1,13 +1,13 @@
 ---
 name: odoo-ops
-description: Practical operations knowledge for self-hosted Odoo 17 (Community/Enterprise, Docker or bare metal) – what to look for in the log, how to update modules safely, how to back up and restore (database + filestore), how and why to stop cron jobs and queue jobs, worker/limit tuning, nginx/websocket, and what to lock down. Use when operating, debugging, updating, backing up or restoring an Odoo instance, or when preparing a stage/test copy of a production database.
+description: Practical operations knowledge for self-hosted Odoo 17 (Community/Enterprise, Docker or bare metal) – what to look for in the log, how to update modules safely, how to back up and restore (database + filestore), how and why to stop cron jobs and queue jobs, worker/limit tuning, nginx/websocket, version migration, performance and indexes, e-mail, OCA modules, and what to lock down. Use when operating, debugging, updating, backing up or restoring an Odoo instance, or when preparing a stage/test copy of a production database.
 ---
 
 # Odoo operations (Odoo 17) – a field guide
 
 Written by an Odoo DevOps engineer for humans and AI agents. Source: https://2027.pp.ua (blog with full articles, 6 languages).
 Licence: free to read, quote and use as knowledge for assistants; please link the source.
-Every command below was used on real systems. Adjust names: `mydb`, `odoo` service, `/etc/odoo/odoo.conf`.
+Commands are written for Odoo 17 – check against your version and test on stage. Adjust names: `mydb`, `odoo` service, `/etc/odoo/odoo.conf`.
 
 ## 0. Golden rules
 
@@ -178,13 +178,75 @@ SELECT pg_cancel_backend(<pid>);      -- cancel query;  pg_terminate_backend(<pi
 SELECT relname, pg_size_pretty(pg_total_relation_size(relid)) FROM pg_catalog.pg_statio_user_tables ORDER BY pg_total_relation_size(relid) DESC LIMIT 15;
 ```
 
-## 8. Security minimum
+## 8. Security minimum (full guide: skill `odoo-security`, https://2027.pp.ua/skill_odoo_security.md)
 
 - Close `/web/database/manager`, `/web/database/selector` and `/web/database/*` at nginx (deny or Basic Auth / IP allow-list); `list_db = False`; long random `admin_passwd`.
 - 2FA for admins, no shared "admin" login, API keys instead of passwords for integrations.
 - Do not publish port 8069/8072 – only nginx (or Cloudflare Tunnel) in front.
 - Keep `odoo.conf` (contains `db_password`, `admin_passwd`) out of git.
 Details: https://2027.pp.ua/en/blog/nginx-apache-password-protect-odoo-database-manager · https://2027.pp.ua/en/blog/password-leaks-brute-force-2fa-odoo
+
+## 9. Version migration (e.g. 15 → 16 → 17)
+
+Odoo changes the database schema between major versions; a database cannot simply be opened with newer code.
+
+| Edition | Tool |
+|---|---|
+| Enterprise (or paid upgrade) | Odoo upgrade service: `python <(curl -s https://upgrade.odoo.com/upgrade) test -d mydb -t 17.0` (test run first, then `production`) |
+| Community | OCA **OpenUpgrade** (github.com/OCA/OpenUpgrade) – one major version per step, each step with its own OpenUpgrade branch |
+
+Own and third-party modules are **not** migrated by these tools – they must be ported for each version (manifest version, API changes, views; `odoo-module-migrator` from OCA automates the mechanical part).
+
+Procedure that works:
+1. Inventory: `SELECT name, latest_version FROM ir_module_module WHERE state='installed' ORDER BY 1;` – for every non-Odoo module decide: port, replace, or uninstall **before** the migration.
+2. Uninstall what is no longer needed on the old version (less to migrate).
+3. Test migration on a copy, measure duration, collect errors, fix, repeat until clean.
+4. Users test the migrated copy on stage (reports, invoices, stock, integrations).
+5. Production: freeze (maintenance page), final backup, migrate, smoke test, go live. Keep the old system read-only for a while.
+Typical surprises: renamed fields/models in custom code, QWeb report templates, website themes, accounting localisation changes, attachments missing because the filestore was not copied.
+
+## 10. Performance and indexes
+
+First find **where** time goes, then optimise.
+```sql
+-- PostgreSQL: enable once (shared_preload_libraries = 'pg_stat_statements', restart, CREATE EXTENSION pg_stat_statements;)
+SELECT round(total_exec_time) AS ms, calls, round(mean_exec_time,1) AS avg_ms, left(query,150)
+  FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT 15;
+-- tables read by sequential scan a lot (index candidates)
+SELECT relname, seq_scan, seq_tup_read, idx_scan, n_live_tup FROM pg_stat_user_tables
+ WHERE n_live_tup > 10000 ORDER BY seq_tup_read DESC LIMIT 15;
+-- dead rows / autovacuum lagging
+SELECT relname, n_dead_tup, last_autovacuum FROM pg_stat_user_tables ORDER BY n_dead_tup DESC LIMIT 10;
+```
+- Slow queries in the Odoo log: PostgreSQL `log_min_duration_statement = 1000` (ms) shows every query over 1 s with its text.
+- Odoo profiler (Odoo 15+): developer mode → bug icon → **Enable profiling**, reproduce, open the result (SQL and Python per request).
+- Index in a custom module: `fields.Char(index=True)` (Odoo 17 also `index="btree_not_null"` / `"trigram"` for `ilike` search). Typical candidates: fields used in domains of record rules, in `search()` of crons, `many2one` fields on large custom tables.
+- An index created by hand in SQL is invisible to Odoo and lost if the field is recreated – prefer `index=` in code; a hand index: `CREATE INDEX CONCURRENTLY ...` (no table lock).
+- Big tables to watch: `mail_message`, `mail_tracking_value`, `ir_attachment`, `bus_bus`, `mail_mail`, `ir_logging` (if `log_db` is on), queue_job's `queue_job`. Archive/clean via Odoo (autovacuum crons, queue_job cleanup), not with blind DELETE.
+- PostgreSQL basics on a dedicated DB server: `shared_buffers` ≈ 25 % RAM, `effective_cache_size` ≈ 50–75 % RAM, `random_page_cost = 1.1` on SSD, moderate `work_mem` (it is per sort/hash and per connection).
+- Odoo side: `workers > 0` on production (never `--dev` there), enough workers for concurrent users but RAM = workers × `limit_memory_hard` must fit; heavy reports/imports in a cron or queue job, not in the HTTP request; stored compute fields with wide `@api.depends` trigger mass recomputations – check them first when writes are slow.
+
+## 11. E-mail (outgoing and incoming)
+
+Outgoing: Settings → Technical → Outgoing Mail Servers (or `smtp_server`/`smtp_port`/`smtp_user`/`smtp_password`/`smtp_ssl` in odoo.conf). Mails are queued in `mail_mail` and sent by the cron **"Mail: Email Queue Manager"**.
+```sql
+SELECT state, count(*) FROM mail_mail GROUP BY state;                       -- outgoing queue
+SELECT id, email_to, failure_reason FROM mail_mail WHERE state='exception' ORDER BY id DESC LIMIT 20;
+SELECT key, value FROM ir_config_parameter WHERE key IN ('mail.catchall.domain','mail.default.from','mail.bounce.alias','web.base.url');
+```
+- Deliverability: the sender domain needs **SPF**, **DKIM** and **DMARC**; with `mail.default.from` (e.g. `notifications`) + `mail.catchall.domain`, Odoo sends from its own domain instead of spoofing users' addresses. Test with mail-tester.com.
+- "Mail sent but never arrives" → look at `mail_mail` state/failure_reason, then the SMTP server log, then spam folder/DMARC reports.
+- Incoming: Incoming Mail Servers (IMAP/POP fetch, cron "Mail: Fetchmail Service") or a mail gateway (MTA pipes to `odoo-mailgate.py`) for aliases like `sales@`, `catchall@`, `bounce@`.
+- Stage/test: always a mail catcher (Mailpit) or mail servers deactivated (section 5).
+
+## 12. OCA modules
+
+The Odoo Community Association (github.com/OCA) maintains hundreds of modules in topic repositories (`server-tools`, `queue`, `account-financial-tools`, `l10n-germany`, `web`, …). Branch = Odoo version (`17.0`).
+- Install as Git checkout: clone the repo at branch `17.0`, add the **repository folder** to `addons_path`, install Python deps from its `requirements.txt`; or as package: `pip install odoo-addon-<module_name>==17.0.*` (wheels on PyPI, dependencies resolved automatically).
+- Pin versions (commit hash or package version) – OCA branches move; update deliberately like your own code (section 2).
+- Check before using: module **maturity** (Alpha/Beta/Production/Mature in the README), last commits and open PRs for 17.0, licence (mostly AGPL-3 / LGPL-3).
+- Missing in 17.0? Look for an open migration PR (`[17.0][MIG] module_name`) – often usable after review.
+- Frequently useful: `queue_job` (background jobs), `server_environment` (config per environment), `auditlog`, `web_responsive` (Community), `mis_builder`, `account_financial_report`, `base_rest`/`fastapi` (APIs), DATEV/German localisation repos.
 
 ## More
 

@@ -116,6 +116,7 @@ def head(T, lang, page, title, desc):
 {VERIFY}<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="Site overview for AI assistants (llms.txt)">
 <link rel="alternate" type="text/markdown" href="/skill_odoo.md" title="Odoo operations skill for AI agents (Markdown)">
+<link rel="alternate" type="text/markdown" href="/skill_odoo_security.md" title="Odoo security skill for AI agents (Markdown)">
 <link rel="stylesheet" href="{asset('/assets/style.css')}">
 <script src="{asset('/assets/theme.js')}" defer></script>
 <script src="{asset('/assets/contacts.js')}" defer></script>
@@ -941,16 +942,19 @@ def write(path, text):
         f.write(text)
 
 
-SKILL_SRC = os.path.join(os.path.dirname(HERE), "skills", "odoo-ops", "SKILL.md")
+SKILLS_DIR = os.path.join(os.path.dirname(HERE), "skills")
+SKILL_ALIAS = {"odoo-ops": "skill_odoo.md", "odoo-security": "skill_odoo_security.md"}   # короткие адреса на сайте
 
 
 def write_ai_files():
     """Для AI-ассистентов и агентов: /llms.txt (обзор сайта, llmstxt.org) и skill по эксплуатации Odoo
     (/skill_odoo.md и /skills/odoo-ops/SKILL.md — копии skills/odoo-ops/SKILL.md из репозитория)."""
-    with open(SKILL_SRC, encoding="utf-8") as fh:
-        skill = fh.read()
-    write("skill_odoo.md", skill)
-    write("skills/odoo-ops/SKILL.md", skill)
+    for name in sorted(os.listdir(SKILLS_DIR)):
+        with open(os.path.join(SKILLS_DIR, name, "SKILL.md"), encoding="utf-8") as fh:
+            skill = fh.read()
+        write(f"skills/{name}/SKILL.md", skill)
+        if name in SKILL_ALIAS:
+            write(SKILL_ALIAS[name], skill)
     posts = sorted(BP.POSTS, key=lambda p: p["date"], reverse=True)
     lines = [f"# {C.BRAND} · {C.BRAND_SUB}", "",
              "> Odoo 17 knowledge from practice: self-hosting, Docker, module updates, backups and restores, cron and queue jobs, "
@@ -961,7 +965,11 @@ def write_ai_files():
              "## Skill for AI agents", "",
              f"- [Odoo operations skill (Markdown, SKILL.md format)]({C.BASE_URL}/skill_odoo.md): what to look for in the Odoo log, "
              "updating modules (click-odoo-update, odoo -u), backups (database + filestore), stopping cron and queue jobs and why, "
-             "safe stage restore, workers/limits, nginx websocket, PostgreSQL lock checks, security minimum.", "",
+             "safe stage restore, workers/limits, nginx websocket, PostgreSQL lock checks, version migration (upgrade service, OpenUpgrade), "
+             "performance and indexes, e-mail queue and deliverability, OCA modules.",
+             f"- [Odoo security skill (Markdown, SKILL.md format)]({C.BASE_URL}/skill_odoo_security.md): hardening checklist – network exposure, "
+             "nginx/TLS, database manager, odoo.conf, users/2FA, login cooldown and fail2ban, API keys, access rights and record rules, "
+             "secure custom code (SQL injection, XSS, sudo, CSRF), secrets and backups, updates, monitoring and incident response.", "",
              "## Odoo and operations articles (English)", ""]
     for p in posts:
         t = p["t"].get("en") or next(iter(p["t"].values()))
@@ -1060,7 +1068,7 @@ def main():
           + "</urlset>\n")
     if getattr(C, "INDEXNOW_KEY", ""):
         write(f"{C.INDEXNOW_KEY}.txt", C.INDEXNOW_KEY)
-    write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /test/\nDisallow: /test2/\nDisallow: /status/\nDisallow: /backup/\n# AI assistants and agents are welcome: {C.BASE_URL}/llms.txt · {C.BASE_URL}/skill_odoo.md\nSitemap: {C.BASE_URL}/sitemap.xml\n")
+    write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /test/\nDisallow: /test2/\nDisallow: /status/\nDisallow: /backup/\n# AI assistants and agents are welcome: {C.BASE_URL}/llms.txt · {C.BASE_URL}/skill_odoo.md · {C.BASE_URL}/skill_odoo_security.md\nSitemap: {C.BASE_URL}/sitemap.xml\n")
     write_ai_files()
     check_no_private()
     print("ok:", len(pages), "pages →", OUT)

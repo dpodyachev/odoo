@@ -15,3 +15,6 @@
 /skills/*
   Content-Type: text/markdown; charset=utf-8
   Cache-Control: public, max-age=3600
+/skill_odoo_security.md
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=3600
