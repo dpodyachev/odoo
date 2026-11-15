@@ -180,7 +180,7 @@ T = {
 <h2>Відомості згідно з § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Контакти</h2>
-<p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Тел./WhatsApp: {phone}</p>
+<p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Тел.: {phone}<br>WhatsApp: {whatsapp}</p>
 <h2>ПДВ</h2>
 <p>{vat}</p>
 <h2>Відповідальний за зміст згідно з § 18 абз. 2 MStV</h2>

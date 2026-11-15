@@ -180,7 +180,7 @@ T = {
 <h2>Information pursuant to § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Contact</h2>
-<p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Phone/WhatsApp: {phone}</p>
+<p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Phone: {phone}<br>WhatsApp: {whatsapp}</p>
 <h2>VAT</h2>
 <p>{vat}</p>
 <h2>Responsible for content pursuant to § 18 (2) MStV</h2>

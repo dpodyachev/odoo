@@ -597,6 +597,7 @@ def legal_page(T, lang, page, key):
         "vat": E(T["kleinunternehmer"] if C.VAT_ID == "KLEINUNTERNEHMER" else C.VAT_ID),
         "telegram": E(C.TELEGRAM_HANDLE), "brand": E(C.BRAND),
         "phone": (f'<a href="tel:{E(C.PHONE)}">{E(C.PHONE_DISPLAY)}</a>' if getattr(C, "PHONE", "") else "—"),
+        "whatsapp": (f'<a href="{E(C.WHATSAPP)}" target="_blank" rel="noopener">{E(C.WHATSAPP.split("//")[-1])}</a>' if getattr(C, "WHATSAPP", "") else "—"),
     }
     body = L["html"].format(**data)
     note = f'<p class="note legalnote">{E(T["legal_note"])} <a href="{url("de", page)}">Deutsch</a></p>' if lang != "de" else ""

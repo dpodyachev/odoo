@@ -183,7 +183,7 @@ T = {
 <h2>Informations selon le § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Contact</h2>
-<p>E-mail : <a href="mailto:{email}">{email}</a><br>Telegram : {telegram}<br>Tél./WhatsApp : {phone}</p>
+<p>E-mail : <a href="mailto:{email}">{email}</a><br>Telegram : {telegram}<br>Tél. : {phone}<br>WhatsApp : {whatsapp}</p>
 <h2>TVA</h2>
 <p>{vat}</p>
 <h2>Responsable du contenu selon le § 18 al. 2 MStV</h2>
