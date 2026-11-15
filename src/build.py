@@ -853,11 +853,21 @@ def main():
 </body>
 </html>
 """)
+    nf = {"de": ("Seite nicht gefunden", "Zur Startseite"), "en": ("Page not found", "Go to the home page"),
+          "fr": ("Page introuvable", "Aller à l’accueil"), "el": ("Η σελίδα δεν βρέθηκε", "Στην αρχική σελίδα"),
+          "uk": ("Сторінку не знайдено", "На головну"), "ru": ("Страница не найдена", "На главную")}
+    rows = "".join(f'<li lang="{l}"><a href="{url(l)}">{flag(l)} <b>{E(nf[l][0])}</b> <span>– {E(nf[l][1])} →</span></a></li>'
+                   for l in C.LANGS)
     write("404.html", f"""<!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>404 · {E(C.BRAND)}</title><link rel="stylesheet" href="{asset('/assets/style.css')}"></head>
-<body><main class="sec"><div class="wrap narrow center"><h1>404</h1>
-<p>Seite nicht gefunden · Page not found</p><p><a class="btn primary" href="/">{E(C.BRAND)} · {E(C.BRAND_SUB)}</a></p></div></main></body></html>
+<meta name="robots" content="noindex">
+<title>404 · {E(C.BRAND)}</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="{asset('/assets/style.css')}"></head>
+<body><main class="sec"><div class="wrap narrow nf">
+<p class="nf-code">404</p>
+<ul class="nf-list">{rows}</ul>
+<p class="nf-brand"><span class="logo">G</span> {E(C.BRAND)} · {E(C.BRAND_SUB)}</p>
+</div></main></body></html>
 """)
     today = datetime.date.today().isoformat()
     def alternates(p):  # hreflang для главных страниц: все языки + x-default
