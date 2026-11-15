@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Geschützter Bereich – so funktioniert er · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="/de/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="langs" aria-label="Language"><a href="/test/de/" hreflang="de" lang="de" title="Deutsch" aria-current=true><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/test/en/" hreflang="en" lang="en" title="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/test/fr/" hreflang="fr" lang="fr" title="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/test/el/" hreflang="el" lang="el" title="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/test/uk/" hreflang="uk" lang="uk" title="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/test/ru/" hreflang="ru" lang="ru" title="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+</div></header>
+<main class="sec blog"><article class="wrap narrow post">
+<h1>🔒 Geschützter Bereich – so funktioniert er</h1>
+<p class="post-note">✅ Anmeldung erfolgreich. Diese Seite sehen nur Besucher mit Benutzername und Passwort.</p>
+<h2>Wie das gemacht ist</h2>
+<ol><li>Die Website ist statisch und liegt auf Cloudflare Pages – einen eigenen Webserver mit nginx gibt es nicht.</li><li>Für Adressen unter <code>/test/</code> läuft vor der Auslieferung eine kleine Funktion bei Cloudflare (Pages Functions, Datei <code>functions/test/_middleware.js</code>).</li><li>Sie liest den Header <code>Authorization</code>, vergleicht Benutzername und Passwort zeitkonstant mit dem Secret <code>TEST_AUTH</code> und gibt die Seite nur bei Übereinstimmung frei – sonst <code>401</code> mit <code>WWW-Authenticate</code>, und der Browser zeigt sein Anmeldefenster.</li><li>Benutzername und Passwort stehen <b>nicht</b> im HTML und <b>nicht</b> im (öffentlichen) Git-Repository, sondern als verschlüsseltes Secret in den Projekteinstellungen bei Cloudflare.</li><li><code>_routes.json</code> sorgt dafür, dass die Funktion nur für <code>/test/*</code> läuft – der Rest der Website bleibt rein statisch und schnell.</li><li>Fehlt das Secret, bleibt die Seite gesperrt (fail closed).</li></ol>
+<h2>Der Code</h2>
+<figure class="code"><figcaption>functions/test/_middleware.js</figcaption><pre><code>// Basic Auth for /test/* on Cloudflare Pages (Pages Functions).
+// Credentials are NOT in the repository: secret TEST_AUTH = &quot;login:password&quot; is stored at Cloudflare
+// (wrangler pages secret put TEST_AUTH --project-name goldberg-odoo). No secret -&gt; access denied.
+
+function same(a, b) {               // constant-time comparison
+  if (a.length !== b.length) return false;
+  let d = 0;
+  for (let i = 0; i &lt; a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return d === 0;
+}
+
+function decode(b64) {              // base64 -&gt; UTF-8 string
+  try {
+    const bin = atob(b64);
+    return new TextDecoder().decode(Uint8Array.from(bin, (c) =&gt; c.charCodeAt(0)));
+  } catch { return &quot;&quot;; }
+}
+
+export async function onRequest({ request, env, next }) {
+  const expected = env.TEST_AUTH || &quot;&quot;;
+  const h = request.headers.get(&quot;Authorization&quot;) || &quot;&quot;;
+  if (expected &amp;&amp; h.startsWith(&quot;Basic &quot;) &amp;&amp; same(decode(h.slice(6).trim()), expected)) {
+    const res = await next();
+    const out = new Response(res.body, res);
+    out.headers.set(&quot;Cache-Control&quot;, &quot;no-store&quot;);
+    out.headers.set(&quot;X-Robots-Tag&quot;, &quot;noindex, nofollow&quot;);
+    return out;
+  }
+  return new Response(&quot;401 – Anmeldung erforderlich / Authentication required\n&quot;, {
+    status: 401,
+    headers: {
+      &quot;WWW-Authenticate&quot;: &#x27;Basic realm=&quot;Goldberg test area&quot;, charset=&quot;UTF-8&quot;&#x27;,
+      &quot;Cache-Control&quot;: &quot;no-store&quot;,
+      &quot;Content-Type&quot;: &quot;text/plain; charset=utf-8&quot;,
+    },
+  });
+}</code></pre></figure>
+<figure class="code"><figcaption>site/_routes.json</figcaption><pre><code>{
+  &quot;version&quot;: 1,
+  &quot;include&quot;: [&quot;/test&quot;, &quot;/test/*&quot;],
+  &quot;exclude&quot;: []
+}</code></pre></figure>
+<h2>Passwort setzen oder ändern</h2>
+<figure class="code"><figcaption>bash</figcaption><pre><code># value = &quot;login:password&quot;, read from stdin - it never appears in the shell history
+printf &#x27;%s&#x27; &#x27;admin:NEW-PASSWORD&#x27; | npx wrangler pages secret put TEST_AUTH --project-name goldberg-odoo
+# a new value applies to the next deployment (any git push)</code></pre></figure>
+<h2>Drei Wege im Vergleich</h2>
+<div class="tablewrap"><table class="post-table"><thead><tr><th></th><th>Passwort in HTML/JavaScript</th><th>Basic Auth (Pages Functions)</th><th>Cloudflare Access</th></tr></thead><tbody><tr><td>Sicherheit</td><td>keine – alles steht im Quelltext</td><td>gut, Prüfung auf dem Server</td><td>sehr gut: E-Mail-Code, SSO, Protokoll</td></tr><tr><td>Benutzer</td><td>–</td><td>ein gemeinsames Passwort</td><td>einzelne Personen / Gruppen</td></tr><tr><td>Aufwand</td><td>Minuten</td><td>eine Datei + Secret</td><td>Zero-Trust-Konto (bis 50 Nutzer kostenlos)</td></tr><tr><td>Abmelden</td><td>–</td><td>Browserfenster schließen</td><td>Abmelde-Link, Sitzungsdauer einstellbar</td></tr></tbody></table></div>
+<p class="note">Abmelden: Basic Auth kennt kein echtes Logout – Browser schließen oder ein privates Fenster verwenden.</p>
+<p class="note">Variante mit Cloudflare Access: /test2/ (in Vorbereitung).</p>
+<p class="post-back"><a href="/de/">← Zur Website</a></p>
+</article></main>
+</body>
+</html>

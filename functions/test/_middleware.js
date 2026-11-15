@@ -1,15 +1,15 @@
-// Basic Auth для /test/* на Cloudflare Pages (Pages Functions).
-// Логин и пароль НЕ в репозитории: секрет TEST_AUTH = "login:password" задан в Cloudflare
-// (wrangler pages secret put TEST_AUTH --project-name goldberg-odoo). Нет секрета — доступ закрыт.
+// Basic Auth for /test/* on Cloudflare Pages (Pages Functions).
+// Credentials are NOT in the repository: secret TEST_AUTH = "login:password" is stored at Cloudflare
+// (wrangler pages secret put TEST_AUTH --project-name goldberg-odoo). No secret -> access denied.
 
-function same(a, b) {               // сравнение без утечки по времени
+function same(a, b) {               // constant-time comparison
   if (a.length !== b.length) return false;
   let d = 0;
   for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return d === 0;
 }
 
-function decode(b64) {              // base64 → UTF-8 строка
+function decode(b64) {              // base64 -> UTF-8 string
   try {
     const bin = atob(b64);
     return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));

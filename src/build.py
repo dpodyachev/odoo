@@ -15,6 +15,7 @@ sys.path.insert(0, HERE)
 import config as C  # noqa: E402
 import europe_map as M  # noqa: E402
 import blog_posts as BP  # noqa: E402
+import test_pages as TP  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(HERE), "site")
 E = html.escape
@@ -682,6 +683,57 @@ def blog_post(T, lang, post):
             + footer(T, lang, page))
 
 
+def test_page(lang):
+    """Защищённая демо-страница /test/<lang>/ (доступ проверяет functions/test/_middleware.js)."""
+    X = TP.T[lang]
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    mw = open(os.path.join(root, "functions/test/_middleware.js"), encoding="utf-8").read().strip()
+    routes = open(os.path.join(OUT, "_routes.json"), encoding="utf-8").read().strip()
+    langs = "".join(
+        f'<a href="/test/{l}/" hreflang="{l}" lang="{l}" title="{E(C.LANG_NAMES[l])}"{" aria-current=true" if l == lang else ""}>'
+        f'{flag(l)}<span class="lc">{l.upper()}</span></a>' for l in C.LANGS)
+    fig = lambda cap, code: f'<figure class="code"><figcaption>{E(cap)}</figcaption><pre><code>{E(code)}</code></pre></figure>'
+    hd, *rows = X["cmp"]
+    table = ('<div class="tablewrap"><table class="post-table"><thead><tr>' + "".join(f"<th>{E(c)}</th>" for c in hd)
+             + "</tr></thead><tbody>" + "".join("<tr>" + "".join(f"<td>{E(c)}</td>" for c in r) + "</tr>" for r in rows)
+             + "</tbody></table></div>")
+    return f"""<!doctype html>
+<html lang="{lang}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>{E(X["title"])} · {E(C.BRAND)}</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="{asset('/assets/style.css')}">
+<script src="{asset('/assets/theme.js')}" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="{url(lang)}"><span class="logo">G</span><span>{E(C.BRAND)}<small>{E(C.BRAND_SUB)}</small></span></a>
+<nav class="langs" aria-label="Language">{langs}</nav>
+</div></header>
+<main class="sec blog"><article class="wrap narrow post">
+<h1>🔒 {E(X["title"])}</h1>
+<p class="post-note">✅ {E(X["ok"])}</p>
+<h2>{E(X["how_h"])}</h2>
+<ol>{"".join(f"<li>{inline(x)}</li>" for x in X["how"])}</ol>
+<h2>{E(X["code_h"])}</h2>
+{fig("functions/test/_middleware.js", mw)}
+{fig("site/_routes.json", routes)}
+<h2>{E(X["secret_h"])}</h2>
+{fig("bash", TP.SECRET_CMD)}
+<h2>{E(X["cmp_h"])}</h2>
+{table}
+<p class="note">{E(X["logout"])}</p>
+<p class="note">{E(X["next"])}</p>
+<p class="post-back"><a href="{url(lang)}">{E(X["back"])}</a></p>
+</article></main>
+</body>
+</html>
+"""
+
+
 LANG_JS = """// Выбор языка по настройкам браузера; по умолчанию — __DEF__. Ничего не сохраняет (без cookies/localStorage).
 // Файл генерируется src/build.py из config.LANGS.
 (function () {
@@ -717,6 +769,15 @@ def main():
         for post in BP.POSTS:
             write(f"{lang}/blog/{post['slug']}.html", blog_post(T, lang, post))
             pages.append(url(lang, f"blog/{post['slug']}.html"))
+    for lang in C.LANGS:
+        write(f"test/{lang}/index.html", test_page(lang))
+    write("test/index.html", '<!doctype html><html lang="de"><head><meta charset="utf-8">'
+          '<meta name="robots" content="noindex, nofollow"><title>Test</title>'
+          f'<script src="{asset("/assets/test-lang.js") if os.path.exists(os.path.join(OUT, "assets/test-lang.js")) else "/assets/test-lang.js"}"></script>'
+          '</head><body>' + " · ".join(f'<a href="/test/{l}/">{E(C.LANG_NAMES[l])}</a>' for l in C.LANGS) + '</body></html>\n')
+    write("assets/test-lang.js", LANG_JS.replace("__LANGS__", ", ".join(f'"{l}"' for l in C.LANGS))
+          .replace("__DEF__", C.LANGS[0]).replace('location.replace("/" + pick + "/" + location.hash)',
+                                                   'location.replace("/test/" + pick + "/")'))
     write("assets/lang.js", LANG_JS.replace("__LANGS__", ", ".join(f'"{l}"' for l in C.LANGS)).replace("__DEF__", C.LANGS[0]))
     alts = "\n".join(f'<link rel="alternate" hreflang="{l}" href="{C.BASE_URL}{url(l)}">' for l in C.LANGS)
     links = " · ".join(f'<a href="{url(l)}" lang="{l}">{flag(l)} {E(C.LANG_NAMES[l])}</a>' for l in C.LANGS)

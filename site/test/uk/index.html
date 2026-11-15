@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Захищена сторінка – як це працює · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="/uk/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="langs" aria-label="Language"><a href="/test/de/" hreflang="de" lang="de" title="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/test/en/" hreflang="en" lang="en" title="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/test/fr/" hreflang="fr" lang="fr" title="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/test/el/" hreflang="el" lang="el" title="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/test/uk/" hreflang="uk" lang="uk" title="Українська" aria-current=true><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/test/ru/" hreflang="ru" lang="ru" title="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+</div></header>
+<main class="sec blog"><article class="wrap narrow post">
+<h1>🔒 Захищена сторінка – як це працює</h1>
+<p class="post-note">✅ Вхід успішний. Цю сторінку бачать лише ті, хто знає логін і пароль.</p>
+<h2>Як це зроблено</h2>
+<ol><li>Сайт статичний і розміщений на Cloudflare Pages, власного вебсервера з nginx немає.</li><li>Для адрес під <code>/test/</code> перед віддачею сторінки на Cloudflare виконується невелика функція (Pages Functions, файл <code>functions/test/_middleware.js</code>).</li><li>Вона читає заголовок <code>Authorization</code>, порівнює логін і пароль із секретом <code>TEST_AUTH</code> (за сталий час, без витоку через таймінг) і лише тоді віддає сторінку. Інакше відповідає <code>401</code> із <code>WWW-Authenticate</code>, і браузер показує своє вікно входу.</li><li>Логіна й пароля <b>немає</b> ні в HTML, ні в (публічному) Git-репозиторії: вони зберігаються як зашифрований секрет у налаштуваннях проєкту Cloudflare.</li><li><code>_routes.json</code> обмежує функцію шляхом <code>/test/*</code>, решта сайту лишається повністю статичною і швидкою.</li><li>Якщо секрету немає, сторінка лишається закритою (fail closed).</li></ol>
+<h2>Код</h2>
+<figure class="code"><figcaption>functions/test/_middleware.js</figcaption><pre><code>// Basic Auth for /test/* on Cloudflare Pages (Pages Functions).
+// Credentials are NOT in the repository: secret TEST_AUTH = &quot;login:password&quot; is stored at Cloudflare
+// (wrangler pages secret put TEST_AUTH --project-name goldberg-odoo). No secret -&gt; access denied.
+
+function same(a, b) {               // constant-time comparison
+  if (a.length !== b.length) return false;
+  let d = 0;
+  for (let i = 0; i &lt; a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return d === 0;
+}
+
+function decode(b64) {              // base64 -&gt; UTF-8 string
+  try {
+    const bin = atob(b64);
+    return new TextDecoder().decode(Uint8Array.from(bin, (c) =&gt; c.charCodeAt(0)));
+  } catch { return &quot;&quot;; }
+}
+
+export async function onRequest({ request, env, next }) {
+  const expected = env.TEST_AUTH || &quot;&quot;;
+  const h = request.headers.get(&quot;Authorization&quot;) || &quot;&quot;;
+  if (expected &amp;&amp; h.startsWith(&quot;Basic &quot;) &amp;&amp; same(decode(h.slice(6).trim()), expected)) {
+    const res = await next();
+    const out = new Response(res.body, res);
+    out.headers.set(&quot;Cache-Control&quot;, &quot;no-store&quot;);
+    out.headers.set(&quot;X-Robots-Tag&quot;, &quot;noindex, nofollow&quot;);
+    return out;
+  }
+  return new Response(&quot;401 – Anmeldung erforderlich / Authentication required\n&quot;, {
+    status: 401,
+    headers: {
+      &quot;WWW-Authenticate&quot;: &#x27;Basic realm=&quot;Goldberg test area&quot;, charset=&quot;UTF-8&quot;&#x27;,
+      &quot;Cache-Control&quot;: &quot;no-store&quot;,
+      &quot;Content-Type&quot;: &quot;text/plain; charset=utf-8&quot;,
+    },
+  });
+}</code></pre></figure>
+<figure class="code"><figcaption>site/_routes.json</figcaption><pre><code>{
+  &quot;version&quot;: 1,
+  &quot;include&quot;: [&quot;/test&quot;, &quot;/test/*&quot;],
+  &quot;exclude&quot;: []
+}</code></pre></figure>
+<h2>Задати або змінити пароль</h2>
+<figure class="code"><figcaption>bash</figcaption><pre><code># value = &quot;login:password&quot;, read from stdin - it never appears in the shell history
+printf &#x27;%s&#x27; &#x27;admin:NEW-PASSWORD&#x27; | npx wrangler pages secret put TEST_AUTH --project-name goldberg-odoo
+# a new value applies to the next deployment (any git push)</code></pre></figure>
+<h2>Три способи для порівняння</h2>
+<div class="tablewrap"><table class="post-table"><thead><tr><th></th><th>Пароль у HTML/JavaScript</th><th>Basic Auth (Pages Functions)</th><th>Cloudflare Access</th></tr></thead><tbody><tr><td>Безпека</td><td>жодної – усе видно у вихідному коді</td><td>добра, перевірка на сервері</td><td>дуже добра: код на e-mail, SSO, журнал</td></tr><tr><td>Користувачі</td><td>–</td><td>один спільний пароль</td><td>окремі люди / групи</td></tr><tr><td>Зусилля</td><td>хвилини</td><td>один файл + секрет</td><td>акаунт Zero Trust (безкоштовно до 50 користувачів)</td></tr><tr><td>Вихід</td><td>–</td><td>закрити вікно браузера</td><td>посилання для виходу, тривалість сесії налаштовується</td></tr></tbody></table></div>
+<p class="note">Вихід: у Basic Auth немає справжнього logout – закрийте браузер або відкрийте приватне вікно.</p>
+<p class="note">Варіант із Cloudflare Access: /test2/ (готується).</p>
+<p class="post-back"><a href="/uk/">← На сайт</a></p>
+</article></main>
+</body>
+</html>
