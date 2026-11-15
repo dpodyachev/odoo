@@ -126,11 +126,12 @@ def book_url():
     return C.CAL_URL or C.TELEGRAM
 
 
-def cta(T, cls=""):
+def cta(T, cls="", li=False):
     return f"""<div class="cta {cls}">
 <a class="btn primary" href="{E(book_url())}" target="_blank" rel="noopener">{E(T["cta_book"])}</a>
 <a class="btn" href="{E(C.TELEGRAM)}" target="_blank" rel="noopener">Telegram {E(C.TELEGRAM_HANDLE)}</a>
 <a class="btn ghost" href="mailto:{E(C.EMAIL)}">{E(C.EMAIL)}</a>
+{f'<a class="btn ghost" href="{E(C.LINKEDIN)}" target="_blank" rel="noopener me">LinkedIn</a>' if li and getattr(C, "LINKEDIN", "") else ""}
 </div>"""
 
 
@@ -144,6 +145,7 @@ def footer(T, lang, page):
 <a href="{url(lang, 'datenschutz.html')}">{E(T["privacy"])}</a>
 <a href="mailto:{E(C.EMAIL)}">{E(C.EMAIL)}</a>
 <a href="{E(C.TELEGRAM)}" target="_blank" rel="noopener">Telegram</a>
+{f'<a href="{E(C.LINKEDIN)}" target="_blank" rel="noopener me">LinkedIn</a>' if getattr(C, "LINKEDIN", "") else ""}
 </div>
 {langswitch(lang, page)}
 <div class="small">© {YEAR} {E(C.BRAND)}. {E(T["footer_note"])}</div>
@@ -510,7 +512,7 @@ def index(T, lang):
 <div class="wrap">
 <p class="reader-intro"><b>{E(C.BRAND)} · {E(C.BRAND_SUB)}</b> — {E(T["kicker"])}</p>
 <p class="reader-intro">{E(T["sub"])}</p>
-<p class="reader-intro">Telegram: <a href="{E(C.TELEGRAM)}">{E(C.TELEGRAM_HANDLE)}</a> · E-Mail: <a href="mailto:{E(C.EMAIL)}">{E(C.EMAIL)}</a> · <a href="{E(book_url())}">{E(T["cta_book"])}</a></p>
+<p class="reader-intro">Telegram: <a href="{E(C.TELEGRAM)}">{E(C.TELEGRAM_HANDLE)}</a> · LinkedIn: <a href="{E(C.LINKEDIN)}">dpodyachev</a> · E-Mail: <a href="mailto:{E(C.EMAIL)}">{E(C.EMAIL)}</a> · <a href="{E(book_url())}">{E(T["cta_book"])}</a></p>
 <h2>{E(T["prices_title"])}</h2>
 <p class="intro">{E(T["prices_intro"])}</p>
 {offer(T)}
@@ -553,7 +555,7 @@ def index(T, lang):
 <div class="wrap narrow center">
 <h2>{E(T["contact_title"])}</h2>
 <p class="intro">{E(T["contact_text"])}</p>
-{cta(T, "center")}
+{cta(T, "center", li=True)}
 <p class="note">{E(T["contact_note"])}</p>
 </div>
 </section>
@@ -661,7 +663,8 @@ def blog_post(T, lang, post):
     note = f'<p class="post-note">{E(U["fallback"])}</p>' if pl != lang and U["fallback"] else ""
     ld = json.dumps({"@context": "https://schema.org", "@type": "BlogPosting", "headline": tx["title"],
                      "description": tx["summary"], "datePublished": post["date"], "inLanguage": pl,
-                     "author": {"@type": "Person", "name": C.OWNER_NAME.split(" –")[0], "url": C.BASE_URL},
+                     "author": {"@type": "Person", "name": C.OWNER_NAME.split(" –")[0], "url": C.BASE_URL,
+                                "sameAs": [x for x in (getattr(C, "LINKEDIN", ""),) if x]},
                      "mainEntityOfPage": C.BASE_URL + url(lang, page)}, ensure_ascii=False).replace("</", "<\\/")
     return (head(T, lang, page, f'{tx["title"]} · {C.BRAND}', tx["summary"]).replace(
                 '</head>', f'<script type="application/ld+json">{ld}</script>\n</head>', 1)
@@ -671,7 +674,7 @@ def blog_post(T, lang, post):
             + f'<p class="post-meta">{fmt_date(post["date"], lang)} · {read_min(post, lang)} {E(U["min"])} · '
             + "".join(f'<span class="post-tag">{E(t)}</span>' for t in post["tags"]) + "</p>"
             + f'<h1>{E(tx["title"])}</h1>{note}<p class="intro">{E(tx["summary"])}</p>' + "".join(out)
-            + f'<aside class="post-cta"><h2>{E(U["cta_title"])}</h2><p>{E(U["cta_text"])}</p>{cta(T)}</aside>'
+            + f'<aside class="post-cta"><h2>{E(U["cta_title"])}</h2><p>{E(U["cta_text"])}</p>{cta(T, li=True)}</aside>'
             + post_nav(lang, post, U) + '</article></main>'
             + footer(T, lang, page))
 

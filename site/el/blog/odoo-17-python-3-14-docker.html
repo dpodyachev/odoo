@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moving Odoo 17 to Python 3.14 – with docker-compose · Goldberg</title>
-<meta name="description" content="A custom odoo17-py314 image, Odoo source from Git mounted into site-packages, testing on stage and a one-minute rollback.">
+<title>Μετάβαση του Odoo 17 σε Python 3.14 – με docker-compose · Goldberg</title>
+<meta name="description" content="Δικό μας image odoo17-py314, ο κώδικας του Odoo από το Git προσαρτημένος στο site-packages, δοκιμή στο stage και επαναφορά σε ένα λεπτό.">
 <link rel="canonical" href="https://2027.pp.ua/el/blog/odoo-17-python-3-14-docker">
 <link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/odoo-17-python-3-14-docker">
 <link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/odoo-17-python-3-14-docker">
@@ -13,8 +13,8 @@
 <link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/odoo-17-python-3-14-docker">
 <link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/odoo-17-python-3-14-docker">
 <link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/odoo-17-python-3-14-docker">
-<meta property="og:title" content="Moving Odoo 17 to Python 3.14 – with docker-compose · Goldberg">
-<meta property="og:description" content="A custom odoo17-py314 image, Odoo source from Git mounted into site-packages, testing on stage and a one-minute rollback.">
+<meta property="og:title" content="Μετάβαση του Odoo 17 σε Python 3.14 – με docker-compose · Goldberg">
+<meta property="og:description" content="Δικό μας image odoo17-py314, ο κώδικας του Odoo από το Git προσαρτημένος στο site-packages, δοκιμή στο stage και επαναφορά σε ένα λεπτό.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://2027.pp.ua/el/blog/odoo-17-python-3-14-docker">
 <meta name="theme-color" content="#3b2a4a">
@@ -22,7 +22,7 @@
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
 <script src="/assets/theme.js?v=eec31096" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Moving Odoo 17 to Python 3.14 – with docker-compose", "description": "A custom odoo17-py314 image, Odoo source from Git mounted into site-packages, testing on stage and a one-minute rollback.", "datePublished": "2026-11-15", "inLanguage": "en", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua"}, "mainEntityOfPage": "https://2027.pp.ua/el/blog/odoo-17-python-3-14-docker"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Μετάβαση του Odoo 17 σε Python 3.14 – με docker-compose", "description": "Δικό μας image odoo17-py314, ο κώδικας του Odoo από το Git προσαρτημένος στο site-packages, δοκιμή στο stage και επαναφορά σε ένα λεπτό.", "datePublished": "2026-11-15", "inLanguage": "el", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua", "sameAs": ["https://www.linkedin.com/in/dpodyachev"]}, "mainEntityOfPage": "https://2027.pp.ua/el/blog/odoo-17-python-3-14-docker"}</script>
 </head>
 <body>
 <header class="top">
@@ -33,7 +33,7 @@
 <button type="button" class="theme" hidden aria-label="Φωτεινό / σκοτεινό θέμα" title="Φωτεινό / σκοτεινό θέμα">🌙</button>
 </div>
 </header>
-<main class="sec blog"><article class="wrap narrow post" lang="en"><p class="post-back"><a href="/el/blog/">← Όλα τα άρθρα</a></p><p class="post-meta">15.11.2026 · 2 λεπτά ανάγνωσης · <span class="post-tag">Docker</span><span class="post-tag">Python 3.14</span><span class="post-tag">Odoo 17</span></p><h1>Moving Odoo 17 to Python 3.14 – with docker-compose</h1><p class="post-note">Το άρθρο δεν είναι ακόμη διαθέσιμο στα ελληνικά – ακολουθεί η αγγλική έκδοση.</p><p class="intro">A custom odoo17-py314 image, Odoo source from Git mounted into site-packages, testing on stage and a one-minute rollback.</p><p>An existing Odoo 17 runs in Docker and should move to a newer Python, here <b>3.14</b>. Reasons: security updates of the base image, newer libraries for custom modules, and often a noticeably faster Python runtime. Odoo 17 was built for Python 3.10–3.12; 3.14 is not officially supported – so the rule is <b>stage first, production second</b>.</p><h2>The idea: separate the image from the Odoo code</h2><p>The new image <code>odoo17-py314:latest</code> only contains Python 3.14 and the dependencies. The Odoo code comes from a Git checkout and is mounted where Python looks for packages: <code>./extra_addons/odoo:/usr/local/lib/python3.14/site-packages/odoo</code>. Odoo patches are then a <code>git pull</code> away, without rebuilding the image.</p><figure class="code"><figcaption>docker-compose.yml</figcaption><pre><code>services:
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/el/blog/">← Όλα τα άρθρα</a></p><p class="post-meta">15.11.2026 · 2 λεπτά ανάγνωσης · <span class="post-tag">Docker</span><span class="post-tag">Python 3.14</span><span class="post-tag">Odoo 17</span></p><h1>Μετάβαση του Odoo 17 σε Python 3.14 – με docker-compose</h1><p class="intro">Δικό μας image odoo17-py314, ο κώδικας του Odoo από το Git προσαρτημένος στο site-packages, δοκιμή στο stage και επαναφορά σε ένα λεπτό.</p><p>Ένα υπάρχον Odoo 17 τρέχει σε Docker και πρέπει να περάσει σε νεότερη Python, εδώ <b>3.14</b>. Γιατί: ενημερώσεις ασφαλείας του βασικού image, νεότερες βιβλιοθήκες για τα δικά μας modules και συχνά αισθητά ταχύτερη Python. Το Odoo 17 σχεδιάστηκε για Python 3.10–3.12· η 3.14 δεν υποστηρίζεται επίσημα – άρα ο κανόνας είναι: <b>πρώτα stage, μετά παραγωγή</b>.</p><h2>Η ιδέα: χωρίζουμε το image από τον κώδικα του Odoo</h2><p>Το νέο image <code>odoo17-py314:latest</code> περιέχει μόνο την Python 3.14 και τις εξαρτήσεις. Ο κώδικας του Odoo έρχεται από ένα Git checkout και προσαρτάται εκεί όπου η Python αναζητά πακέτα: <code>./extra_addons/odoo:/usr/local/lib/python3.14/site-packages/odoo</code>. Έτσι οι διορθώσεις του Odoo περνούν με ένα <code>git pull</code>, χωρίς νέο build του image.</p><figure class="code"><figcaption>docker-compose.yml</figcaption><pre><code>services:
   odoo:
     image: odoo17-py314:latest          # new image: Python 3.14 + dependencies, no Odoo code inside
     restart: unless-stopped
@@ -56,7 +56,7 @@
 
 volumes:
   odoo-data:
-  db-data:</code></pre></figure><p class="post-note">Important: the path contains the Python version. When moving from 3.12 to 3.14, change <code>python3.12</code> → <code>python3.14</code> in the volume too – otherwise Python will not find the <code>odoo</code> package.</p><h2>The image</h2><figure class="code"><figcaption>docker/odoo17-py314/Dockerfile</figcaption><pre><code>FROM python:3.14-slim-trixie
+  db-data:</code></pre></figure><p class="post-note">Σημαντικό: η διαδρομή περιέχει την έκδοση της Python. Στη μετάβαση από 3.12 σε 3.14 αλλάξτε και στο volume <code>python3.12</code> → <code>python3.14</code> – αλλιώς η Python δεν βρίσκει το πακέτο <code>odoo</code>.</p><h2>Το image</h2><figure class="code"><figcaption>docker/odoo17-py314/Dockerfile</figcaption><pre><code>FROM python:3.14-slim-trixie
 
 # runtime libraries for Odoo
 RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \
@@ -79,7 +79,7 @@ RUN printf &#x27;#!/usr/bin/env python3\nimport odoo\nodoo.cli.main()\n&#x27; &g
     &amp;&amp; mkdir -p /mnt/extra-addons &amp;&amp; chown -R odoo /var/lib/odoo /mnt/extra-addons
 
 USER odoo
-EXPOSE 8069 8072</code></pre></figure><p>Odoo 17&#x27;s <code>requirements.txt</code> pins versions for older Pythons. For 3.14, raise the pins of packages with C extensions (e.g. <code>gevent</code>, <code>greenlet</code>, <code>lxml</code>, <code>psycopg2</code>, <code>Pillow</code>, <code>reportlab</code>) to versions that ship 3.14 wheels. <code>wkhtmltopdf</code> (PDF reports) is installed separately as before.</p><h2>Procedure</h2><figure class="code"><figcaption>bash</figcaption><pre><code># 1) backup: database + filestore
+EXPOSE 8069 8072</code></pre></figure><p>Το <code>requirements.txt</code> του Odoo 17 «κλειδώνει» εκδόσεις για παλαιότερες Python. Για την 3.14 ανεβάζουμε τις εκδόσεις των πακέτων με επεκτάσεις C (π.χ. <code>gevent</code>, <code>greenlet</code>, <code>lxml</code>, <code>psycopg2</code>, <code>Pillow</code>, <code>reportlab</code>) σε εκείνες που έχουν wheels για 3.14. Το <code>wkhtmltopdf</code> (αναφορές PDF) εγκαθίσταται ξεχωριστά, όπως πριν.</p><h2>Διαδικασία</h2><figure class="code"><figcaption>bash</figcaption><pre><code># 1) backup: database + filestore
 docker compose exec -T db pg_dump -U odoo -Fc mydb &gt; mydb-$(date +%F).dump
 docker compose exec -T odoo tar czf - -C /var/lib/odoo filestore/mydb &gt; filestore-$(date +%F).tgz
 
@@ -92,12 +92,13 @@ docker compose run --rm --no-deps odoo \
 
 # 4) start and watch the log
 docker compose up -d odoo
-docker compose logs -f --tail=200 odoo | grep -E &quot;ERROR|Traceback|ImportError|Warning&quot;</code></pre></figure><ul><li>On stage, click through all key flows: quotations, invoices, inventory, PDF reports, e-mail (into a mail catcher), scheduled actions.</li><li>Watch the log for <code>ImportError</code>, <code>DeprecationWarning</code> and <code>SyntaxWarning</code> – older modules with invalid escape sequences in strings show up here first. Since Python 3.13 some old standard modules are gone as well (PEP 594).</li><li>A module update (<code>-u</code>) is not needed for a pure Python switch – the database schema does not change.</li></ul><h2>Rollback</h2><figure class="code"><figcaption>bash</figcaption><pre><code># rollback: previous image in docker-compose.yml (and the old site-packages path), then
-docker compose up -d odoo</code></pre></figure><p>Database and filestore stay untouched, so a rollback takes as long as a container restart.</p><aside class="post-cta"><h2>Να το αναλάβω εγώ;</h2><p>Το υλοποιώ στο σύστημά σας – πρώτα σε αντίγραφο δοκιμών, με δυνατότητα επαναφοράς και αναφορά.</p><div class="cta ">
+docker compose logs -f --tail=200 odoo | grep -E &quot;ERROR|Traceback|ImportError|Warning&quot;</code></pre></figure><ul><li>Στο stage περνάμε όλες τις βασικές ροές: προσφορές, τιμολόγια, αποθήκη, αναφορές PDF, e-mail (σε mail catcher), προγραμματισμένες ενέργειες.</li><li>Στο log προσέχουμε <code>ImportError</code>, <code>DeprecationWarning</code> και <code>SyntaxWarning</code> – παλιά modules με μη έγκυρες ακολουθίες διαφυγής σε συμβολοσειρές εμφανίζονται πρώτα. Από την Python 3.13 λείπουν επίσης ορισμένα παλιά πρότυπα modules (PEP 594).</li><li>Ενημέρωση modules (<code>-u</code>) δεν χρειάζεται για σκέτη αλλαγή Python – το σχήμα της βάσης δεν αλλάζει.</li></ul><h2>Επαναφορά</h2><figure class="code"><figcaption>bash</figcaption><pre><code># rollback: previous image in docker-compose.yml (and the old site-packages path), then
+docker compose up -d odoo</code></pre></figure><p>Η βάση και το filestore μένουν ανέγγιχτα, οπότε η επαναφορά διαρκεί όσο μια επανεκκίνηση container.</p><aside class="post-cta"><h2>Να το αναλάβω εγώ;</h2><p>Το υλοποιώ στο σύστημά σας – πρώτα σε αντίγραφο δοκιμών, με δυνατότητα επαναφοράς και αναφορά.</p><div class="cta ">
 <a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Κλείστε ραντεβού – 30 λεπτά δωρεάν</a>
 <a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
 <a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
-</div></aside><nav class="post-nav" aria-label="Blog &amp; οδηγοί"><a class="prev" href="/el/blog/odoo-module-update-click-odoo-update" rel="prev"><small>← Προηγούμενο άρθρο</small><span>Updating Odoo modules: click-odoo-update or odoo -u</span></a><a class="all" href="/el/blog/"><small>← Όλα τα άρθρα</small></a><a class="next" href="/el/blog/odoo-logging-options-cheatsheet" rel="next"><small>Επόμενο άρθρο →</small><span>Odoo logging: warn or warning, log_level or --log-level? A cheat sheet</span></a></nav></article></main><footer class="foot">
+<a class="btn ghost" href="https://www.linkedin.com/in/dpodyachev" target="_blank" rel="noopener me">LinkedIn</a>
+</div></aside><nav class="post-nav" aria-label="Blog &amp; οδηγοί"><a class="prev" href="/el/blog/odoo-module-update-click-odoo-update" rel="prev"><small>← Προηγούμενο άρθρο</small><span>Ενημέρωση modules του Odoo: click-odoo-update ή odoo -u</span></a><a class="all" href="/el/blog/"><small>← Όλα τα άρθρα</small></a><a class="next" href="/el/blog/odoo-logging-options-cheatsheet" rel="next"><small>Επόμενο άρθρο →</small><span>Logs του Odoo: warn ή warning, log_level ή --log-level; Σκονάκι</span></a></nav></article></main><footer class="foot">
 <div class="wrap foot-in">
 <div><strong>Goldberg · Odoo Services</strong><br>Υποστήριξη, εγκατάσταση και ενοποίηση Odoo για Γερμανία, Αυστρία και Ελβετία.</div>
 <div class="foot-links">
@@ -106,6 +107,7 @@ docker compose up -d odoo</code></pre></figure><p>Database and filestore stay un
 <a href="/el/datenschutz">Απόρρητο</a>
 <a href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
 <a href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram</a>
+<a href="https://www.linkedin.com/in/dpodyachev" target="_blank" rel="noopener me">LinkedIn</a>
 </div>
 <nav class="langs" aria-label="Language"><a href="/de/blog/odoo-17-python-3-14-docker" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/odoo-17-python-3-14-docker" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/odoo-17-python-3-14-docker" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/odoo-17-python-3-14-docker" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά" aria-current="true"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/odoo-17-python-3-14-docker" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/odoo-17-python-3-14-docker" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
 <div class="small">© 2026 Goldberg. Αυτός ο ιστότοπος δεν χρησιμοποιεί cookies ούτε tracking.</div>

@@ -5,6 +5,7 @@ BRAND_SUB = "Odoo Services"
 TELEGRAM = "https://t.me/podyachev"
 TELEGRAM_HANDLE = "@podyachev"
 EMAIL = "dpodiatschev@gmail.com"
+LINKEDIN = "https://www.linkedin.com/in/dpodyachev"     # пусто — не показывать
 CAL_URL = "https://cal.com/dmytro-podiatschev-xvsnlm"                              # ссылка Cal.com (https://cal.com/<имя>/30min); пусто — кнопка «Termin buchen» ведёт в Telegram
 
 # Данные для Impressum — ОБЯЗАТЕЛЬНО заполнить перед публикацией (§ 5 DDG)

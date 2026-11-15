@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Restoring a backup on stage – without cron jobs and queue jobs firing · Goldberg</title>
-<meta name="description" content="Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.">
+<title>Επαναφορά backup στο stage – χωρίς να ξεκινήσουν cron και queue jobs · Goldberg</title>
+<meta name="description" content="Γιατί ένα stage μπορεί να στείλει υπενθυμίσεις πληρωμής σε πραγματικούς πελάτες, και η σειρά βημάτων που το αποτρέπει: SQL πριν από την πρώτη εκκίνηση, neutralize, ρυθμίσεις stage.">
 <link rel="canonical" href="https://2027.pp.ua/el/blog/odoo-stage-restore-stop-cron-jobs">
 <link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/odoo-stage-restore-stop-cron-jobs">
 <link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/odoo-stage-restore-stop-cron-jobs">
@@ -13,8 +13,8 @@
 <link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/odoo-stage-restore-stop-cron-jobs">
 <link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/odoo-stage-restore-stop-cron-jobs">
 <link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/odoo-stage-restore-stop-cron-jobs">
-<meta property="og:title" content="Restoring a backup on stage – without cron jobs and queue jobs firing · Goldberg">
-<meta property="og:description" content="Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.">
+<meta property="og:title" content="Επαναφορά backup στο stage – χωρίς να ξεκινήσουν cron και queue jobs · Goldberg">
+<meta property="og:description" content="Γιατί ένα stage μπορεί να στείλει υπενθυμίσεις πληρωμής σε πραγματικούς πελάτες, και η σειρά βημάτων που το αποτρέπει: SQL πριν από την πρώτη εκκίνηση, neutralize, ρυθμίσεις stage.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://2027.pp.ua/el/blog/odoo-stage-restore-stop-cron-jobs">
 <meta name="theme-color" content="#3b2a4a">
@@ -22,7 +22,7 @@
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
 <script src="/assets/theme.js?v=eec31096" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Restoring a backup on stage – without cron jobs and queue jobs firing", "description": "Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.", "datePublished": "2026-11-15", "inLanguage": "en", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua"}, "mainEntityOfPage": "https://2027.pp.ua/el/blog/odoo-stage-restore-stop-cron-jobs"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Επαναφορά backup στο stage – χωρίς να ξεκινήσουν cron και queue jobs", "description": "Γιατί ένα stage μπορεί να στείλει υπενθυμίσεις πληρωμής σε πραγματικούς πελάτες, και η σειρά βημάτων που το αποτρέπει: SQL πριν από την πρώτη εκκίνηση, neutralize, ρυθμίσεις stage.", "datePublished": "2026-11-15", "inLanguage": "el", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua", "sameAs": ["https://www.linkedin.com/in/dpodyachev"]}, "mainEntityOfPage": "https://2027.pp.ua/el/blog/odoo-stage-restore-stop-cron-jobs"}</script>
 </head>
 <body>
 <header class="top">
@@ -33,7 +33,7 @@
 <button type="button" class="theme" hidden aria-label="Φωτεινό / σκοτεινό θέμα" title="Φωτεινό / σκοτεινό θέμα">🌙</button>
 </div>
 </header>
-<main class="sec blog"><article class="wrap narrow post" lang="en"><p class="post-back"><a href="/el/blog/">← Όλα τα άρθρα</a></p><p class="post-meta">15.11.2026 · 2 λεπτά ανάγνωσης · <span class="post-tag">Stage</span><span class="post-tag">Backup</span><span class="post-tag">Cron</span><span class="post-tag">queue_job</span></p><h1>Restoring a backup on stage – without cron jobs and queue jobs firing</h1><p class="post-note">Το άρθρο δεν είναι ακόμη διαθέσιμο στα ελληνικά – ακολουθεί η αγγλική έκδοση.</p><p class="intro">Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.</p><p>The production database is restored on stage to test an update. Odoo starts – and immediately processes everything that became &quot;due&quot; during the downtime: dunning and invoice e-mails, syncs with the shop, bank or carriers, queued jobs. With real customer data and real credentials. The classic stage accident.</p><p>The core point: <b>Odoo starts its cron threads and the job runner right at startup.</b> Switching things off in the UI is too late. Everything has to happen <b>before</b> Odoo sees the database for the first time.</p><h2>1. Restore – Odoo stays stopped</h2><figure class="code"><figcaption>bash</figcaption><pre><code>docker compose stop odoo                       # Odoo must NOT be running yet
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/el/blog/">← Όλα τα άρθρα</a></p><p class="post-meta">15.11.2026 · 2 λεπτά ανάγνωσης · <span class="post-tag">Stage</span><span class="post-tag">Backup</span><span class="post-tag">Cron</span><span class="post-tag">queue_job</span></p><h1>Επαναφορά backup στο stage – χωρίς να ξεκινήσουν cron και queue jobs</h1><p class="intro">Γιατί ένα stage μπορεί να στείλει υπενθυμίσεις πληρωμής σε πραγματικούς πελάτες, και η σειρά βημάτων που το αποτρέπει: SQL πριν από την πρώτη εκκίνηση, neutralize, ρυθμίσεις stage.</p><p>Η βάση παραγωγής επαναφέρεται στο stage για να δοκιμαστεί μια ενημέρωση. Το Odoo ξεκινά – και εκτελεί αμέσως ό,τι «έληξε» όσο ήταν εκτός λειτουργίας: υπενθυμίσεις και τιμολόγια με e-mail, συγχρονισμό με e-shop, τράπεζα ή μεταφορικές, εργασίες από την ουρά. Με πραγματικά δεδομένα πελατών και πραγματικά διαπιστευτήρια. Το κλασικό ατύχημα του stage.</p><p>Το ουσιώδες: <b>το Odoo ξεκινά τα cron threads και τον job runner αμέσως κατά την εκκίνηση.</b> Η απενεργοποίηση από το περιβάλλον χρήστη είναι πια αργά. Όλα πρέπει να γίνουν <b>πριν</b> το Odoo δει τη βάση για πρώτη φορά.</p><h2>1. Επαναφορά – το Odoo μένει σταματημένο</h2><figure class="code"><figcaption>bash</figcaption><pre><code>docker compose stop odoo                       # Odoo must NOT be running yet
 
 docker compose exec -T db dropdb   -U odoo --if-exists mydb_stage
 docker compose exec -T db createdb -U odoo mydb_stage
@@ -45,7 +45,7 @@ docker compose exec -T db psql -U odoo -d mydb_stage -v ON_ERROR_STOP=1 &lt; sta
 # filestore: the folder name must match the database name
 #   .../filestore/mydb  -&gt;  .../filestore/mydb_stage
 
-docker compose start odoo</code></pre></figure><h2>2. Neutralise with SQL</h2><figure class="code"><figcaption>stage-safety.sql</figcaption><pre><code>BEGIN;
+docker compose start odoo</code></pre></figure><h2>2. Εξουδετέρωση με SQL</h2><figure class="code"><figcaption>stage-safety.sql</figcaption><pre><code>BEGIN;
 -- 1. remember what was active (to re-enable selectively later)
 CREATE TABLE IF NOT EXISTS zz_stage_cron_before AS
     SELECT id, cron_name, active FROM ir_cron;
@@ -64,20 +64,21 @@ UPDATE fetchmail_server SET active = false;
 -- 5. stage URL and its own database UUID
 UPDATE ir_config_parameter SET value = &#x27;https://stage.example.com&#x27; WHERE key = &#x27;web.base.url&#x27;;
 UPDATE ir_config_parameter SET value = gen_random_uuid()::text   WHERE key = &#x27;database.uuid&#x27;;
-COMMIT;</code></pre></figure><p class="post-note">The tables <code>queue_job</code> and <code>fetchmail_server</code> only exist when the modules are installed – drop those lines otherwise. The <code>zz_stage_cron_before</code> list helps to re-enable individual crons on stage later on purpose.</p><p>Since Odoo 16 there is also the built-in <code>neutralize</code> command: among other things it deactivates scheduled actions, mail servers and payment providers and shows a &quot;neutralized&quot; banner. I use it as the base and add the SQL for third-party modules such as <code>queue_job</code>.</p><figure class="code"><figcaption>bash · Odoo 16+</figcaption><pre><code>docker compose run --rm odoo odoo neutralize -c /etc/odoo/odoo.conf -d mydb_stage</code></pre></figure><h2>3. A stage config as a second safety net</h2><figure class="code"><figcaption>etc/odoo.conf (stage)</figcaption><pre><code>[options]
+COMMIT;</code></pre></figure><p class="post-note">Οι πίνακες <code>queue_job</code> και <code>fetchmail_server</code> υπάρχουν μόνο όταν είναι εγκατεστημένα τα αντίστοιχα modules – αλλιώς αφαιρέστε αυτές τις γραμμές. Η λίστα <code>zz_stage_cron_before</code> βοηθά να ενεργοποιήσετε αργότερα, συνειδητά, μεμονωμένα crons στο stage.</p><p>Από το Odoo 16 υπάρχει επίσης η ενσωματωμένη εντολή <code>neutralize</code>: μεταξύ άλλων απενεργοποιεί προγραμματισμένες ενέργειες, mail servers και παρόχους πληρωμών και εμφανίζει banner «neutralized». Τη χρησιμοποιώ ως βάση και προσθέτω το SQL για modules τρίτων όπως το <code>queue_job</code>.</p><figure class="code"><figcaption>bash · Odoo 16+</figcaption><pre><code>docker compose run --rm odoo odoo neutralize -c /etc/odoo/odoo.conf -d mydb_stage</code></pre></figure><h2>3. Ρυθμίσεις stage ως δεύτερο δίχτυ ασφαλείας</h2><figure class="code"><figcaption>etc/odoo.conf (stage)</figcaption><pre><code>[options]
 ; no cron thread at all on stage
 max_cron_threads = 0
 ; without queue_job here the job runner does not start
 server_wide_modules = base,web
 ; every e-mail ends up in Mailpit - nothing leaves the server
 smtp_server = mailpit
-smtp_port = 1025</code></pre></figure><p>Even if a database is restored without neutralising, nothing can leave the server with this config: no cron thread, no job runner, e-mail only in the mail catcher.</p><h2>4. Verify</h2><figure class="code"><figcaption>sql</figcaption><pre><code>SELECT count(*) FROM ir_cron WHERE active;                 -- expected: 0
+smtp_port = 1025</code></pre></figure><p>Ακόμη κι αν μια βάση επαναφερθεί χωρίς εξουδετέρωση, με αυτές τις ρυθμίσεις τίποτα δεν βγαίνει από τον server: κανένα cron thread, κανένας job runner, e-mail μόνο στον mail catcher.</p><h2>4. Έλεγχος</h2><figure class="code"><figcaption>sql</figcaption><pre><code>SELECT count(*) FROM ir_cron WHERE active;                 -- expected: 0
 SELECT state, count(*) FROM queue_job GROUP BY state;      -- no pending / enqueued
-SELECT key, value FROM ir_config_parameter WHERE key = &#x27;web.base.url&#x27;;</code></pre></figure><ul><li>Release stage for testing only when all three queries look right.</li><li>Replace credentials for external services (shop, bank, shipping, payments) on stage with sandbox keys, or remove them.</li><li>Keep the whole procedure as a script – a fresh stage is then a matter of minutes, and no step is forgotten.</li></ul><aside class="post-cta"><h2>Να το αναλάβω εγώ;</h2><p>Το υλοποιώ στο σύστημά σας – πρώτα σε αντίγραφο δοκιμών, με δυνατότητα επαναφοράς και αναφορά.</p><div class="cta ">
+SELECT key, value FROM ir_config_parameter WHERE key = &#x27;web.base.url&#x27;;</code></pre></figure><ul><li>Το stage δίνεται για δοκιμές μόνο όταν και τα τρία ερωτήματα δείχνουν το σωστό αποτέλεσμα.</li><li>Τα διαπιστευτήρια εξωτερικών υπηρεσιών (e-shop, τράπεζα, αποστολές, πληρωμές) στο stage αντικαθίστανται με sandbox κλειδιά ή αφαιρούνται.</li><li>Όλη η διαδικασία φυλάσσεται ως script – έτσι ένα φρέσκο stage είναι θέμα λεπτών και κανένα βήμα δεν ξεχνιέται.</li></ul><aside class="post-cta"><h2>Να το αναλάβω εγώ;</h2><p>Το υλοποιώ στο σύστημά σας – πρώτα σε αντίγραφο δοκιμών, με δυνατότητα επαναφοράς και αναφορά.</p><div class="cta ">
 <a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Κλείστε ραντεβού – 30 λεπτά δωρεάν</a>
 <a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
 <a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
-</div></aside><nav class="post-nav" aria-label="Blog &amp; οδηγοί"><a class="prev" href="/el/blog/odoo-logging-options-cheatsheet" rel="prev"><small>← Προηγούμενο άρθρο</small><span>Odoo logging: warn or warning, log_level or --log-level? A cheat sheet</span></a><a class="all" href="/el/blog/"><small>← Όλα τα άρθρα</small></a><a class="next" href="/el/blog/odoo-module-update-click-odoo-update" rel="next"><small>Επόμενο άρθρο →</small><span>Updating Odoo modules: click-odoo-update or odoo -u</span></a></nav></article></main><footer class="foot">
+<a class="btn ghost" href="https://www.linkedin.com/in/dpodyachev" target="_blank" rel="noopener me">LinkedIn</a>
+</div></aside><nav class="post-nav" aria-label="Blog &amp; οδηγοί"><a class="prev" href="/el/blog/odoo-logging-options-cheatsheet" rel="prev"><small>← Προηγούμενο άρθρο</small><span>Logs του Odoo: warn ή warning, log_level ή --log-level; Σκονάκι</span></a><a class="all" href="/el/blog/"><small>← Όλα τα άρθρα</small></a><a class="next" href="/el/blog/odoo-module-update-click-odoo-update" rel="next"><small>Επόμενο άρθρο →</small><span>Ενημέρωση modules του Odoo: click-odoo-update ή odoo -u</span></a></nav></article></main><footer class="foot">
 <div class="wrap foot-in">
 <div><strong>Goldberg · Odoo Services</strong><br>Υποστήριξη, εγκατάσταση και ενοποίηση Odoo για Γερμανία, Αυστρία και Ελβετία.</div>
 <div class="foot-links">
@@ -86,6 +87,7 @@ SELECT key, value FROM ir_config_parameter WHERE key = &#x27;web.base.url&#x27;;
 <a href="/el/datenschutz">Απόρρητο</a>
 <a href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
 <a href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram</a>
+<a href="https://www.linkedin.com/in/dpodyachev" target="_blank" rel="noopener me">LinkedIn</a>
 </div>
 <nav class="langs" aria-label="Language"><a href="/de/blog/odoo-stage-restore-stop-cron-jobs" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/odoo-stage-restore-stop-cron-jobs" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/odoo-stage-restore-stop-cron-jobs" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/odoo-stage-restore-stop-cron-jobs" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά" aria-current="true"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/odoo-stage-restore-stop-cron-jobs" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/odoo-stage-restore-stop-cron-jobs" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
 <div class="small">© 2026 Goldberg. Αυτός ο ιστότοπος δεν χρησιμοποιεί cookies ούτε tracking.</div>

@@ -762,3 +762,7 @@ from blog_posts_fr import FR as _FR  # noqa: E402
 for _p in POSTS:
     if _p["slug"] in _FR:
         _p["t"]["fr"] = _FR[_p["slug"]]
+from blog_posts_el import EL as _EL  # noqa: E402
+for _p in POSTS:
+    if _p["slug"] in _EL:
+        _p["t"]["el"] = _EL[_p["slug"]]
