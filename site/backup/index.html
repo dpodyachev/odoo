@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Backup · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=7d5aff4a">
+<script src="/assets/theme.js" defer></script>
+<script src="/assets/backup.js?v=76bcd92b" defer></script>
+</head>
+<body class="st-body">
+<header class="st-top">
+  <a class="brand" href="/backup/"><span class="logo">G</span><span>Goldberg<small>Backup</small></span></a>
+  <div class="st-actions">
+    <button type="button" class="btn primary small" id="bk-new" data-t="upload">+ Upload</button>
+  </div>
+</header>
+<main class="wrap narrow bk-main">
+  <form id="bk-form" class="bk-form" novalidate hidden>
+    <h1 data-t="up_title">New file</h1>
+    <label class="st-field"><span data-t="f_title">Title</span><input type="text" id="bk-title" maxlength="200"></label>
+    <label class="st-drop" id="bk-drop">
+      <input type="file" id="bk-file">
+      <span data-t="drop">Choose a file or drop it here</span>
+      <b id="bk-fname"></b>
+    </label>
+    <label class="st-field"><span data-t="f_desc">Description</span><textarea id="bk-desc" rows="6"></textarea></label>
+    <p class="note" data-t="note">The file goes directly to Cloudflare R2 (private bucket). Large files are uploaded in parts; keep this tab open until it finishes.</p>
+    <div class="bk-bar" id="bk-bar" hidden><i id="bk-fill"></i></div>
+    <p id="bk-prog" class="bk-prog" role="status"></p>
+    <div class="bk-btns">
+      <button type="submit" class="btn primary" id="bk-save" data-t="save">Upload</button>
+      <button type="button" class="st-btn" id="bk-cancel" data-t="cancel">Cancel</button>
+    </div>
+  </form>
+  <h2 class="bk-h" data-t="files">Files</h2>
+  <p id="bk-sum" class="st-meta"></p>
+  <ul class="bk-list" id="bk-list"><li class="st-empty" data-t="loading">…</li></ul>
+</main>
+</body>
+</html>

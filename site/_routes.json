@@ -4,7 +4,9 @@
     "/test",
     "/test/*",
     "/status",
-    "/status/*"
+    "/status/*",
+    "/backup",
+    "/backup/*"
   ],
   "exclude": []
 }

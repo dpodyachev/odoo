@@ -3,4 +3,5 @@ Allow: /
 Disallow: /test/
 Disallow: /test2/
 Disallow: /status/
+Disallow: /backup/
 Sitemap: https://2027.pp.ua/sitemap.xml
