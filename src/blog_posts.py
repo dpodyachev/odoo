@@ -519,24 +519,240 @@ SELECT key, value FROM ir_config_parameter WHERE key = 'web.base.url';"""),
     },
 })
 
+# ---------------------------------------------------------------------------------------------------------------------
+POSTS.append({
+    "slug": "odoo-logging-options-cheatsheet",
+    "date": "2026-11-15",
+    "tags": ["Logging", "odoo.conf", "CLI", "click-odoo"],
+    "code": {
+        "conf": ("etc/odoo.conf", """[options]
+log_level = warn
+log_handler = :INFO,werkzeug:WARNING,odoo.addons.sale:DEBUG
+logfile = /var/log/odoo/odoo.log
+; write warnings and errors into the database (Settings -> Technical -> Logging)
+log_db = %d
+log_db_level = warning"""),
+        "cli": ("bash · odoo", """odoo -c /etc/odoo/odoo.conf \\
+    --log-level=warn \\
+    --log-handler=odoo.addons.sale:DEBUG \\
+    --log-handler=werkzeug:WARNING \\
+    --logfile=/var/log/odoo/odoo.log
+
+# shortcuts (Odoo 17)
+odoo -c /etc/odoo/odoo.conf --log-sql     # = --log-handler=odoo.sql_db:DEBUG
+odoo -c /etc/odoo/odoo.conf --log-web     # = --log-handler=odoo.http:DEBUG"""),
+        "click": ("bash · click-odoo-update", """click-odoo-update -c /etc/odoo/odoo.conf -d mydb \\
+    --log-level=warn \\
+    --logfile=/var/log/odoo/update-$(date +%F).log
+# log_handler: put it into the -c config file"""),
+        "wrong": ("etc/odoo.conf – wrong", """log-level = ERROR                         ; dash + capital letters: silently ignored -> stays INFO
+log_level = warning                       ; unknown value: silently INFO
+log_handler = odoo.addons.sale:debug      ; lowercase: silently INFO"""),
+        "check": ("bash", """# what does your Odoo version accept?
+odoo --help | grep -A3 -- "--log-level"
+grep -n "PSEUDOCONFIG_MAPPER" -A12 odoo/netsvc.py
+
+# what is actually set in the file?
+grep -nE "^ *log" /etc/odoo/odoo.conf"""),
+    },
+    "t": {
+        "de": {
+            "title": "Odoo-Logging: warn oder warning, log_level oder --log-level? Spickzettel",
+            "summary": "Konfigurationsdatei, Kommandozeile, click-odoo-update – drei Schreibweisen, drei Arten von Stufen. Eine Tabelle zum Nachschlagen und die Fehler, bei denen Odoo still auf INFO bleibt.",
+            "body": [
+                ("p", "Ich vergesse es selbst immer wieder: Heißt es `warn` oder `warning`? `log_level` oder `log-level`? Die Antwort hängt davon ab, **wo** man es schreibt. Hier alles auf einer Seite (geprüft am Quellcode von Odoo 17)."),
+                ("h", "Die Faustregel"),
+                ("ul", [
+                    "**In `odoo.conf`: Unterstrich** – `log_level`, `log_handler`, `log_db_level`.",
+                    "**In der Kommandozeile: Bindestrich** – `--log-level`, `--log-handler`, `--log-db-level`.",
+                    "`log_level` kennt **Odoo-eigene Wörter, klein**: `warn` (nicht `warning`!), `error`, `info`, `debug` …",
+                    "`log_handler` erwartet **Python-Stufen in GROSSBUCHSTABEN**: `WARNING`, `ERROR`, `DEBUG`.",
+                    "`log_db_level` erwartet **Python-Stufen klein**: `warning`, `error` (Standard: `warning`).",
+                ]),
+                ("h", "Spickzettel"),
+                ("table", [
+                    ["Was", "odoo.conf", "Kommandozeile", "click-odoo-update"],
+                    ["Gesamt-Stufe", "`log_level = warn`", "`--log-level=warn`", "`--log-level=warn`"],
+                    ["Stufe je Logger", "`log_handler = werkzeug:WARNING,odoo.addons.sale:DEBUG`", "`--log-handler=odoo.addons.sale:DEBUG` (mehrfach möglich)", "über `-c` Konfigurationsdatei"],
+                    ["Logdatei", "`logfile = /var/log/odoo/odoo.log`", "`--logfile=…`", "`--logfile=…`"],
+                    ["Syslog", "`syslog = True`", "`--syslog`", "–"],
+                    ["In die Datenbank", "`log_db = %d`, `log_db_level = warning`", "`--log-db=%d --log-db-level=warning`", "über `-c`"],
+                    ["Abkürzungen", "–", "`--log-sql`, `--log-web`", "–"],
+                ]),
+                ("h", "Erlaubte Werte"),
+                ("table", [
+                    ["Option", "Werte"],
+                    ["`log_level`", "`info` (Standard), `warn`, `error`, `critical`, `debug`, `debug_sql`, `debug_rpc`, `debug_rpc_answer`, `notset`, `test`, `runbot`"],
+                    ["`log_handler`", "`PREFIX:STUFE`, Stufe = `DEBUG` · `INFO` · `WARNING` (oder `WARN`) · `ERROR` · `CRITICAL`; leerer Prefix = Root-Logger, z. B. `:INFO`"],
+                    ["`log_db_level`", "`debug` · `info` · `warning` · `error` · `critical`"],
+                    ["`log_db`", "`%d` = aktuelle Datenbank oder Name einer eigenen Log-Datenbank"],
+                ]),
+                ("h", "Beispiele"),
+                ("code", "conf"),
+                ("code", "cli"),
+                ("p", "`click-odoo-update` (und die anderen `click-odoo`-Skripte) haben eigene Schalter `--log-level` und `--logfile` mit denselben Werten wie Odoo. Logger-genaue Einstellungen kommen aus der mit `-c` übergebenen Konfigurationsdatei."),
+                ("code", "click"),
+                ("h", "Die stillen Fehler"),
+                ("p", "Die Kommandozeile meldet einen falschen Wert sofort (`invalid choice: 'warning'`). Die Konfigurationsdatei **nicht** – Odoo läuft einfach mit INFO weiter, und man wundert sich über volle Logs:"),
+                ("code", "wrong"),
+                ("note", "`log_level = warn` setzt nur die Logger `odoo` und `werkzeug` auf WARNING. Fremde Bibliotheken loggen über den Root-Logger weiter mit INFO – wer es ganz ruhig will, ergänzt `log_handler = :WARNING`."),
+                ("h", "Nachprüfen statt raten"),
+                ("code", "check"),
+            ],
+        },
+        "en": {
+            "title": "Odoo logging: warn or warning, log_level or --log-level? A cheat sheet",
+            "summary": "Config file, command line, click-odoo-update – three spellings and three kinds of levels. One table to look things up, plus the mistakes where Odoo silently stays on INFO.",
+            "body": [
+                ("p", "I keep forgetting it myself: is it `warn` or `warning`? `log_level` or `log-level`? The answer depends on **where** you write it. Everything on one page (checked against the Odoo 17 source)."),
+                ("h", "Rule of thumb"),
+                ("ul", [
+                    "**In `odoo.conf`: underscore** – `log_level`, `log_handler`, `log_db_level`.",
+                    "**On the command line: dash** – `--log-level`, `--log-handler`, `--log-db-level`.",
+                    "`log_level` takes **Odoo's own words, lowercase**: `warn` (not `warning`!), `error`, `info`, `debug` …",
+                    "`log_handler` expects **Python levels in UPPERCASE**: `WARNING`, `ERROR`, `DEBUG`.",
+                    "`log_db_level` expects **Python levels in lowercase**: `warning`, `error` (default: `warning`).",
+                ]),
+                ("h", "Cheat sheet"),
+                ("table", [
+                    ["What", "odoo.conf", "Command line", "click-odoo-update"],
+                    ["Overall level", "`log_level = warn`", "`--log-level=warn`", "`--log-level=warn`"],
+                    ["Per-logger level", "`log_handler = werkzeug:WARNING,odoo.addons.sale:DEBUG`", "`--log-handler=odoo.addons.sale:DEBUG` (repeatable)", "via the `-c` config file"],
+                    ["Log file", "`logfile = /var/log/odoo/odoo.log`", "`--logfile=…`", "`--logfile=…`"],
+                    ["Syslog", "`syslog = True`", "`--syslog`", "–"],
+                    ["Into the database", "`log_db = %d`, `log_db_level = warning`", "`--log-db=%d --log-db-level=warning`", "via `-c`"],
+                    ["Shortcuts", "–", "`--log-sql`, `--log-web`", "–"],
+                ]),
+                ("h", "Allowed values"),
+                ("table", [
+                    ["Option", "Values"],
+                    ["`log_level`", "`info` (default), `warn`, `error`, `critical`, `debug`, `debug_sql`, `debug_rpc`, `debug_rpc_answer`, `notset`, `test`, `runbot`"],
+                    ["`log_handler`", "`PREFIX:LEVEL`, level = `DEBUG` · `INFO` · `WARNING` (or `WARN`) · `ERROR` · `CRITICAL`; empty prefix = root logger, e.g. `:INFO`"],
+                    ["`log_db_level`", "`debug` · `info` · `warning` · `error` · `critical`"],
+                    ["`log_db`", "`%d` = current database, or the name of a separate log database"],
+                ]),
+                ("h", "Examples"),
+                ("code", "conf"),
+                ("code", "cli"),
+                ("p", "`click-odoo-update` (and the other `click-odoo` scripts) have their own `--log-level` and `--logfile` switches with the same values as Odoo. Per-logger settings come from the config file passed with `-c`."),
+                ("code", "click"),
+                ("h", "The silent mistakes"),
+                ("p", "The command line rejects a wrong value immediately (`invalid choice: 'warning'`). The config file does **not** – Odoo simply keeps running on INFO, and you wonder why the logs are so full:"),
+                ("code", "wrong"),
+                ("note", "`log_level = warn` only sets the `odoo` and `werkzeug` loggers to WARNING. Third-party libraries keep logging at INFO via the root logger – for a really quiet log add `log_handler = :WARNING`."),
+                ("h", "Check instead of guessing"),
+                ("code", "check"),
+            ],
+        },
+        "uk": {
+            "title": "Логи Odoo: warn чи warning, log_level чи --log-level? Шпаргалка",
+            "summary": "Конфіг, командний рядок, click-odoo-update – три написання і три види рівнів. Одна таблиця, щоб підглядати, і помилки, за яких Odoo мовчки лишається на INFO.",
+            "body": [
+                ("p", "Сам постійно забуваю: `warn` чи `warning`? `log_level` чи `log-level`? Відповідь залежить від того, **де** це пишеш. Усе на одній сторінці (перевірено за кодом Odoo 17)."),
+                ("h", "Просте правило"),
+                ("ul", [
+                    "**В `odoo.conf` – підкреслення**: `log_level`, `log_handler`, `log_db_level`.",
+                    "**У командному рядку – дефіс**: `--log-level`, `--log-handler`, `--log-db-level`.",
+                    "`log_level` приймає **власні слова Odoo, малими**: `warn` (не `warning`!), `error`, `info`, `debug` …",
+                    "`log_handler` чекає **рівні Python ВЕЛИКИМИ**: `WARNING`, `ERROR`, `DEBUG`.",
+                    "`log_db_level` чекає **рівні Python малими**: `warning`, `error` (за замовчуванням `warning`).",
+                ]),
+                ("h", "Шпаргалка"),
+                ("table", [
+                    ["Що", "odoo.conf", "Командний рядок", "click-odoo-update"],
+                    ["Загальний рівень", "`log_level = warn`", "`--log-level=warn`", "`--log-level=warn`"],
+                    ["Рівень для логера", "`log_handler = werkzeug:WARNING,odoo.addons.sale:DEBUG`", "`--log-handler=odoo.addons.sale:DEBUG` (можна кілька разів)", "через конфіг `-c`"],
+                    ["Файл логу", "`logfile = /var/log/odoo/odoo.log`", "`--logfile=…`", "`--logfile=…`"],
+                    ["Syslog", "`syslog = True`", "`--syslog`", "–"],
+                    ["У базу даних", "`log_db = %d`, `log_db_level = warning`", "`--log-db=%d --log-db-level=warning`", "через `-c`"],
+                    ["Скорочення", "–", "`--log-sql`, `--log-web`", "–"],
+                ]),
+                ("h", "Допустимі значення"),
+                ("table", [
+                    ["Параметр", "Значення"],
+                    ["`log_level`", "`info` (за замовчуванням), `warn`, `error`, `critical`, `debug`, `debug_sql`, `debug_rpc`, `debug_rpc_answer`, `notset`, `test`, `runbot`"],
+                    ["`log_handler`", "`PREFIX:РІВЕНЬ`, рівень = `DEBUG` · `INFO` · `WARNING` (або `WARN`) · `ERROR` · `CRITICAL`; порожній префікс = кореневий логер, напр. `:INFO`"],
+                    ["`log_db_level`", "`debug` · `info` · `warning` · `error` · `critical`"],
+                    ["`log_db`", "`%d` = поточна база або назва окремої бази для логів"],
+                ]),
+                ("h", "Приклади"),
+                ("code", "conf"),
+                ("code", "cli"),
+                ("p", "`click-odoo-update` (та інші скрипти `click-odoo`) мають власні ключі `--log-level` і `--logfile` з тими самими значеннями, що й Odoo. Налаштування окремих логерів беруться з конфігу, переданого через `-c`."),
+                ("code", "click"),
+                ("h", "Тихі помилки"),
+                ("p", "Командний рядок одразу лається на неправильне значення (`invalid choice: 'warning'`). Конфіг – **ні**: Odoo просто працює далі на INFO, а ти дивуєшся, чому лог такий великий:"),
+                ("code", "wrong"),
+                ("note", "`log_level = warn` ставить WARNING лише логерам `odoo` і `werkzeug`. Сторонні бібліотеки й далі пишуть INFO через кореневий логер. Для зовсім тихого логу додайте `log_handler = :WARNING`."),
+                ("h", "Перевіряти, а не вгадувати"),
+                ("code", "check"),
+            ],
+        },
+        "ru": {
+            "title": "Логи Odoo: warn или warning, log_level или --log-level? Шпаргалка",
+            "summary": "Конфиг, командная строка, click-odoo-update – три написания и три вида уровней. Одна таблица, чтобы подглядывать, и ошибки, при которых Odoo молча остаётся на INFO.",
+            "body": [
+                ("p", "Сам постоянно забываю: `warn` или `warning`? `log_level` или `log-level`? Ответ зависит от того, **где** это пишешь. Всё на одной странице (проверено по коду Odoo 17)."),
+                ("h", "Простое правило"),
+                ("ul", [
+                    "**В `odoo.conf` – подчёркивание**: `log_level`, `log_handler`, `log_db_level`.",
+                    "**В командной строке – дефис**: `--log-level`, `--log-handler`, `--log-db-level`.",
+                    "`log_level` принимает **собственные слова Odoo, строчными**: `warn` (не `warning`!), `error`, `info`, `debug` …",
+                    "`log_handler` ждёт **уровни Python ЗАГЛАВНЫМИ**: `WARNING`, `ERROR`, `DEBUG`.",
+                    "`log_db_level` ждёт **уровни Python строчными**: `warning`, `error` (по умолчанию `warning`).",
+                ]),
+                ("h", "Шпаргалка"),
+                ("table", [
+                    ["Что", "odoo.conf", "Командная строка", "click-odoo-update"],
+                    ["Общий уровень", "`log_level = warn`", "`--log-level=warn`", "`--log-level=warn`"],
+                    ["Уровень для логгера", "`log_handler = werkzeug:WARNING,odoo.addons.sale:DEBUG`", "`--log-handler=odoo.addons.sale:DEBUG` (можно несколько раз)", "через конфиг `-c`"],
+                    ["Файл лога", "`logfile = /var/log/odoo/odoo.log`", "`--logfile=…`", "`--logfile=…`"],
+                    ["Syslog", "`syslog = True`", "`--syslog`", "–"],
+                    ["В базу данных", "`log_db = %d`, `log_db_level = warning`", "`--log-db=%d --log-db-level=warning`", "через `-c`"],
+                    ["Сокращения", "–", "`--log-sql`, `--log-web`", "–"],
+                ]),
+                ("h", "Допустимые значения"),
+                ("table", [
+                    ["Параметр", "Значения"],
+                    ["`log_level`", "`info` (по умолчанию), `warn`, `error`, `critical`, `debug`, `debug_sql`, `debug_rpc`, `debug_rpc_answer`, `notset`, `test`, `runbot`"],
+                    ["`log_handler`", "`PREFIX:УРОВЕНЬ`, уровень = `DEBUG` · `INFO` · `WARNING` (или `WARN`) · `ERROR` · `CRITICAL`; пустой префикс = корневой логгер, напр. `:INFO`"],
+                    ["`log_db_level`", "`debug` · `info` · `warning` · `error` · `critical`"],
+                    ["`log_db`", "`%d` = текущая база или имя отдельной базы для логов"],
+                ]),
+                ("h", "Примеры"),
+                ("code", "conf"),
+                ("code", "cli"),
+                ("p", "`click-odoo-update` (и другие скрипты `click-odoo`) имеют собственные ключи `--log-level` и `--logfile` с теми же значениями, что и Odoo. Настройки отдельных логгеров берутся из конфига, переданного через `-c`."),
+                ("code", "click"),
+                ("h", "Тихие ошибки"),
+                ("p", "Командная строка сразу ругается на неправильное значение (`invalid choice: 'warning'`). Конфиг – **нет**: Odoo просто работает дальше на INFO, а ты удивляешься, почему лог такой большой:"),
+                ("code", "wrong"),
+                ("note", "`log_level = warn` ставит WARNING только логгерам `odoo` и `werkzeug`. Сторонние библиотеки продолжают писать INFO через корневой логгер. Для совсем тихого лога добавьте `log_handler = :WARNING`."),
+                ("h", "Проверять, а не угадывать"),
+                ("code", "check"),
+            ],
+        },
+    },
+})
+
 # Надписи раздела по языкам
 UI = {
-    "de": {"title": "Blog & How-tos", "intro": "Fälle aus der Praxis und Anleitungen rund um Odoo, Docker und PostgreSQL – so, wie ich sie selbst umsetze.",
+    "de": {"prev": 'Vorheriger Artikel', "next": 'Nächster Artikel', "title": "Blog & How-tos", "intro": "Fälle aus der Praxis und Anleitungen rund um Odoo, Docker und PostgreSQL – so, wie ich sie selbst umsetze.",
            "read": "Weiterlesen", "back": "← Alle Artikel", "fallback": "", "min": "Min. Lesezeit",
            "cta_title": "Soll ich das für Sie übernehmen?", "cta_text": "Ich setze das in Ihrem System um – zuerst auf einer Testkopie, mit Rücksprung und Protokoll."},
-    "en": {"title": "Blog & how-tos", "intro": "Real cases and step-by-step guides on Odoo, Docker and PostgreSQL – the way I do it myself.",
+    "en": {"prev": 'Previous article', "next": 'Next article', "title": "Blog & how-tos", "intro": "Real cases and step-by-step guides on Odoo, Docker and PostgreSQL – the way I do it myself.",
            "read": "Read more", "back": "← All articles", "fallback": "", "min": "min read",
            "cta_title": "Want me to do this for you?", "cta_text": "I'll implement it in your system – on a test copy first, with rollback and a written record."},
-    "fr": {"title": "Blog & guides", "intro": "Cas réels et guides pas à pas sur Odoo, Docker et PostgreSQL – tels que je les applique moi-même.",
+    "fr": {"prev": 'Article précédent', "next": 'Article suivant', "title": "Blog & guides", "intro": "Cas réels et guides pas à pas sur Odoo, Docker et PostgreSQL – tels que je les applique moi-même.",
            "read": "Lire la suite", "back": "← Tous les articles", "fallback": "Cet article n’est pas encore disponible en français – voici la version anglaise.", "min": "min de lecture",
            "cta_title": "Je m’en occupe pour vous ?", "cta_text": "Je le mets en place dans votre système – d’abord sur une copie de test, avec retour arrière et compte rendu."},
-    "el": {"title": "Blog & οδηγοί", "intro": "Πραγματικές περιπτώσεις και οδηγοί βήμα-βήμα για Odoo, Docker και PostgreSQL – όπως τα εφαρμόζω ο ίδιος.",
+    "el": {"prev": 'Προηγούμενο άρθρο', "next": 'Επόμενο άρθρο', "title": "Blog & οδηγοί", "intro": "Πραγματικές περιπτώσεις και οδηγοί βήμα-βήμα για Odoo, Docker και PostgreSQL – όπως τα εφαρμόζω ο ίδιος.",
            "read": "Περισσότερα", "back": "← Όλα τα άρθρα", "fallback": "Το άρθρο δεν είναι ακόμη διαθέσιμο στα ελληνικά – ακολουθεί η αγγλική έκδοση.", "min": "λεπτά ανάγνωσης",
            "cta_title": "Να το αναλάβω εγώ;", "cta_text": "Το υλοποιώ στο σύστημά σας – πρώτα σε αντίγραφο δοκιμών, με δυνατότητα επαναφοράς και αναφορά."},
-    "uk": {"title": "Блог і how-to", "intro": "Реальні випадки й покрокові інструкції з Odoo, Docker і PostgreSQL – так, як я роблю це сам.",
+    "uk": {"prev": 'Попередня стаття', "next": 'Наступна стаття', "title": "Блог і how-to", "intro": "Реальні випадки й покрокові інструкції з Odoo, Docker і PostgreSQL – так, як я роблю це сам.",
            "read": "Читати далі", "back": "← Усі статті", "fallback": "", "min": "хв читання",
            "cta_title": "Зробити це для вас?", "cta_text": "Я впроваджу це у вашій системі – спершу на тестовій копії, з можливістю відкату й протоколом."},
-    "ru": {"title": "Блог и how-to", "intro": "Реальные случаи и пошаговые инструкции по Odoo, Docker и PostgreSQL – так, как я делаю это сам.",
+    "ru": {"prev": 'Предыдущая статья', "next": 'Следующая статья', "title": "Блог и how-to", "intro": "Реальные случаи и пошаговые инструкции по Odoo, Docker и PostgreSQL – так, как я делаю это сам.",
            "read": "Читать дальше", "back": "← Все статьи", "fallback": "", "min": "мин чтения",
            "cta_title": "Сделать это для вас?", "cta_text": "Я внедрю это в вашей системе – сначала на тестовой копии, с возможностью отката и протоколом."},
 }

@@ -600,6 +600,11 @@ def fmt_date(d, lang):
     return f"{dd}.{m}.{y}" if lang != "en" else f"{y}-{m}-{dd}"
 
 
+def ordered_posts():
+    """Новые сверху; при одинаковой дате — позже добавленная статья выше."""
+    return [p for _, p in sorted(enumerate(BP.POSTS), key=lambda x: (x[1]["date"], x[0]), reverse=True)]
+
+
 def blog_index(T, lang):
     U = BP.UI[lang]
     page = "blog/"
@@ -609,10 +614,22 @@ def blog_index(T, lang):
         f'<p>{E(p["t"][post_lang(p, lang)]["summary"])}</p>'
         f'<p class="post-tags">{"".join(f"<span>{E(t)}</span>" for t in p["tags"])}</p>'
         f'<a class="more" href="{url(lang, "blog/" + p["slug"] + ".html")}">{E(U["read"])} →</a></article>'
-        for p in sorted(BP.POSTS, key=lambda p: p["date"], reverse=True))
+        for p in ordered_posts())
     return (head(T, lang, page, f'{U["title"]} · {C.BRAND} {C.BRAND_SUB}', U["intro"]) + header(T, lang, page)
             + f'<main class="sec blog"><div class="wrap narrow"><h1>{E(U["title"])}</h1><p class="intro">{E(U["intro"])}</p>'
             + f'<div class="post-list">{cards}</div></div></main>' + footer(T, lang, page))
+
+
+def post_nav(lang, post, U):
+    """Предыдущая / следующая статья по кругу (в порядке списка блога)."""
+    lst = ordered_posts()
+    if len(lst) < 2:
+        return ""
+    i = next(k for k, p in enumerate(lst) if p["slug"] == post["slug"])
+    prv, nxt = lst[(i - 1) % len(lst)], lst[(i + 1) % len(lst)]
+    a = lambda p, cls, lab, arrow: (f'<a class="{cls}" href="{url(lang, "blog/" + p["slug"] + ".html")}" rel="{cls}">'
+                                   f'<small>{(arrow + " " + E(lab)) if cls == "prev" else (E(lab) + " " + arrow)}</small><span>{E(p["t"][post_lang(p, lang)]["title"])}</span></a>')
+    return f'<nav class="post-nav" aria-label="{E(U["title"])}">{a(prv, "prev", U["prev"], "←")}{a(nxt, "next", U["next"], "→")}</nav>'
 
 
 def blog_post(T, lang, post):
@@ -653,6 +670,7 @@ def blog_post(T, lang, post):
             + "".join(f'<span class="post-tag">{E(t)}</span>' for t in post["tags"]) + "</p>"
             + f'<h1>{E(tx["title"])}</h1>{note}<p class="intro">{E(tx["summary"])}</p>' + "".join(out)
             + f'<aside class="post-cta"><h2>{E(U["cta_title"])}</h2><p>{E(U["cta_text"])}</p>{cta(T)}</aside>'
+            + post_nav(lang, post, U)
             + f'<p class="post-back"><a href="{url(lang, "blog/")}">{E(U["back"])}</a></p></article></main>'
             + footer(T, lang, page))
 
