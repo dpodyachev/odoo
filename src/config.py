@@ -56,6 +56,7 @@ PRICES = [
     ("qrbill",         "600 €", "from"),
     ("monitoring",     "590 €", "from_fix"),
     ("loadtest",       "890 €", "from"),
+    ("replica",        "+10 %", "pct"),      # надбавка к проекту
     ("bot",            "390 €", "from_fix"),
 ]
 # Einstiegsangebot для новых клиентов (блок над тарифами). Срок обязателен; после даты блок

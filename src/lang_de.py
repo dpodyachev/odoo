@@ -112,7 +112,7 @@ T = {
                   "* Wochenend-Einsätze werden mit 95 € / Std. berechnet.",
     "table_title": "Einzelleistungen",
     "table_head": ["Leistung", "Preis"],
-    "units": {"h": "/ Std.", "fix": "Festpreis", "from": "ab"},
+    "units": {"h": "/ Std.", "fix": "Festpreis", "from": "ab", "pct": 'vom Projekt'},
     "price_names": {
         "hourly_support": ("Support & Wartung", "Anpassungen, Benutzerfragen, geplante Arbeiten – im 15-Minuten-Takt"),
         "hourly_urgent": ("Dringend, Wochenende, Troubleshooting", "Störung, Ausfall, Fehlersuche unter Zeitdruck"),
@@ -128,6 +128,7 @@ T = {
         "qrbill": ("Schweizer QR-Rechnung", "QR-IBAN, Referenzen, MWST"),
         "monitoring": ('Grafana & Prometheus einrichten', 'Exporter für Server, PostgreSQL, Docker, nginx; Dashboards und Alarme'),
         "loadtest": ('Lasttest mit Locust', 'Szenarien, Testkopie, Messung, Bericht mit Empfehlungen'),
+        "replica": ('PostgreSQL-Read-Replica für Odoo 18/19', 'Streaming-Replikation, db_replica_host, Messung mit/ohne Replica, Prüfung eigener Module'),
         "bot": ("Monitoring-Bot für Ihr Team", "eigene Instanz, Einrichtung für Ihren Server"),
     },
     "vat_note": "Alle Preise in EUR. Gemäß § 19 UStG (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet. Abrechnung monatlich nach Aufwand im 15-Minuten-Takt bzw. zum vereinbarten Festpreis.",

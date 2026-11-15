@@ -786,3 +786,7 @@ def ACCESS_TITLE(lang):
     return p["t"].get(lang, p["t"]["en"])["title"]
 from blog_post_replica import REPLICA as _C8  # noqa: E402
 POSTS.append(_C8)
+from blog_post_serialize import SERIALIZE as _C9  # noqa: E402
+POSTS.append(_C9)
+from blog_post_restore import RESTORE as _C10  # noqa: E402
+POSTS.append(_C10)

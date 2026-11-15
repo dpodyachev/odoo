@@ -111,7 +111,7 @@ T = {
     "plans_note": "Heures supplémentaires dans une formule : 65 € / h. Résiliable chaque mois. * Interventions le week-end : 95 € / h.",
     "table_title": "Prestations à l'unité",
     "table_head": ["Prestation", "Prix"],
-    "units": {"h": "/ h", "fix": "prix fixe", "from": "à partir de"},
+    "units": {"h": "/ h", "fix": "prix fixe", "from": "à partir de", "pct": 'du projet'},
     "price_names": {
         "hourly_support": ("Support et maintenance", "adaptations, questions des utilisateurs, travaux planifiés – facturé par tranche de 15 min"),
         "hourly_urgent": ("Urgence, week-end, dépannage", "incident, panne, recherche d'erreur sous pression"),
@@ -127,6 +127,7 @@ T = {
         "qrbill": ("QR-facture suisse", "QR-IBAN, références, TVA"),
         "monitoring": ('Mise en place Grafana & Prometheus', 'Exporters serveur, PostgreSQL, Docker, nginx ; tableaux de bord et alertes'),
         "loadtest": ('Test de charge avec Locust', 'scénarios, copie de test, mesures, rapport avec recommandations'),
+        "replica": ('Réplique PostgreSQL en lecture pour Odoo 18/19', 'réplication en streaming, db_replica_host, mesures avec/sans réplique, revue des modules maison'),
         "bot": ("Bot de supervision pour votre équipe", "votre propre instance, configurée pour votre serveur"),
     },
     "vat_note": "Tous les prix en EUR. Selon le § 19 UStG (régime des petites entreprises), aucune TVA n'est facturée. Facturation mensuelle au temps passé par tranche de 15 min ou au prix fixe convenu.",

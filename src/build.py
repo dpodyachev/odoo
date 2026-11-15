@@ -446,6 +446,8 @@ def price_unit(T, unit, price):
         return f'<b>{price}</b> <span>{E(u["fix"])}</span>'
     if unit == "from_fix":
         return f'<span>{E(u["from"])}</span> <b>{price}</b> <span>{E(u["fix"])}</span>'
+    if unit == "pct":
+        return f'<b>{price}</b> <span>{E(u["pct"])}</span>'
     return f'<span>{E(u["from"])}</span> <b>{price}</b>'
 
 

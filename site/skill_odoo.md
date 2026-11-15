@@ -38,7 +38,7 @@ grep -nE "Odoo version|Modules loaded|Registry loaded|Failed to load registry" o
 | `ModuleNotFoundError: No module named 'xyz'` | Missing Python dependency of a custom/OCA module (`pip install`, or add it to the image). |
 | `Some modules are not loaded, some dependencies or manifest may be missing` / `module ... not found` | Module in the database but not in `addons_path` (wrong mount, typo in path, missing OCA repo). |
 | `invalid module names, ignored` | You passed a module to `-u`/`-i` that Odoo does not know. |
-| `could not serialize access due to concurrent update` / `SerializationFailure, retry` | Concurrent transactions (often a cron and users editing the same records). Odoo retries a few times; constant repetition = a long cron fighting with users. |
+| `could not serialize access due to concurrent update` / `SerializationFailure, retry` | Concurrent transactions (often a cron and users editing the same records). Odoo retries a few times; constant repetition = a long cron fighting with users. Details: https://2027.pp.ua/en/blog/odoo-could-not-serialize-access-concurrent-update |
 | `LockNotAvailable` / `lock timeout` / requests hanging | A long transaction holds locks – see `pg_stat_activity` (section 7). |
 | `virtual memory limit ... reached` / `memory limit` | Worker exceeded `limit_memory_soft/hard` and was recycled. Occasional = OK; constant = heavy report/import, raise limits or fix the code. |
 | `timeout after ...s` / `real time limit` | Request or cron exceeded `limit_time_real` (or `limit_time_real_cron`) and was killed. Big imports/reports belong in a cron or a job, not in a request. |
@@ -91,7 +91,7 @@ aws s3 cp mydb_*.dump s3://backups/odoo/ --endpoint-url "$S3_ENDPOINT"
 ```
 - The database manager backup (`/web/database/backup`, zip with dump + filestore) is fine for small databases; for large ones use pg_dump + tar.
 - 3-2-1: three copies, two media, one off-site. Keep daily/weekly/monthly.
-- **A backup is only proven by a restore** – restore to stage regularly (section 5).
+- **A backup is only proven by a restore** – restore to stage regularly (section 5) and check the restore log for `ERROR` (pg_restore continues after errors and silently skips failed indexes/foreign keys). Restore fails with duplicates or foreign key errors: https://2027.pp.ua/en/blog/postgresql-restore-fails-foreign-key-duplicate-index-odoo
 - Attachments in the database instead of the filestore? `ir_attachment.location` system parameter – keep the default (`file`) for large instances.
 
 ## 4. Cron jobs and queue jobs – how to stop them and why

@@ -108,7 +108,7 @@ T = {
     "plans_note": "Extra hours within a plan: €65 / h. Cancel monthly. * Weekend work is billed at €95 / h.",
     "table_title": "Individual services",
     "table_head": ["Service", "Price"],
-    "units": {"h": "/ hour", "fix": "fixed price", "from": "from"},
+    "units": {"h": "/ hour", "fix": "fixed price", "from": "from", "pct": 'of the project'},
     "price_names": {
         "hourly_support": ("Support & maintenance", "changes, user questions, planned work – billed in 15-minute steps"),
         "hourly_urgent": ("Urgent, weekend, troubleshooting", "incidents, outages, debugging under time pressure"),
@@ -124,6 +124,7 @@ T = {
         "qrbill": ("Swiss QR-bill", "QR-IBAN, references, VAT"),
         "monitoring": ('Grafana & Prometheus setup', 'Exporters for server, PostgreSQL, Docker, nginx; dashboards and alerts'),
         "loadtest": ('Load test with Locust', 'scenarios, test copy, measurement, report with recommendations'),
+        "replica": ('PostgreSQL read replica for Odoo 18/19', 'streaming replication, db_replica_host, measurement with/without replica, review of custom modules'),
         "bot": ("Monitoring bot for your team", "your own instance, set up for your server"),
     },
     "vat_note": "All prices in EUR. Under § 19 UStG (small business scheme) no VAT is charged. Billed monthly by time in 15-minute steps or at the agreed fixed price.",
