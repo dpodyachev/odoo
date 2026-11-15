@@ -762,6 +762,8 @@ from blog_posts_more import COMPOSE as _C1, CERTBOT as _C2  # noqa: E402
 POSTS += [_C1, _C2]
 from blog_post_ssl import SSL as _C3  # noqa: E402  (все 6 языков внутри)
 POSTS.append(_C3)
+from blog_post_sec import AUTH as _C4, PWD as _C5  # noqa: E402
+POSTS += [_C4, _C5]
 
 # переводы, вынесенные в отдельные файлы (blog_posts_<lang>.py)
 from blog_posts_fr import FR as _FR  # noqa: E402

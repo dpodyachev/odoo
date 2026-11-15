@@ -8,11 +8,11 @@ SSL = {
     "code": {
         "linux_dns": ("bash · Linux – where am I, where does the name point", """hostname -f                       # full name of THIS server
 hostname -I                       # its IP addresses
-dig +short A    odoo.example.com  # where the domain points (IPv4)
-dig +short AAAA odoo.example.com  # IPv6 - often forgotten, often the culprit
-dig +short CAA  example.com       # which CAs may issue for the domain
-nslookup odoo.example.com         # the same, available almost everywhere"""),
-        "linux_openssl": ("bash · Linux – openssl", """H=odoo.example.com
+dig +short A    2027.pp.ua        # where the domain points (IPv4)
+dig +short AAAA 2027.pp.ua        # IPv6 - often forgotten, often the culprit
+dig +short CAA  goldberg.pp.ua    # which CAs may issue for the domain
+nslookup goldberg.pp.ua           # the same, available almost everywhere"""),
+        "linux_openssl": ("bash · Linux – openssl", """H=2027.pp.ua
 
 # validity, subject, issuer of the certificate actually served
 openssl s_client -connect $H:443 -servername $H </dev/null 2>/dev/null \\
@@ -32,20 +32,20 @@ openssl s_client -connect $H:443 -servername $H -showcerts </dev/null 2>/dev/nul
 # mail server with STARTTLS
 openssl s_client -connect mail.example.com:587 -starttls smtp </dev/null 2>/dev/null \\
   | openssl x509 -noout -enddate"""),
-        "linux_more": ("bash · Linux – curl, nmap, local file", """curl -svI https://odoo.example.com 2>&1 | grep -E "expire date|subject:|issuer:|SSL certificate verify"
-nmap -p 443 --script ssl-cert odoo.example.com
+        "linux_more": ("bash · Linux – curl, nmap, local file", """curl -svI https://2027.pp.ua 2>&1 | grep -E "expire date|subject:|issuer:|SSL certificate verify"
+nmap -p 443 --script ssl-cert goldberg.pp.ua
 openssl x509 -in /etc/letsencrypt/live/odoo.example.com/cert.pem -noout -enddate   # file on disk"""),
         "badssl": ("bash · practise on broken certificates", """for h in expired self-signed untrusted-root wrong.host incomplete-chain; do
   printf "%-20s " $h
   openssl s_client -connect $h.badssl.com:443 -servername $h.badssl.com -verify_hostname $h.badssl.com \\
     </dev/null 2>&1 | grep "Verify return code"
 done"""),
-        "windows": ("PowerShell · Windows", """Resolve-DnsName odoo.example.com                      # DNS (like dig)
-nslookup odoo.example.com
-Test-NetConnection odoo.example.com -Port 443         # is 443 reachable at all?
+        "windows": ("PowerShell · Windows", """Resolve-DnsName 2027.pp.ua                            # DNS (like dig)
+nslookup goldberg.pp.ua
+Test-NetConnection 2027.pp.ua -Port 443               # is 443 reachable at all?
 
 # read the certificate - even an invalid one (the callback accepts everything)
-$h   = "odoo.example.com"
+$h   = "2027.pp.ua"
 $tcp = [Net.Sockets.TcpClient]::new($h, 443)
 $ssl = [Net.Security.SslStream]::new($tcp.GetStream(), $false, { $true })
 $ssl.AuthenticateAsClient($h)
@@ -56,10 +56,10 @@ $ssl.Dispose(); $tcp.Dispose()
 # is the chain trusted by Windows itself?
 $chain = [Security.Cryptography.X509Certificates.X509Chain]::new()
 $chain.Build($c); $chain.ChainStatus | Select-Object Status, StatusInformation"""),
-        "emudhra": ("bash · does my certificate chain to eMudhra?", """H=odoo.example.com
+        "emudhra": ("bash · does my certificate chain to eMudhra?", """H=goldberg.pp.ua
 openssl s_client -connect $H:443 -servername $H -showcerts </dev/null 2>/dev/null \\
   | grep -iE "emSign|eMudhra" && echo "eMudhra in the chain -> replace" || echo "no eMudhra"
-dig +short CAA example.com      # only "emsign.com" here? -> add the new CA first"""),
+dig +short CAA goldberg.pp.ua   # only "emsign.com" here? -> add the new CA first"""),
     },
     "links": [
         ("SSL Labs Server Test", "https://www.ssllabs.com/ssltest/"),
