@@ -757,6 +757,10 @@ UI = {
            "cta_title": "Сделать это для вас?", "cta_text": "Я внедрю это в вашей системе – сначала на тестовой копии, с возможностью отката и протоколом."},
 }
 
+# статьи 5–6 вынесены в blog_posts_more.py
+from blog_posts_more import COMPOSE as _C1, CERTBOT as _C2  # noqa: E402
+POSTS += [_C1, _C2]
+
 # переводы, вынесенные в отдельные файлы (blog_posts_<lang>.py)
 from blog_posts_fr import FR as _FR  # noqa: E402
 for _p in POSTS:

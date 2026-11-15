@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odoo у docker-compose: extra-addons, odoo.conf і nginx – у контейнері чи на хості · Goldberg</title>
+<meta name="description" content="Як правильно змонтувати власні й OCA-модулі, що має бути в odoo.conf і як nginx коректно проксить Odoo разом із websocket – в обох варіантах.">
+<link rel="canonical" href="https://2027.pp.ua/uk/blog/odoo-docker-compose-extra-addons-nginx">
+<link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/odoo-docker-compose-extra-addons-nginx">
+<link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/odoo-docker-compose-extra-addons-nginx">
+<link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/blog/odoo-docker-compose-extra-addons-nginx">
+<link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/blog/odoo-docker-compose-extra-addons-nginx">
+<link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/odoo-docker-compose-extra-addons-nginx">
+<link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/odoo-docker-compose-extra-addons-nginx">
+<link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/odoo-docker-compose-extra-addons-nginx">
+<meta property="og:title" content="Odoo у docker-compose: extra-addons, odoo.conf і nginx – у контейнері чи на хості · Goldberg">
+<meta property="og:description" content="Як правильно змонтувати власні й OCA-модулі, що має бути в odoo.conf і як nginx коректно проксить Odoo разом із websocket – в обох варіантах.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2027.pp.ua/uk/blog/odoo-docker-compose-extra-addons-nginx">
+<meta name="theme-color" content="#3b2a4a">
+<meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Odoo у docker-compose: extra-addons, odoo.conf і nginx – у контейнері чи на хості", "description": "Як правильно змонтувати власні й OCA-модулі, що має бути в odoo.conf і як nginx коректно проксить Odoo разом із websocket – в обох варіантах.", "datePublished": "2026-11-15", "inLanguage": "uk", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua", "sameAs": ["https://www.linkedin.com/in/dpodyachev"]}, "mainEntityOfPage": "https://2027.pp.ua/uk/blog/odoo-docker-compose-extra-addons-nginx"}</script>
+</head>
+<body>
+<header class="top">
+<div class="wrap top-in">
+<a class="brand" href="/uk/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="menu"><a class="nav-icon multi" href="/uk/#services" title="Послуги" aria-label="Послуги"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7.8" stroke-width="3" stroke-dasharray="3 3.125" stroke-linecap="butt"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7z"/></svg></a><a class="nav-icon" href="/uk/#dach" title="DATEV і E-Rechnung" aria-label="DATEV і E-Rechnung"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5M14 3l5 5v4M14 3v5h5"/><path d="M8.5 11h5M8.5 14.5h3"/><path d="m14.5 18.5 2 2 4-4.5"/></svg></a><a class="nav-icon radar" href="/uk/#bot" title="Моніторинг" aria-label="Моніторинг"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.2" opacity=".55"/><g class="sweep"><path d="M12 12 18.5 5.5A9.2 9.2 0 0 1 21.2 12z" fill="currentColor" stroke="none" opacity=".28"/><path d="M12 12l6.5-6.5"/></g><circle cx="15.6" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon cur" href="/uk/#prices" title="Ціни" aria-label="Ціни"><span aria-hidden="true">₴</span></a><a class="nav-icon" href="/uk/#about" title="Про мене" aria-label="Про мене"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/></svg></a><a class="nav-icon" href="/uk/blog/" title="Блог і how-to" aria-label="Блог і how-to" aria-current=page><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon" href="/uk/#contact" title="Контакт" aria-label="Контакт"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a></nav>
+<nav class="langs" aria-label="Language"><a href="/de/blog/odoo-docker-compose-extra-addons-nginx" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/odoo-docker-compose-extra-addons-nginx" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/odoo-docker-compose-extra-addons-nginx" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/odoo-docker-compose-extra-addons-nginx" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/odoo-docker-compose-extra-addons-nginx" hreflang="uk" lang="uk" title="Українська" aria-label="Українська" aria-current="true"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/odoo-docker-compose-extra-addons-nginx" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<button type="button" class="theme" hidden aria-label="Світла / темна тема" title="Світла / темна тема">🌙</button>
+</div>
+</header>
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/uk/blog/">← Усі статті</a></p><p class="post-meta">15.11.2026 · 2 хв читання · <span class="post-tag">Docker</span><span class="post-tag">odoo.conf</span><span class="post-tag">extra-addons</span><span class="post-tag">nginx</span></p><h1>Odoo у docker-compose: extra-addons, odoo.conf і nginx – у контейнері чи на хості</h1><p class="intro">Як правильно змонтувати власні й OCA-модулі, що має бути в odoo.conf і як nginx коректно проксить Odoo разом із websocket – в обох варіантах.</p><p>Odoo в docker-compose запускається швидко, а типові проблеми починаються потім: модулі не з&#x27;являються, зміни конфігу не діють, чат не підключається, або Odoo раптом доступний напряму з інтернету. Ось схема, яка себе виправдала.</p><h2>Структура каталогів</h2><figure class="code"><figcaption>/srv/odoo</figcaption><pre><code>/srv/odoo/
+├── docker-compose.yml
+├── .env                      # passwords - never in Git
+├── config/odoo.conf          # mounted as a directory
+├── addons/
+│   ├── custom/               # your own modules
+│   └── oca/
+│       ├── web/              # one OCA repository = one folder of modules
+│       └── server-tools/
+└── nginx/odoo.conf           # only for variant A (nginx in compose)</code></pre></figure><h2>docker-compose.yml</h2><figure class="code"><figcaption>docker-compose.yml</figcaption><pre><code>services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;pg_isready -U odoo&quot;]
+      interval: 10s
+
+  odoo:
+    image: odoo:17
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    command: odoo -c /etc/odoo/odoo.conf
+    volumes:
+      - ./config:/etc/odoo:ro                              # the directory, not a single file
+      - ./addons/custom:/mnt/extra-addons/custom:ro
+      - ./addons/oca:/mnt/extra-addons/oca:ro
+      - odoo-data:/var/lib/odoo                            # filestore + sessions
+    # variant A: no &quot;ports&quot; here - nginx reaches odoo over the compose network
+    # variant B (nginx on the host): publish ONLY on localhost
+    # ports:
+    #   - &quot;127.0.0.1:8069:8069&quot;
+    #   - &quot;127.0.0.1:8072:8072&quot;
+
+volumes:
+  db-data:
+  odoo-data:</code></pre></figure><ul><li><b>Монтуйте каталоги, а не окремі файли.</b> Якщо змонтовано лише файл <code>odoo.conf</code>, контейнер не побачить змін після <code>sed -i</code> або редактора, який перезаписує файл: у нового файлу інший inode. З <code>./config:/etc/odoo</code> цієї проблеми немає.</li><li>Модулі монтуйте з <code>:ro</code>: Odoo не потрібні права на запис туди.</li><li>Офіційний образ працює від користувача <code>odoo</code> (UID 101). Для bind-mount з даними: <code>chown -R 101:101</code>.</li></ul><h2>odoo.conf</h2><figure class="code"><figcaption>config/odoo.conf</figcaption><pre><code>[options]
+; paths INSIDE the container; Odoo adds its own core addons itself
+addons_path = /mnt/extra-addons/custom,/mnt/extra-addons/oca/web,/mnt/extra-addons/oca/server-tools
+data_dir = /var/lib/odoo
+
+db_host = db
+db_port = 5432
+db_user = odoo
+db_password = change-me              ; same as PG_PASSWORD in .env
+list_db = False
+admin_passwd = change-me-too
+
+proxy_mode = True                    ; behind nginx: trust X-Forwarded-* headers
+workers = 4
+max_cron_threads = 1
+gevent_port = 8072                   ; websocket (live chat, notifications)
+limit_memory_soft = 2147483648
+limit_memory_hard = 2684354560
+limit_time_cpu = 600
+limit_time_real = 1200</code></pre></figure><ul><li>В <code>addons_path</code> пишуться <b>шляхи всередині контейнера</b>, а не на хості.</li><li>OCA-репозиторій – це каталог із багатьма модулями. Кожен репозиторій треба вказати <b>окремо</b>, батьківського <code>oca/</code> недостатньо.</li><li>Нові модулі з&#x27;являються лише після перезапуску й «Додатки → Оновити список» (або <code>-u base</code>). Без <code>__manifest__.py</code> у каталозі це не модуль.</li><li><code>proxy_mode = True</code> за nginx обов&#x27;язковий, інакше Odoo бачить <code>http</code> замість <code>https</code> і IP nginx замість клієнта.</li></ul><h2>nginx: один конфіг, два варіанти</h2><p>Odoo 17 потрібні дві адреси: <code>8069</code> для всього і <code>8072</code> для <code>/websocket</code> (чат, сповіщення). Конфіг однаковий в обох варіантах, відрізняються лише адреси в <code>upstream</code>.</p><figure class="code"><figcaption>nginx – odoo.conf</figcaption><pre><code>upstream odoo     { server odoo:8069; }       # variant B: 127.0.0.1:8069
+upstream odoochat { server odoo:8072; }       # variant B: 127.0.0.1:8072
+
+map $http_upgrade $connection_upgrade { default upgrade; &#x27;&#x27; close; }
+
+server {
+    listen 80;
+    server_name odoo.example.com;
+    location /.well-known/acme-challenge/ { root /var/www/certbot; }
+    location / { return 301 https://$host$request_uri; }
+}
+
+server {
+    listen 443 ssl;
+    http2 on;                         # nginx &lt; 1.25.1: &quot;listen 443 ssl http2;&quot; instead
+    server_name odoo.example.com;
+    ssl_certificate     /etc/letsencrypt/live/odoo.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/odoo.example.com/privkey.pem;
+
+    client_max_body_size 200m;
+    proxy_read_timeout 720s;
+    proxy_connect_timeout 720s;
+    proxy_send_timeout 720s;
+
+    proxy_set_header X-Forwarded-Host  $http_host;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP         $remote_addr;
+
+    location /websocket {
+        proxy_pass http://odoochat;
+        proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header X-Forwarded-Host  $http_host;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP         $remote_addr;
+    }
+
+    location / {
+        proxy_redirect off;
+        proxy_pass http://odoo;
+    }
+
+    gzip on;
+    gzip_types text/css text/plain application/json application/javascript text/xml;
+}</code></pre></figure><h2>Варіант А: nginx у тому самому docker-compose</h2><figure class="code"><figcaption>docker-compose.yml – variant A</figcaption><pre><code>  nginx:
+    image: nginx:1.27
+    restart: unless-stopped
+    depends_on: [odoo]
+    ports:
+      - &quot;80:80&quot;
+      - &quot;443:443&quot;
+    volumes:
+      - ./nginx:/etc/nginx/conf.d:ro                       # directory again
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./certbot-www:/var/www/certbot:ro</code></pre></figure><p>nginx звертається до Odoo за іменем сервісу <code>odoo</code> у мережі compose. Odoo <b>не</b> публікує порти, ззовні видно лише nginx на 80/443. Сертифікати беруться з хоста (<code>/etc/letsencrypt</code>, лише читання).</p><h2>Варіант Б: nginx на хості</h2><p>Порти Odoo публікуються лише на <code>127.0.0.1</code> (див. закоментовані <code>ports</code> вище), а в <code>upstream</code> nginx вказуються <code>127.0.0.1:8069</code> і <code>127.0.0.1:8072</code>.</p><p class="post-note">Увага: <code>&quot;8069:8069&quot;</code> без <code>127.0.0.1</code> відкриває Odoo всьому інтернету, <b>навіть якщо ufw блокує порт</b>. Docker пише свої правила прямо в iptables, повз ufw.</p><h2>Перевірка</h2><figure class="code"><figcaption>bash</figcaption><pre><code># which addons paths did Odoo really load?
+docker compose logs odoo | grep &quot;addons paths&quot;
+
+# is the config the one you think?
+docker compose exec odoo grep -E &quot;^(addons_path|proxy_mode|workers)&quot; /etc/odoo/odoo.conf
+
+# nginx: syntax + reload without downtime
+docker compose exec nginx nginx -t &amp;&amp; docker compose exec nginx nginx -s reload   # variant A
+sudo nginx -t &amp;&amp; sudo systemctl reload nginx                                       # variant B
+
+# Odoo must NOT answer from outside on 8069 (variant B)
+curl -m 5 -sI http://&lt;server-ip&gt;:8069/web/login || echo &quot;closed - good&quot;</code></pre></figure><aside class="post-cta"><h2>Зробити це для вас?</h2><p>Я впроваджу це у вашій системі – спершу на тестовій копії, з можливістю відкату й протоколом.</p><div class="cta ">
+<a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Записатися – 30 хв безкоштовно</a>
+<a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
+<a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
+<a class="btn ghost" href="https://www.linkedin.com/in/dpodyachev" target="_blank" rel="noopener me">LinkedIn</a>
+</div></aside><nav class="post-nav" aria-label="Блог і how-to"><a class="prev" href="/uk/blog/certbot-nginx-auto-renewal" rel="prev"><small>← Попередня стаття</small><span>Certbot для nginx – і як ніколи не забути про продовження</span></a><a class="all" href="/uk/blog/"><small>← Усі статті</small></a><a class="next" href="/uk/blog/odoo-logging-options-cheatsheet" rel="next"><small>Наступна стаття →</small><span>Логи Odoo: warn чи warning, log_level чи --log-level? Шпаргалка</span></a></nav></article></main><footer class="foot">
+<div class="wrap foot-in">
+<div><strong>Goldberg · Odoo Services</strong><br>Підтримка, встановлення та інтеграція Odoo для Німеччини, Австрії та Швейцарії.</div>
+<div class="foot-links">
+<a href="/uk/blog/">Блог і how-to</a>
+<a href="/uk/impressum">Impressum</a>
+<a href="/uk/datenschutz">Конфіденційність</a>
+<a href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
+<a href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram</a>
+<a href="https://www.linkedin.com/in/dpodyachev" target="_blank" rel="noopener me">LinkedIn</a>
+</div>
+<nav class="langs" aria-label="Language"><a href="/de/blog/odoo-docker-compose-extra-addons-nginx" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/odoo-docker-compose-extra-addons-nginx" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/odoo-docker-compose-extra-addons-nginx" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/odoo-docker-compose-extra-addons-nginx" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/odoo-docker-compose-extra-addons-nginx" hreflang="uk" lang="uk" title="Українська" aria-label="Українська" aria-current="true"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/odoo-docker-compose-extra-addons-nginx" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<div class="small">© 2026 Goldberg. Сайт не використовує cookies і трекінг.</div>
+</div>
+</footer>
+</body>
+</html>

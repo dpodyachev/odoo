@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certbot για nginx – και πώς η ανανέωση δεν ξεχνιέται ποτέ · Goldberg</title>
+<meta name="description" content="Έκδοση πιστοποιητικού (nginx στον host ή σε container), αυτόματη ανανέωση με systemd timer ή cron, επαναφόρτωση του nginx μετά την ανανέωση και δική σας παρακολούθηση της λήξης.">
+<link rel="canonical" href="https://2027.pp.ua/el/blog/certbot-nginx-auto-renewal">
+<link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/certbot-nginx-auto-renewal">
+<link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/certbot-nginx-auto-renewal">
+<link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/blog/certbot-nginx-auto-renewal">
+<link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/blog/certbot-nginx-auto-renewal">
+<link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/certbot-nginx-auto-renewal">
+<link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/certbot-nginx-auto-renewal">
+<link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/certbot-nginx-auto-renewal">
+<meta property="og:title" content="Certbot για nginx – και πώς η ανανέωση δεν ξεχνιέται ποτέ · Goldberg">
+<meta property="og:description" content="Έκδοση πιστοποιητικού (nginx στον host ή σε container), αυτόματη ανανέωση με systemd timer ή cron, επαναφόρτωση του nginx μετά την ανανέωση και δική σας παρακολούθηση της λήξης.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2027.pp.ua/el/blog/certbot-nginx-auto-renewal">
+<meta name="theme-color" content="#3b2a4a">
+<meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Certbot για nginx – και πώς η ανανέωση δεν ξεχνιέται ποτέ", "description": "Έκδοση πιστοποιητικού (nginx στον host ή σε container), αυτόματη ανανέωση με systemd timer ή cron, επαναφόρτωση του nginx μετά την ανανέωση και δική σας παρακολούθηση της λήξης.", "datePublished": "2026-11-15", "inLanguage": "el", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua", "sameAs": ["https://www.linkedin.com/in/dpodyachev"]}, "mainEntityOfPage": "https://2027.pp.ua/el/blog/certbot-nginx-auto-renewal"}</script>
+</head>
+<body>
+<header class="top">
+<div class="wrap top-in">
+<a class="brand" href="/el/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="menu"><a class="nav-icon multi" href="/el/#services" title="Υπηρεσίες" aria-label="Υπηρεσίες"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7.8" stroke-width="3" stroke-dasharray="3 3.125" stroke-linecap="butt"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7z"/></svg></a><a class="nav-icon" href="/el/#dach" title="DATEV &amp; e-τιμολόγια" aria-label="DATEV &amp; e-τιμολόγια"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5M14 3l5 5v4M14 3v5h5"/><path d="M8.5 11h5M8.5 14.5h3"/><path d="m14.5 18.5 2 2 4-4.5"/></svg></a><a class="nav-icon radar" href="/el/#bot" title="Παρακολούθηση" aria-label="Παρακολούθηση"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.2" opacity=".55"/><g class="sweep"><path d="M12 12 18.5 5.5A9.2 9.2 0 0 1 21.2 12z" fill="currentColor" stroke="none" opacity=".28"/><path d="M12 12l6.5-6.5"/></g><circle cx="15.6" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon cur" href="/el/#prices" title="Τιμές" aria-label="Τιμές"><span aria-hidden="true">€</span></a><a class="nav-icon" href="/el/#about" title="Σχετικά" aria-label="Σχετικά"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/></svg></a><a class="nav-icon" href="/el/blog/" title="Blog &amp; οδηγοί" aria-label="Blog &amp; οδηγοί" aria-current=page><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon" href="/el/#contact" title="Επικοινωνία" aria-label="Επικοινωνία"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a></nav>
+<nav class="langs" aria-label="Language"><a href="/de/blog/certbot-nginx-auto-renewal" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/certbot-nginx-auto-renewal" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/certbot-nginx-auto-renewal" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/certbot-nginx-auto-renewal" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά" aria-current="true"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/certbot-nginx-auto-renewal" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/certbot-nginx-auto-renewal" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<button type="button" class="theme" hidden aria-label="Φωτεινό / σκοτεινό θέμα" title="Φωτεινό / σκοτεινό θέμα">🌙</button>
+</div>
+</header>
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/el/blog/">← Όλα τα άρθρα</a></p><p class="post-meta">15.11.2026 · 2 λεπτά ανάγνωσης · <span class="post-tag">nginx</span><span class="post-tag">certbot</span><span class="post-tag">Let&#x27;s Encrypt</span><span class="post-tag">systemd</span></p><h1>Certbot για nginx – και πώς η ανανέωση δεν ξεχνιέται ποτέ</h1><p class="intro">Έκδοση πιστοποιητικού (nginx στον host ή σε container), αυτόματη ανανέωση με systemd timer ή cron, επαναφόρτωση του nginx μετά την ανανέωση και δική σας παρακολούθηση της λήξης.</p><p>Ένα ληγμένο πιστοποιητικό ρίχνει το Odoo όπως και μια πτώση του server: οι browsers μπλοκάρουν τη σελίδα, οι διασυνδέσεις και οι εφαρμογές σταματούν. Δύο αλλαγές κάνουν το θέμα πιο επείγον: η Let&#x27;s Encrypt <b>από το 2025 δεν στέλνει πλέον e-mail λήξης</b>, και η διάρκεια των πιστοποιητικών <b>μειώνεται σταδιακά</b> (στόχος: 45 ημέρες έως το 2028). Η χειροκίνητη ανανέωση δεν είναι πια επιλογή.</p><h2>1. Έκδοση πιστοποιητικού</h2><p><b>nginx στον host</b> – το plugin του nginx κάνει τα πάντα:</p><figure class="code"><figcaption>bash · nginx on the host</figcaption><pre><code>sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d odoo.example.com
+# certbot edits the nginx server block and reloads nginx itself</code></pre></figure><p><b>nginx σε docker-compose</b> – μέθοδος <code>webroot</code>: ο nginx στο container σερβίρει το αρχείο ελέγχου, το certbot τρέχει στον host:</p><figure class="code"><figcaption>bash · nginx in docker-compose</figcaption><pre><code># nginx serves /.well-known/acme-challenge/ from ./certbot-www (see the Odoo + nginx article)
+sudo apt install certbot
+sudo certbot certonly --webroot -w /srv/odoo/certbot-www -d odoo.example.com
+# certificates land in /etc/letsencrypt, mounted read-only into the nginx container</code></pre></figure><h2>2. Επαναφόρτωση του nginx μετά την ανανέωση</h2><p>Το certbot ανανεώνει τα αρχεία – αλλά ο nginx συνεχίζει να σερβίρει το παλιό πιστοποιητικό από τη μνήμη μέχρι να γίνει reload. Ένα deploy hook εκτελείται <b>μόνο μετά από πραγματική ανανέωση</b>:</p><figure class="code"><figcaption>/etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh</figcaption><pre><code>#!/bin/sh
+# runs ONLY after a certificate was actually renewed
+# nginx on the host:
+systemctl reload nginx
+# nginx in docker-compose (use this line instead):
+# docker compose -f /srv/odoo/docker-compose.yml exec -T nginx nginx -s reload</code></pre></figure><p>Μην ξεχάσετε <code>chmod +x</code> για το script.</p><h2>3. Αυτόματη ανανέωση</h2><p>Το πακέτο Debian/Ubuntu περιλαμβάνει ήδη systemd timer (δύο φορές την ημέρα), όπως και η έκδοση snap. Η ανανέωση γίνεται μόλις απομείνουν λιγότερες από 30 ημέρες. Έλεγχος:</p><figure class="code"><figcaption>bash</figcaption><pre><code>systemctl list-timers | grep -i certbot      # certbot.timer (apt) or snap.certbot.renew.timer (snap)
+sudo certbot renew --dry-run                  # full rehearsal against the staging server
+sudo certbot certificates                     # domains and expiry dates</code></pre></figure><p>Αν λείπει ο timer (π.χ. εγκατάσταση μέσω pip), δημιουργήστε δικό σας. Προτιμώ systemd timers από cron: η έξοδος πηγαίνει στο journal (<code>journalctl -u certbot-renew</code>) και το <code>Persistent=true</code> αναπληρώνει εκτελέσεις που χάθηκαν λόγω επανεκκίνησης.</p><figure class="code"><figcaption>/etc/systemd/system/certbot-renew.service + .timer</figcaption><pre><code># certbot-renew.service
+[Unit]
+Description=Renew Let&#x27;s Encrypt certificates
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/certbot renew --quiet
+
+# certbot-renew.timer
+[Unit]
+Description=Twice a day: certbot renew
+
+[Timer]
+OnCalendar=*-*-* 03,15:17:00
+RandomizedDelaySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+
+# enable:
+#   sudo systemctl daemon-reload &amp;&amp; sudo systemctl enable --now certbot-renew.timer</code></pre></figure><p>Η παραλλαγή με cron σε μία γραμμή:</p><figure class="code"><figcaption>/etc/cron.d/certbot-renew</figcaption><pre><code>17 3,15 * * * root certbot renew --quiet</code></pre></figure><h2>4. Δική σας παρακολούθηση – όχι αναμονή για e-mail</h2><p>Ο αυτοματισμός μπορεί να αποτύχει σιωπηλά: άλλαξε το DNS, έκλεισε η θύρα 80, σφάλμα στο hook. Γι&#x27; αυτό ελέγχετε απ&#x27; έξω τη λήξη του πιστοποιητικού που πραγματικά σερβίρεται – καθημερινά, με ειδοποίηση:</p><figure class="code"><figcaption>bash · check-cert.sh</figcaption><pre><code>#!/bin/sh
+# exit code 1 and a message if the certificate expires in less than 14 days
+D=odoo.example.com
+END=$(echo | openssl s_client -servername $D -connect $D:443 2&gt;/dev/null | openssl x509 -noout -enddate | cut -d= -f2)
+echo | openssl s_client -servername $D -connect $D:443 2&gt;/dev/null \
+  | openssl x509 -noout -checkend $((14*86400)) &gt;/dev/null \
+  || { echo &quot;certificate for $D expires: $END&quot;; exit 1; }</code></pre></figure><ul><li>Εκτελέστε το script καθημερινά με timer και στείλτε μήνυμα όταν ο κωδικός εξόδου είναι 1 (e-mail, Telegram bot).</li><li>Με Prometheus το αναλαμβάνει ο <code>blackbox_exporter</code>: μετρική <code>probe_ssl_earliest_cert_expiry</code>, ειδοποίηση κάτω από 14 ημέρες.</li><li>Μετά από κάθε αλλαγή στον nginx ή στο DNS, εκτελέστε μία φορά <code>certbot renew --dry-run</code>.</li></ul><aside class="post-cta"><h2>Να το αναλάβω εγώ;</h2><p>Το υλοποιώ στο σύστημά σας – πρώτα σε αντίγραφο δοκιμών, με δυνατότητα επαναφοράς και αναφορά.</p><div class="cta ">
+<a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Κλείστε ραντεβού – 30 λεπτά δωρεάν</a>
+<a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
+<a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
+<a class="btn ghost" href="https://www.linkedin.com/in/dpodyachev" target="_blank" rel="noopener me">LinkedIn</a>
+</div></aside><nav class="post-nav" aria-label="Blog &amp; οδηγοί"><a class="prev" href="/el/blog/odoo-17-python-3-14-docker" rel="prev"><small>← Προηγούμενο άρθρο</small><span>Μετάβαση του Odoo 17 σε Python 3.14 – με docker-compose</span></a><a class="all" href="/el/blog/"><small>← Όλα τα άρθρα</small></a><a class="next" href="/el/blog/odoo-docker-compose-extra-addons-nginx" rel="next"><small>Επόμενο άρθρο →</small><span>Odoo με docker-compose: extra-addons, odoo.conf και nginx – σε container ή στον host</span></a></nav></article></main><footer class="foot">
+<div class="wrap foot-in">
+<div><strong>Goldberg · Odoo Services</strong><br>Υποστήριξη, εγκατάσταση και ενοποίηση Odoo για Γερμανία, Αυστρία και Ελβετία.</div>
+<div class="foot-links">
+<a href="/el/blog/">Blog &amp; οδηγοί</a>
+<a href="/el/impressum">Νομικές πληροφορίες</a>
+<a href="/el/datenschutz">Απόρρητο</a>
+<a href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
+<a href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram</a>
+<a href="https://www.linkedin.com/in/dpodyachev" target="_blank" rel="noopener me">LinkedIn</a>
+</div>
+<nav class="langs" aria-label="Language"><a href="/de/blog/certbot-nginx-auto-renewal" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/certbot-nginx-auto-renewal" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/certbot-nginx-auto-renewal" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/certbot-nginx-auto-renewal" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά" aria-current="true"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/certbot-nginx-auto-renewal" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/certbot-nginx-auto-renewal" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<div class="small">© 2026 Goldberg. Αυτός ο ιστότοπος δεν χρησιμοποιεί cookies ούτε tracking.</div>
+</div>
+</footer>
+</body>
+</html>
