@@ -958,6 +958,8 @@ def write_ai_files():
         write(f"skills/{name}/SKILL.md", skill)
         if name in SKILL_ALIAS:
             write(SKILL_ALIAS[name], skill)
+    with open(os.path.join(os.path.dirname(HERE), "tools", "pgload", "pgload.py"), encoding="utf-8") as fh:
+        write("tools/pgload.py", fh.read())          # скачивание из статьи про pgload
     posts = sorted(BP.POSTS, key=lambda p: p["date"], reverse=True)
     lines = [f"# {C.BRAND} · {C.BRAND_SUB}", "",
              "> Odoo 17 knowledge from practice: self-hosting, Docker, module updates, backups and restores, cron and queue jobs, "

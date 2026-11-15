@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pgload : un petit générateur de charge pour PostgreSQL – base locale contre base distante avec réplique · Goldberg</title>
+<meta name="description" content="Pourquoi nous avons écrit notre propre outil de charge à côté de pgbench, ce qu&#x27;il mesure (percentiles de latence, débit, erreurs), comment comparer socket local, hôte distant et réplique synchrone – avec le code complet, mots de passe uniquement depuis l&#x27;environnement.">
+<link rel="canonical" href="https://2027.pp.ua/fr/blog/postgresql-load-test-pgload-replica">
+<link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/postgresql-load-test-pgload-replica">
+<link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/postgresql-load-test-pgload-replica">
+<link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/blog/postgresql-load-test-pgload-replica">
+<link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/blog/postgresql-load-test-pgload-replica">
+<link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/postgresql-load-test-pgload-replica">
+<link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/postgresql-load-test-pgload-replica">
+<link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/postgresql-load-test-pgload-replica">
+<meta property="og:title" content="pgload : un petit générateur de charge pour PostgreSQL – base locale contre base distante avec réplique · Goldberg">
+<meta property="og:description" content="Pourquoi nous avons écrit notre propre outil de charge à côté de pgbench, ce qu&#x27;il mesure (percentiles de latence, débit, erreurs), comment comparer socket local, hôte distant et réplique synchrone – avec le code complet, mots de passe uniquement depuis l&#x27;environnement.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2027.pp.ua/fr/blog/postgresql-load-test-pgload-replica">
+<meta name="theme-color" content="#3b2a4a">
+<meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="Site overview for AI assistants (llms.txt)">
+<link rel="alternate" type="text/markdown" href="/skill_odoo.md" title="Odoo operations skill for AI agents (Markdown)">
+<link rel="alternate" type="text/markdown" href="/skill_odoo_security.md" title="Odoo security skill for AI agents (Markdown)">
+<link rel="stylesheet" href="/assets/style.css?v=8ecde3c6">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+<script src="/assets/contacts.js?v=b8439ff0" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "pgload : un petit générateur de charge pour PostgreSQL – base locale contre base distante avec réplique", "description": "Pourquoi nous avons écrit notre propre outil de charge à côté de pgbench, ce qu'il mesure (percentiles de latence, débit, erreurs), comment comparer socket local, hôte distant et réplique synchrone – avec le code complet, mots de passe uniquement depuis l'environnement.", "datePublished": "2026-11-15", "inLanguage": "fr", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua", "sameAs": ["https://www.linkedin.com/in/dpodyachev"]}, "mainEntityOfPage": "https://2027.pp.ua/fr/blog/postgresql-load-test-pgload-replica"}</script>
+</head>
+<body>
+<header class="top">
+<div class="wrap top-in">
+<a class="brand" href="/fr/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="menu"><a class="nav-icon multi" href="/fr/#services" title="Services" aria-label="Services"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7.8" stroke-width="3" stroke-dasharray="3 3.125" stroke-linecap="butt"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7z"/></svg></a><a class="nav-icon" href="/fr/#dach" title="DATEV &amp; e-facture" aria-label="DATEV &amp; e-facture"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5M14 3l5 5v4M14 3v5h5"/><path d="M8.5 11h5M8.5 14.5h3"/><path d="m14.5 18.5 2 2 4-4.5"/></svg></a><a class="nav-icon radar" href="/fr/#bot" title="Supervision" aria-label="Supervision"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.2" opacity=".55"/><g class="sweep"><path d="M12 12 18.5 5.5A9.2 9.2 0 0 1 21.2 12z" fill="currentColor" stroke="none" opacity=".28"/><path d="M12 12l6.5-6.5"/></g><circle cx="15.6" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon cur" href="/fr/#prices" title="Tarifs" aria-label="Tarifs"><span aria-hidden="true">€</span></a><a class="nav-icon" href="/fr/#about" title="À propos" aria-label="À propos"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/></svg></a><a class="nav-icon" href="/fr/blog/" title="Blog &amp; guides" aria-label="Blog &amp; guides" aria-current=page><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon" href="/fr/#contact" title="Contact" aria-label="Contact"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a></nav>
+<nav class="langs" aria-label="Language"><a href="/de/blog/postgresql-load-test-pgload-replica" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/postgresql-load-test-pgload-replica" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/postgresql-load-test-pgload-replica" hreflang="fr" lang="fr" title="Français" aria-label="Français" aria-current="true"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/postgresql-load-test-pgload-replica" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/postgresql-load-test-pgload-replica" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/postgresql-load-test-pgload-replica" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<button type="button" class="theme" hidden aria-label="Thème clair / sombre" title="Thème clair / sombre">🌙</button>
+</div>
+</header>
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/fr/blog/">← Tous les articles</a></p><p class="post-meta">15.11.2026 · 5 min de lecture · <span class="post-tag">PostgreSQL</span><span class="post-tag">Performance</span><span class="post-tag">Replica</span><span class="post-tag">Load test</span><span class="post-tag">Python</span></p><h1>pgload : un petit générateur de charge pour PostgreSQL – base locale contre base distante avec réplique</h1><p class="intro">Pourquoi nous avons écrit notre propre outil de charge à côté de pgbench, ce qu&#x27;il mesure (percentiles de latence, débit, erreurs), comment comparer socket local, hôte distant et réplique synchrone – avec le code complet, mots de passe uniquement depuis l&#x27;environnement.</p><p>Avant de déplacer une base Odoo vers un serveur PostgreSQL séparé avec réplique, nous voulions des chiffres plutôt que des opinions : de combien un commit est-il plus lent à travers le réseau ? Que coûte une réplique synchrone ? Quels réglages comptent ? <code>pgbench</code> mesure sa propre charge de type TPC-B ; nous voulions <b>notre</b> profil – beaucoup de connexions parallèles, des blocs binaires comme les pièces jointes Odoo, des lectures courtes – et la même commande contre chaque variante.</p><p class="post-note">En bref : pgload ouvre N connexions parallèles, insère (et lit en option) des blocs de taille réglable et affiche débit et percentiles de latence. Lancé à l&#x27;identique contre le socket local, l&#x27;hôte distant et l&#x27;hôte distant avec réplique synchrone, il montre vos coûts de réseau et de réplication. Uniquement sur une base de test : il écrit de vraies données et du WAL.</p><h2>Ce qu&#x27;il fait</h2><ul><li>Crée un schéma <code>pgload</code> avec une table (colonne bytea, deux index – chaque insertion met donc à jour index et WAL comme une vraie table).</li><li>Exécute <code>--count</code> opérations avec <code>--workers</code> connexions parallèles, par blocs ; chaque opération est sa propre transaction (autocommit) – chaque insertion paie un commit complet, y compris l&#x27;attente d&#x27;une réplique synchrone.</li><li>Modes : <code>insert</code>, <code>select</code> (lectures aléatoires par plage), <code>mixed</code> avec <code>--read-ratio</code>.</li><li>Affiche après chaque bloc et à la fin : opérations par seconde, moyenne, latence p50/p95/p99/max, Mo écrits, erreurs.</li><li>Paramètres de connexion <b>uniquement via l&#x27;environnement libpq</b> (<code>PGHOST</code>, <code>PGUSER</code>, <code>PGDATABASE</code>, mot de passe via <code>~/.pgpass</code>) – rien de secret dans le script ni dans l&#x27;historique du shell.</li></ul><h2>Lancer une comparaison</h2><figure class="code"><figcaption>bash · runs to compare</figcaption><pre><code>pip install psycopg2-binary
+export PGDATABASE=loadtest PGUSER=odoo            # password: ~/.pgpass, never on the command line
+
+# A) local database over the Unix socket
+PGHOST=/run/postgresql ./pgload.py -w 32 -c 20000 -s 64 -r | tee a_local.log
+
+# B) remote database, asynchronous replica
+PGHOST=10.0.0.10 ./pgload.py -w 32 -c 20000 -s 64 -r | tee b_remote.log
+
+# C) same remote database, synchronous replica (on the primary: synchronous_standby_names = &#x27;*&#x27;)
+PGHOST=10.0.0.10 ./pgload.py -w 32 -c 20000 -s 64 -r | tee c_remote_sync.log
+
+# D) Odoo-like: many small reads and short writes
+PGHOST=10.0.0.10 ./pgload.py -m mixed --read-ratio 0.8 -s 2 -w 64 -c 50000 | tee d_mixed.log
+
+grep RESULT *.log
+./pgload.py --drop                                  # clean up</code></pre></figure><figure class="code"><figcaption>output</figcaption><pre><code>2026-11-15 22:10:01 server 10.0.0.10 PostgreSQL 16.4, synchronous_commit=on, replicas=1; workers=32 count=20000 size=64kB mode=insert
+2026-11-15 22:10:02 insert: n=100 ...
+2026-11-15 22:11:40 RESULT insert: n=20000 204/s avg=156.2ms p50=148.0 p95=231.4 p99=298.7 max=611.0ms | written 937 MB (9.6 MB/s) | errors 0 | 98s
+(example of the format – your numbers depend entirely on hardware, network and settings)</code></pre></figure><h2>Ce qu&#x27;on fait varier – une chose à la fois</h2><div class="tablewrap"><table class="post-table"><thead><tr><th>Réglage</th><th>Ce qu&#x27;il montre</th></tr></thead><tbody><tr><td>Socket Unix vs. TCP vers localhost vs. hôte distant</td><td>coût réseau pur par commit/requête</td></tr><tr><td><code>synchronous_commit</code> on / off / <code>remote_write</code> / <code>remote_apply</code></td><td>coût de la durabilité et de l&#x27;attente de la réplique</td></tr><tr><td>Réplique asynchrone vs. synchrone (<code>synchronous_standby_names</code>)</td><td>chaque commit attend l&#x27;aller-retour vers la réplique</td></tr><tr><td><code>wal_compression</code>, <code>max_wal_size</code>, <code>checkpoint_timeout</code></td><td>volume de WAL et pics de checkpoint (surveiller p99/max)</td></tr><tr><td><code>-s</code> petit (2 ko) vs. grand (512 ko)</td><td>limité par la latence vs. par la bande passante</td></tr><tr><td><code>-w</code> 8 → 32 → 128</td><td>où le débit cesse de croître et où la latence explose</td></tr></tbody></table></div><figure class="code"><figcaption>sql · watch during the run</figcaption><pre><code>-- on the primary: replication and how far the replica is behind
+SELECT application_name, state, sync_state, write_lag, flush_lag, replay_lag FROM pg_stat_replication;
+-- WAL generated (PostgreSQL 14+): run before and after, compare
+SELECT wal_records, pg_size_pretty(wal_bytes), wal_buffers_full FROM pg_stat_wal;
+-- what the test connections are waiting for
+SELECT wait_event_type, wait_event, count(*) FROM pg_stat_activity
+ WHERE application_name = &#x27;pgload&#x27; GROUP BY 1, 2 ORDER BY 3 DESC;</code></pre></figure><h2>Lire les résultats</h2><ul><li><b>Petits blocs :</b> latence ≈ aller-retour réseau + commit (fsync). Avec une réplique synchrone, ajouter l&#x27;aller-retour vers la réplique. Quelques millisecondes par opération sont normales à distance – et Odoo fait des centaines de petites opérations par clic, cela s&#x27;additionne.</li><li><b>Grands blocs :</b> le débit est limité par la bande passante et le WAL ; <code>wal_compression</code> peut aider, les disques du primaire et de la réplique décident.</li><li><b>p99/max très au-dessus de la moyenne :</b> checkpoints, autovacuum ou une réplique qui ne suit pas – comparer avec <code>pg_stat_wal</code> et <code>replay_lag</code>.</li><li><b>Plus de workers, même débit :</b> le goulot est atteint ; plus de connexions ne font qu&#x27;ajouter de l&#x27;attente.</li><li>Dans notre projet, la variante distante était nettement plus lente par opération ; l&#x27;outil a séparé la part du réseau de celle des réglages PostgreSQL.</li></ul><h2>Sécurité</h2><ul><li>Ne jamais le lancer « juste un instant » contre la production : 20 000 × 64 ko font environ 1,3 Go de données plus autant de WAL, répliqués et inclus dans les prochaines sauvegardes.</li><li>Utiliser une base dédiée (<code>createdb loadtest</code>) ou une copie de stage, puis <code>--drop</code>.</li><li>Ne pas écrire <code>PGPASSWORD</code> dans des scripts du dépôt ; utiliser <code>~/.pgpass</code> (chmod 600) ou l&#x27;authentification peer via le socket.</li></ul><h2>Le code</h2><p>Un seul fichier, seule dépendance <code>psycopg2</code>. C&#x27;est une version nettoyée d&#x27;un outil interne : vrais percentiles au lieu de moyennes de moyennes, un seul pool de threads, mode mixte, nettoyage, aucun secret.</p><figure class="code"><figcaption>python · pgload.py (download: /tools/pgload.py)</figcaption><pre><code>#!/usr/bin/env python3
+&quot;&quot;&quot;pgload – a small PostgreSQL load generator: many parallel connections insert (and optionally read) binary blocks.
+
+Compare the same run against different databases or settings: local socket vs. remote host, with and without a
+synchronous replica, synchronous_commit on/off, wal_compression, max_wal_size, disk types ...
+
+Connection only via the standard libpq environment variables – no passwords in the code or on the command line:
+    PGHOST, PGPORT, PGUSER, PGPASSWORD (or ~/.pgpass), PGDATABASE
+
+    export PGHOST=/run/postgresql PGDATABASE=loadtest PGUSER=odoo      # password from ~/.pgpass
+    ./pgload.py --workers 32 --count 20000 --block 200 --size 64 --randomize
+    ./pgload.py --mode mixed --read-ratio 0.7 --workers 64 --count 50000
+    ./pgload.py --drop                                                  # remove the test schema afterwards
+
+Writes into its own schema &quot;pgload&quot; – run it on a test/stage database, never blindly on production:
+count × size of data plus WAL, replication traffic and bigger backups.
+
+Based on an internal tool of the author; source: https://2027.pp.ua/en/blog/postgresql-load-test-pgload-replica
+&quot;&quot;&quot;
+import argparse
+import os
+import random
+import statistics
+import sys
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
+
+import psycopg2
+import psycopg2.pool
+
+DDL = &quot;&quot;&quot;
+CREATE SCHEMA IF NOT EXISTS pgload;
+CREATE TABLE IF NOT EXISTS pgload.ldata (
+    id    bigserial PRIMARY KEY,
+    ctime timestamptz NOT NULL DEFAULT clock_timestamp(),
+    rmark double precision NOT NULL DEFAULT random(),
+    size  integer NOT NULL DEFAULT 0,
+    data  bytea
+);
+CREATE INDEX IF NOT EXISTS i_pgload_ctime ON pgload.ldata (ctime);
+CREATE INDEX IF NOT EXISTS i_pgload_rmark ON pgload.ldata (rmark);
+&quot;&quot;&quot;
+INSERT = &quot;INSERT INTO pgload.ldata (size, data) VALUES (%s, %s)&quot;
+SELECT = &quot;SELECT id, size, length(data) FROM pgload.ldata WHERE rmark &gt;= %s ORDER BY rmark LIMIT %s&quot;
+
+
+def log(msg):
+    print(f&quot;{datetime.now():%Y-%m-%d %H:%M:%S} {msg}&quot;, flush=True)
+
+
+def percentile(values, p):
+    if not values:
+        return 0.0
+    values = sorted(values)
+    k = (len(values) - 1) * p / 100
+    f, c = int(k), min(int(k) + 1, len(values) - 1)
+    return values[f] + (values[c] - values[f]) * (k - f)
+
+
+class Runner:
+    def __init__(self, args):
+        self.args = args
+        self.pool = psycopg2.pool.ThreadedConnectionPool(1, args.workers, application_name=&quot;pgload&quot;)
+        self.payload = os.urandom(args.size * 1024)
+        self.lock = threading.Lock()
+        self.lat = {&quot;insert&quot;: [], &quot;select&quot;: []}
+        self.bytes = 0
+        self.errors = 0
+
+    def one(self, kind):
+        conn = self.pool.getconn()
+        try:
+            conn.autocommit = True                     # one statement = one transaction = one commit
+            t0 = time.perf_counter()
+            with conn.cursor() as cur:
+                if kind == &quot;insert&quot;:
+                    sz = random.randint(len(self.payload) // 2, len(self.payload)) if self.args.randomize else len(self.payload)
+                    cur.execute(INSERT, (sz, self.payload[:sz]))
+                else:
+                    sz = 0
+                    cur.execute(SELECT, (random.random(), self.args.read_rows))
+                    cur.fetchall()
+            dt = time.perf_counter() - t0
+            with self.lock:
+                self.lat[kind].append(dt)
+                self.bytes += sz
+        except Exception as e:                         # noqa: BLE001 – count and continue, a load test must not stop
+            with self.lock:
+                self.errors += 1
+            log(f&quot;ERROR {kind}: {e}&quot;.strip())
+        finally:
+            self.pool.putconn(conn)
+
+    def report(self, t_start, final=False):
+        el = time.perf_counter() - t_start
+        with self.lock:
+            parts = []
+            for kind, v in self.lat.items():
+                if v:
+                    parts.append(f&quot;{kind}: n={len(v)} {len(v) / el:.0f}/s avg={statistics.fmean(v) * 1000:.1f}ms &quot;
+                                 f&quot;p50={percentile(v, 50) * 1000:.1f} p95={percentile(v, 95) * 1000:.1f} &quot;
+                                 f&quot;p99={percentile(v, 99) * 1000:.1f} max={max(v) * 1000:.1f}ms&quot;)
+            mb = self.bytes / 1024 / 1024
+            log((&quot;RESULT &quot; if final else &quot;&quot;) + &quot; | &quot;.join(parts) + f&quot; | written {mb:.0f} MB ({mb / el:.1f} MB/s) | errors {self.errors} | {el:.0f}s&quot;)
+
+    def run(self):
+        a = self.args
+        conn = self.pool.getconn()
+        try:
+            conn.autocommit = True
+            with conn.cursor() as cur:
+                cur.execute(DDL)
+                cur.execute(&quot;SELECT current_setting(&#x27;synchronous_commit&#x27;), current_setting(&#x27;server_version&#x27;), &quot;
+                            &quot;inet_server_addr(), (SELECT count(*) FROM pg_stat_replication)&quot;)
+                sc, ver, addr, repl = cur.fetchone()
+        finally:
+            self.pool.putconn(conn)
+        log(f&quot;server {addr or &#x27;unix socket&#x27;} PostgreSQL {ver}, synchronous_commit={sc}, replicas={repl}; &quot;
+            f&quot;workers={a.workers} count={a.count} size={a.size}kB mode={a.mode}&quot;)
+        t0 = time.perf_counter()
+        done = 0
+        with ThreadPoolExecutor(max_workers=a.workers) as ex:
+            while done &lt; a.count:
+                n = min(a.block, a.count - done)
+                kinds = [&quot;select&quot; if a.mode == &quot;select&quot; or (a.mode == &quot;mixed&quot; and random.random() &lt; a.read_ratio)
+                         else &quot;insert&quot; for _ in range(n)]
+                list(ex.map(self.one, kinds))          # wait for the whole block
+                done += n
+                self.report(t0)
+        self.report(t0, final=True)
+
+
+def drop():
+    with psycopg2.connect(application_name=&quot;pgload&quot;) as conn, conn.cursor() as cur:
+        cur.execute(&quot;DROP SCHEMA IF EXISTS pgload CASCADE&quot;)
+    log(&quot;schema pgload dropped&quot;)
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__.split(&quot;\n&quot;)[0])
+    p.add_argument(&quot;-w&quot;, &quot;--workers&quot;, type=int, default=32, help=&quot;parallel connections (default 32)&quot;)
+    p.add_argument(&quot;-c&quot;, &quot;--count&quot;, type=int, default=10000, help=&quot;operations in total (default 10000)&quot;)
+    p.add_argument(&quot;-b&quot;, &quot;--block&quot;, type=int, default=100, help=&quot;operations per block / progress line (default 100)&quot;)
+    p.add_argument(&quot;-s&quot;, &quot;--size&quot;, type=int, default=64, help=&quot;max. data per insert in kB (default 64)&quot;)
+    p.add_argument(&quot;-r&quot;, &quot;--randomize&quot;, action=&quot;store_true&quot;, help=&quot;random size between size/2 and size&quot;)
+    p.add_argument(&quot;-m&quot;, &quot;--mode&quot;, choices=[&quot;insert&quot;, &quot;select&quot;, &quot;mixed&quot;], default=&quot;insert&quot;)
+    p.add_argument(&quot;--read-ratio&quot;, type=float, default=0.5, help=&quot;share of reads in mixed mode (default 0.5)&quot;)
+    p.add_argument(&quot;--read-rows&quot;, type=int, default=50, help=&quot;rows per read (default 50)&quot;)
+    p.add_argument(&quot;--drop&quot;, action=&quot;store_true&quot;, help=&quot;drop the pgload schema and exit&quot;)
+    a = p.parse_args()
+    if a.drop:
+        return drop()
+    if &quot;PGPASSWORD&quot; in os.environ and os.environ.get(&quot;PGHOST&quot;, &quot;&quot;).startswith(&quot;/&quot;):
+        log(&quot;hint: PGPASSWORD is set although a Unix socket is used – prefer ~/.pgpass or peer auth&quot;)
+    Runner(a).run()
+
+
+if __name__ == &quot;__main__&quot;:
+    sys.exit(main())
+</code></pre></figure><h2>Liens</h2><ul class="post-links"><li><a href="https://2027.pp.ua/tools/pgload.py" target="_blank" rel="noopener">pgload.py – download</a></li><li><a href="https://www.postgresql.org/docs/current/warm-standby.html#SYNCHRONOUS-REPLICATION" target="_blank" rel="noopener">PostgreSQL: synchronous_commit and synchronous replication</a></li><li><a href="https://www.postgresql.org/docs/current/monitoring-stats.html" target="_blank" rel="noopener">PostgreSQL: pg_stat_wal / pg_stat_replication</a></li><li><a href="https://www.postgresql.org/docs/current/pgbench.html" target="_blank" rel="noopener">pgbench – the standard benchmark</a></li><li><a href="/fr/blog/odoo-19-postgresql-read-replica">Blog: Odoo 19 with a read replica</a></li></ul><aside class="post-cta"><h2>Je m’en occupe pour vous ?</h2><p>Je le mets en place dans votre système – d’abord sur une copie de test, avec retour arrière et compte rendu.</p><div class="cta ">
+<a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Prendre rendez-vous – 30 min offertes</a>
+<a class="soc-ico btn" data-ch="{telegram}" data-ct="Telegram: {telegram_handle}" title="Telegram" aria-label="Telegram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.5 2.8 10.7c-.9.4-.9 1.6.1 1.9l4.6 1.5 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.8 3.5c.7.5 1.7.1 1.9-.7L22.9 4.9c.2-1-.6-1.8-1.4-1.4z"/><path d="m7.5 14.1 10-6.6-7.6 8.1"/></svg></a>
+<a class="soc-ico btn ghost" data-ch="{whatsapp}" data-ct="WhatsApp" title="WhatsApp" aria-label="WhatsApp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.2A8.6 8.6 0 1 1 8 19.4z"/><path d="M9 8.6c.1 2.9 3.4 6.2 6.3 6.4l1.2-1.4-1.9-1-.9.8c-1-.5-2.3-1.8-2.8-2.8l.8-.9-1-1.9z"/></svg></a>
+<a class="soc-ico btn ghost" data-ch="tel:{phone}" data-ct="Tel.: {phone_display}" title="Tel." aria-label="Tel."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></a>
+<a class="soc-ico btn ghost" data-ch="mailto:{email}" data-ct="E-Mail: {email}" title="E-Mail" aria-label="E-Mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a>
+<a class="soc-ico btn ghost" href="https://www.linkedin.com/in/dpodyachev" title="LinkedIn" aria-label="LinkedIn" target="_blank" rel="noopener me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V17M8 7.3v.1M12 17v-6.5M12 13.3c0-1.6 1.1-2.8 2.5-2.8S17 11.5 17 13v4"/></svg></a>
+</div></aside><nav class="post-nav" aria-label="Blog &amp; guides"><a class="prev" href="/fr/blog/odoo-17-python-3-14-docker" rel="prev"><small>← Article précédent</small><span>Passer Odoo 17 à Python 3.14 – avec docker-compose</span></a><a class="all" href="/fr/blog/"><small>← Tous les articles</small></a><a class="next" href="/fr/blog/postgresql-restore-fails-foreign-key-duplicate-index-odoo" rel="next"><small>Article suivant →</small><span>La sauvegarde existe – mais ne se restaure pas : clés étrangères, doublons dans les index uniques, index manquants</span></a></nav></article></main><footer class="foot">
+<div class="wrap foot-in">
+<div><strong>Goldberg · Odoo Services</strong><br>Support, installation et intégration Odoo pour l&#x27;Allemagne, l&#x27;Autriche et la Suisse.</div>
+<div class="foot-links">
+<a href="/fr/blog/">Blog &amp; guides</a>
+<a href="/fr/impressum">Mentions légales</a>
+<a href="/fr/datenschutz">Confidentialité</a>
+<span class="foot-soc"><a class="soc-ico" data-ch="mailto:{email}" data-ct="E-Mail: {email}" title="E-Mail" aria-label="E-Mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a><a class="soc-ico" data-ch="{telegram}" data-ct="Telegram: {telegram_handle}" title="Telegram" aria-label="Telegram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.5 2.8 10.7c-.9.4-.9 1.6.1 1.9l4.6 1.5 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.8 3.5c.7.5 1.7.1 1.9-.7L22.9 4.9c.2-1-.6-1.8-1.4-1.4z"/><path d="m7.5 14.1 10-6.6-7.6 8.1"/></svg></a><a class="soc-ico" data-ch="{whatsapp}" data-ct="WhatsApp" title="WhatsApp" aria-label="WhatsApp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.2A8.6 8.6 0 1 1 8 19.4z"/><path d="M9 8.6c.1 2.9 3.4 6.2 6.3 6.4l1.2-1.4-1.9-1-.9.8c-1-.5-2.3-1.8-2.8-2.8l.8-.9-1-1.9z"/></svg></a><a class="soc-ico" data-ch="tel:{phone}" data-ct="Tel.: {phone_display}" title="Tel." aria-label="Tel."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></a><a class="soc-ico" href="https://www.linkedin.com/in/dpodyachev" title="LinkedIn" aria-label="LinkedIn" target="_blank" rel="noopener me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V17M8 7.3v.1M12 17v-6.5M12 13.3c0-1.6 1.1-2.8 2.5-2.8S17 11.5 17 13v4"/></svg></a></span>
+</div>
+<nav class="langs" aria-label="Language"><a href="/de/blog/postgresql-load-test-pgload-replica" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/postgresql-load-test-pgload-replica" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/postgresql-load-test-pgload-replica" hreflang="fr" lang="fr" title="Français" aria-label="Français" aria-current="true"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/postgresql-load-test-pgload-replica" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/postgresql-load-test-pgload-replica" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/postgresql-load-test-pgload-replica" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<div class="small">© 2026 Goldberg. Ce site n&#x27;utilise ni cookies ni suivi.</div>
+</div>
+</footer>
+</body>
+</html>

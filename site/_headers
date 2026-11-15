@@ -21,3 +21,6 @@
 /skill_odoo_replica.md
   Content-Type: text/markdown; charset=utf-8
   Cache-Control: public, max-age=3600
+/tools/*
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
