@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Restoring a backup on stage – without cron jobs and queue jobs firing · Goldberg</title>
-<meta name="description" content="Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.">
+<title>Restaurer une sauvegarde en préproduction – sans que les crons et les queue jobs ne se déclenchent · Goldberg</title>
+<meta name="description" content="Pourquoi une préproduction peut envoyer des relances à de vrais clients, et l’ordre des étapes qui l’évite : SQL avant le premier démarrage, neutralize, configuration dédiée.">
 <link rel="canonical" href="https://2027.pp.ua/fr/blog/odoo-stage-restore-stop-cron-jobs">
 <link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/odoo-stage-restore-stop-cron-jobs">
 <link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/odoo-stage-restore-stop-cron-jobs">
@@ -13,16 +13,16 @@
 <link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/odoo-stage-restore-stop-cron-jobs">
 <link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/odoo-stage-restore-stop-cron-jobs">
 <link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/odoo-stage-restore-stop-cron-jobs">
-<meta property="og:title" content="Restoring a backup on stage – without cron jobs and queue jobs firing · Goldberg">
-<meta property="og:description" content="Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.">
+<meta property="og:title" content="Restaurer une sauvegarde en préproduction – sans que les crons et les queue jobs ne se déclenchent · Goldberg">
+<meta property="og:description" content="Pourquoi une préproduction peut envoyer des relances à de vrais clients, et l’ordre des étapes qui l’évite : SQL avant le premier démarrage, neutralize, configuration dédiée.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://2027.pp.ua/fr/blog/odoo-stage-restore-stop-cron-jobs">
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=5a8c7449">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
 <script src="/assets/theme.js?v=eec31096" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Restoring a backup on stage – without cron jobs and queue jobs firing", "description": "Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.", "datePublished": "2026-11-15", "inLanguage": "en", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua"}, "mainEntityOfPage": "https://2027.pp.ua/fr/blog/odoo-stage-restore-stop-cron-jobs"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Restaurer une sauvegarde en préproduction – sans que les crons et les queue jobs ne se déclenchent", "description": "Pourquoi une préproduction peut envoyer des relances à de vrais clients, et l’ordre des étapes qui l’évite : SQL avant le premier démarrage, neutralize, configuration dédiée.", "datePublished": "2026-11-15", "inLanguage": "fr", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua"}, "mainEntityOfPage": "https://2027.pp.ua/fr/blog/odoo-stage-restore-stop-cron-jobs"}</script>
 </head>
 <body>
 <header class="top">
@@ -33,7 +33,7 @@
 <button type="button" class="theme" hidden aria-label="Thème clair / sombre" title="Thème clair / sombre">🌙</button>
 </div>
 </header>
-<main class="sec blog"><article class="wrap narrow post" lang="en"><p class="post-back"><a href="/fr/blog/">← Tous les articles</a></p><p class="post-meta">15.11.2026 · 2 min de lecture · <span class="post-tag">Stage</span><span class="post-tag">Backup</span><span class="post-tag">Cron</span><span class="post-tag">queue_job</span></p><h1>Restoring a backup on stage – without cron jobs and queue jobs firing</h1><p class="post-note">Cet article n’est pas encore disponible en français – voici la version anglaise.</p><p class="intro">Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.</p><p>The production database is restored on stage to test an update. Odoo starts – and immediately processes everything that became &quot;due&quot; during the downtime: dunning and invoice e-mails, syncs with the shop, bank or carriers, queued jobs. With real customer data and real credentials. The classic stage accident.</p><p>The core point: <b>Odoo starts its cron threads and the job runner right at startup.</b> Switching things off in the UI is too late. Everything has to happen <b>before</b> Odoo sees the database for the first time.</p><h2>1. Restore – Odoo stays stopped</h2><figure class="code"><figcaption>bash</figcaption><pre><code>docker compose stop odoo                       # Odoo must NOT be running yet
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/fr/blog/">← Tous les articles</a></p><p class="post-meta">15.11.2026 · 2 min de lecture · <span class="post-tag">Stage</span><span class="post-tag">Backup</span><span class="post-tag">Cron</span><span class="post-tag">queue_job</span></p><h1>Restaurer une sauvegarde en préproduction – sans que les crons et les queue jobs ne se déclenchent</h1><p class="intro">Pourquoi une préproduction peut envoyer des relances à de vrais clients, et l’ordre des étapes qui l’évite : SQL avant le premier démarrage, neutralize, configuration dédiée.</p><p>La base de production est restaurée en préproduction pour tester une mise à jour. Odoo démarre – et exécute aussitôt tout ce qui est devenu « échu » pendant l’arrêt : relances et factures par e-mail, synchronisation avec la boutique, la banque ou les transporteurs, tâches en file d’attente. Avec de vraies données clients et de vrais identifiants. L’accident classique de préproduction.</p><p>Le point essentiel : <b>Odoo lance ses threads cron et le job runner dès le démarrage.</b> Désactiver dans l’interface, c’est trop tard. Tout doit être fait <b>avant</b> qu’Odoo ne voie la base pour la première fois.</p><h2>1. Restaurer – Odoo reste arrêté</h2><figure class="code"><figcaption>bash</figcaption><pre><code>docker compose stop odoo                       # Odoo must NOT be running yet
 
 docker compose exec -T db dropdb   -U odoo --if-exists mydb_stage
 docker compose exec -T db createdb -U odoo mydb_stage
@@ -45,7 +45,7 @@ docker compose exec -T db psql -U odoo -d mydb_stage -v ON_ERROR_STOP=1 &lt; sta
 # filestore: the folder name must match the database name
 #   .../filestore/mydb  -&gt;  .../filestore/mydb_stage
 
-docker compose start odoo</code></pre></figure><h2>2. Neutralise with SQL</h2><figure class="code"><figcaption>stage-safety.sql</figcaption><pre><code>BEGIN;
+docker compose start odoo</code></pre></figure><h2>2. Neutraliser en SQL</h2><figure class="code"><figcaption>stage-safety.sql</figcaption><pre><code>BEGIN;
 -- 1. remember what was active (to re-enable selectively later)
 CREATE TABLE IF NOT EXISTS zz_stage_cron_before AS
     SELECT id, cron_name, active FROM ir_cron;
@@ -64,20 +64,20 @@ UPDATE fetchmail_server SET active = false;
 -- 5. stage URL and its own database UUID
 UPDATE ir_config_parameter SET value = &#x27;https://stage.example.com&#x27; WHERE key = &#x27;web.base.url&#x27;;
 UPDATE ir_config_parameter SET value = gen_random_uuid()::text   WHERE key = &#x27;database.uuid&#x27;;
-COMMIT;</code></pre></figure><p class="post-note">The tables <code>queue_job</code> and <code>fetchmail_server</code> only exist when the modules are installed – drop those lines otherwise. The <code>zz_stage_cron_before</code> list helps to re-enable individual crons on stage later on purpose.</p><p>Since Odoo 16 there is also the built-in <code>neutralize</code> command: among other things it deactivates scheduled actions, mail servers and payment providers and shows a &quot;neutralized&quot; banner. I use it as the base and add the SQL for third-party modules such as <code>queue_job</code>.</p><figure class="code"><figcaption>bash · Odoo 16+</figcaption><pre><code>docker compose run --rm odoo odoo neutralize -c /etc/odoo/odoo.conf -d mydb_stage</code></pre></figure><h2>3. A stage config as a second safety net</h2><figure class="code"><figcaption>etc/odoo.conf (stage)</figcaption><pre><code>[options]
+COMMIT;</code></pre></figure><p class="post-note">Les tables <code>queue_job</code> et <code>fetchmail_server</code> n’existent que si les modules sont installés – supprimez sinon ces lignes. La liste <code>zz_stage_cron_before</code> aide à réactiver plus tard, volontairement, certains crons en préproduction.</p><p>Depuis Odoo 16, il existe aussi la commande intégrée <code>neutralize</code> : elle désactive notamment les actions planifiées, les serveurs de messagerie et les fournisseurs de paiement, et affiche un bandeau « neutralisé ». Je l’utilise comme base et j’ajoute le SQL pour les modules tiers comme <code>queue_job</code>.</p><figure class="code"><figcaption>bash · Odoo 16+</figcaption><pre><code>docker compose run --rm odoo odoo neutralize -c /etc/odoo/odoo.conf -d mydb_stage</code></pre></figure><h2>3. Une configuration de préproduction comme deuxième filet</h2><figure class="code"><figcaption>etc/odoo.conf (stage)</figcaption><pre><code>[options]
 ; no cron thread at all on stage
 max_cron_threads = 0
 ; without queue_job here the job runner does not start
 server_wide_modules = base,web
 ; every e-mail ends up in Mailpit - nothing leaves the server
 smtp_server = mailpit
-smtp_port = 1025</code></pre></figure><p>Even if a database is restored without neutralising, nothing can leave the server with this config: no cron thread, no job runner, e-mail only in the mail catcher.</p><h2>4. Verify</h2><figure class="code"><figcaption>sql</figcaption><pre><code>SELECT count(*) FROM ir_cron WHERE active;                 -- expected: 0
+smtp_port = 1025</code></pre></figure><p>Même si une base est restaurée sans neutralisation, rien ne peut sortir du serveur avec cette configuration : pas de thread cron, pas de job runner, e-mails uniquement dans le mail catcher.</p><h2>4. Vérifier</h2><figure class="code"><figcaption>sql</figcaption><pre><code>SELECT count(*) FROM ir_cron WHERE active;                 -- expected: 0
 SELECT state, count(*) FROM queue_job GROUP BY state;      -- no pending / enqueued
-SELECT key, value FROM ir_config_parameter WHERE key = &#x27;web.base.url&#x27;;</code></pre></figure><ul><li>Release stage for testing only when all three queries look right.</li><li>Replace credentials for external services (shop, bank, shipping, payments) on stage with sandbox keys, or remove them.</li><li>Keep the whole procedure as a script – a fresh stage is then a matter of minutes, and no step is forgotten.</li></ul><aside class="post-cta"><h2>Je m’en occupe pour vous ?</h2><p>Je le mets en place dans votre système – d’abord sur une copie de test, avec retour arrière et compte rendu.</p><div class="cta ">
+SELECT key, value FROM ir_config_parameter WHERE key = &#x27;web.base.url&#x27;;</code></pre></figure><ul><li>Ne livrer la préproduction aux tests que lorsque les trois requêtes donnent le bon résultat.</li><li>Remplacer en préproduction les identifiants des services externes (boutique, banque, transport, paiement) par des clés sandbox, ou les supprimer.</li><li>Garder toute la procédure dans un script – une préproduction fraîche prend alors quelques minutes, et aucune étape n’est oubliée.</li></ul><aside class="post-cta"><h2>Je m’en occupe pour vous ?</h2><p>Je le mets en place dans votre système – d’abord sur une copie de test, avec retour arrière et compte rendu.</p><div class="cta ">
 <a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Prendre rendez-vous – 30 min offertes</a>
 <a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
 <a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
-</div></aside><nav class="post-nav" aria-label="Blog &amp; guides"><a class="prev" href="/fr/blog/odoo-logging-options-cheatsheet" rel="prev"><small>← Article précédent</small><span>Odoo logging: warn or warning, log_level or --log-level? A cheat sheet</span></a><a class="next" href="/fr/blog/odoo-module-update-click-odoo-update" rel="next"><small>Article suivant →</small><span>Updating Odoo modules: click-odoo-update or odoo -u</span></a></nav><p class="post-back"><a href="/fr/blog/">← Tous les articles</a></p></article></main><footer class="foot">
+</div></aside><nav class="post-nav" aria-label="Blog &amp; guides"><a class="prev" href="/fr/blog/odoo-logging-options-cheatsheet" rel="prev"><small>← Article précédent</small><span>Journaux Odoo : warn ou warning, log_level ou --log-level ? Aide-mémoire</span></a><a class="all" href="/fr/blog/"><small>← Tous les articles</small></a><a class="next" href="/fr/blog/odoo-module-update-click-odoo-update" rel="next"><small>Article suivant →</small><span>Mettre à jour les modules Odoo : click-odoo-update ou odoo -u</span></a></nav></article></main><footer class="foot">
 <div class="wrap foot-in">
 <div><strong>Goldberg · Odoo Services</strong><br>Support, installation et intégration Odoo pour l&#x27;Allemagne, l&#x27;Autriche et la Suisse.</div>
 <div class="foot-links">

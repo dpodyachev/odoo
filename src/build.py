@@ -629,7 +629,9 @@ def post_nav(lang, post, U):
     prv, nxt = lst[(i - 1) % len(lst)], lst[(i + 1) % len(lst)]
     a = lambda p, cls, lab, arrow: (f'<a class="{cls}" href="{url(lang, "blog/" + p["slug"] + ".html")}" rel="{cls}">'
                                    f'<small>{(arrow + " " + E(lab)) if cls == "prev" else (E(lab) + " " + arrow)}</small><span>{E(p["t"][post_lang(p, lang)]["title"])}</span></a>')
-    return f'<nav class="post-nav" aria-label="{E(U["title"])}">{a(prv, "prev", U["prev"], "←")}{a(nxt, "next", U["next"], "→")}</nav>'
+    allp = f'<a class="all" href="{url(lang, "blog/")}"><small>{E(U["back"])}</small></a>'
+    return (f'<nav class="post-nav" aria-label="{E(U["title"])}">{a(prv, "prev", U["prev"], "←")}{allp}'
+            f'{a(nxt, "next", U["next"], "→")}</nav>')
 
 
 def blog_post(T, lang, post):
@@ -670,8 +672,7 @@ def blog_post(T, lang, post):
             + "".join(f'<span class="post-tag">{E(t)}</span>' for t in post["tags"]) + "</p>"
             + f'<h1>{E(tx["title"])}</h1>{note}<p class="intro">{E(tx["summary"])}</p>' + "".join(out)
             + f'<aside class="post-cta"><h2>{E(U["cta_title"])}</h2><p>{E(U["cta_text"])}</p>{cta(T)}</aside>'
-            + post_nav(lang, post, U)
-            + f'<p class="post-back"><a href="{url(lang, "blog/")}">{E(U["back"])}</a></p></article></main>'
+            + post_nav(lang, post, U) + '</article></main>'
             + footer(T, lang, page))
 
 

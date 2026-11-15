@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moving Odoo 17 to Python 3.14 – with docker-compose · Goldberg</title>
-<meta name="description" content="A custom odoo17-py314 image, Odoo source from Git mounted into site-packages, testing on stage and a one-minute rollback.">
+<title>Passer Odoo 17 à Python 3.14 – avec docker-compose · Goldberg</title>
+<meta name="description" content="Une image odoo17-py314 maison, le code Odoo depuis Git monté dans site-packages, des tests sur la préproduction et un retour arrière en une minute.">
 <link rel="canonical" href="https://2027.pp.ua/fr/blog/odoo-17-python-3-14-docker">
 <link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/odoo-17-python-3-14-docker">
 <link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/odoo-17-python-3-14-docker">
@@ -13,16 +13,16 @@
 <link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/odoo-17-python-3-14-docker">
 <link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/odoo-17-python-3-14-docker">
 <link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/odoo-17-python-3-14-docker">
-<meta property="og:title" content="Moving Odoo 17 to Python 3.14 – with docker-compose · Goldberg">
-<meta property="og:description" content="A custom odoo17-py314 image, Odoo source from Git mounted into site-packages, testing on stage and a one-minute rollback.">
+<meta property="og:title" content="Passer Odoo 17 à Python 3.14 – avec docker-compose · Goldberg">
+<meta property="og:description" content="Une image odoo17-py314 maison, le code Odoo depuis Git monté dans site-packages, des tests sur la préproduction et un retour arrière en une minute.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://2027.pp.ua/fr/blog/odoo-17-python-3-14-docker">
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=5a8c7449">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
 <script src="/assets/theme.js?v=eec31096" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Moving Odoo 17 to Python 3.14 – with docker-compose", "description": "A custom odoo17-py314 image, Odoo source from Git mounted into site-packages, testing on stage and a one-minute rollback.", "datePublished": "2026-11-15", "inLanguage": "en", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua"}, "mainEntityOfPage": "https://2027.pp.ua/fr/blog/odoo-17-python-3-14-docker"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Passer Odoo 17 à Python 3.14 – avec docker-compose", "description": "Une image odoo17-py314 maison, le code Odoo depuis Git monté dans site-packages, des tests sur la préproduction et un retour arrière en une minute.", "datePublished": "2026-11-15", "inLanguage": "fr", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua"}, "mainEntityOfPage": "https://2027.pp.ua/fr/blog/odoo-17-python-3-14-docker"}</script>
 </head>
 <body>
 <header class="top">
@@ -33,7 +33,7 @@
 <button type="button" class="theme" hidden aria-label="Thème clair / sombre" title="Thème clair / sombre">🌙</button>
 </div>
 </header>
-<main class="sec blog"><article class="wrap narrow post" lang="en"><p class="post-back"><a href="/fr/blog/">← Tous les articles</a></p><p class="post-meta">15.11.2026 · 2 min de lecture · <span class="post-tag">Docker</span><span class="post-tag">Python 3.14</span><span class="post-tag">Odoo 17</span></p><h1>Moving Odoo 17 to Python 3.14 – with docker-compose</h1><p class="post-note">Cet article n’est pas encore disponible en français – voici la version anglaise.</p><p class="intro">A custom odoo17-py314 image, Odoo source from Git mounted into site-packages, testing on stage and a one-minute rollback.</p><p>An existing Odoo 17 runs in Docker and should move to a newer Python, here <b>3.14</b>. Reasons: security updates of the base image, newer libraries for custom modules, and often a noticeably faster Python runtime. Odoo 17 was built for Python 3.10–3.12; 3.14 is not officially supported – so the rule is <b>stage first, production second</b>.</p><h2>The idea: separate the image from the Odoo code</h2><p>The new image <code>odoo17-py314:latest</code> only contains Python 3.14 and the dependencies. The Odoo code comes from a Git checkout and is mounted where Python looks for packages: <code>./extra_addons/odoo:/usr/local/lib/python3.14/site-packages/odoo</code>. Odoo patches are then a <code>git pull</code> away, without rebuilding the image.</p><figure class="code"><figcaption>docker-compose.yml</figcaption><pre><code>services:
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/fr/blog/">← Tous les articles</a></p><p class="post-meta">15.11.2026 · 2 min de lecture · <span class="post-tag">Docker</span><span class="post-tag">Python 3.14</span><span class="post-tag">Odoo 17</span></p><h1>Passer Odoo 17 à Python 3.14 – avec docker-compose</h1><p class="intro">Une image odoo17-py314 maison, le code Odoo depuis Git monté dans site-packages, des tests sur la préproduction et un retour arrière en une minute.</p><p>Un Odoo 17 existant tourne dans Docker et doit passer à une version plus récente de Python, ici <b>3.14</b>. Pourquoi : mises à jour de sécurité de l’image de base, bibliothèques plus récentes pour les modules spécifiques, et souvent un Python sensiblement plus rapide. Odoo 17 a été conçu pour Python 3.10–3.12 ; 3.14 n’est pas officiellement supporté – la règle est donc : <b>d’abord la préproduction, ensuite la production</b>.</p><h2>L’idée : séparer l’image et le code Odoo</h2><p>La nouvelle image <code>odoo17-py314:latest</code> ne contient que Python 3.14 et les dépendances. Le code Odoo vient d’un dépôt Git et est monté là où Python cherche ses paquets : <code>./extra_addons/odoo:/usr/local/lib/python3.14/site-packages/odoo</code>. Les correctifs Odoo s’appliquent alors par <code>git pull</code>, sans reconstruire l’image.</p><figure class="code"><figcaption>docker-compose.yml</figcaption><pre><code>services:
   odoo:
     image: odoo17-py314:latest          # new image: Python 3.14 + dependencies, no Odoo code inside
     restart: unless-stopped
@@ -56,7 +56,7 @@
 
 volumes:
   odoo-data:
-  db-data:</code></pre></figure><p class="post-note">Important: the path contains the Python version. When moving from 3.12 to 3.14, change <code>python3.12</code> → <code>python3.14</code> in the volume too – otherwise Python will not find the <code>odoo</code> package.</p><h2>The image</h2><figure class="code"><figcaption>docker/odoo17-py314/Dockerfile</figcaption><pre><code>FROM python:3.14-slim-trixie
+  db-data:</code></pre></figure><p class="post-note">Important : le chemin contient la version de Python. En passant de 3.12 à 3.14, remplacez aussi <code>python3.12</code> → <code>python3.14</code> dans le volume – sinon Python ne trouve pas le paquet <code>odoo</code>.</p><h2>L’image</h2><figure class="code"><figcaption>docker/odoo17-py314/Dockerfile</figcaption><pre><code>FROM python:3.14-slim-trixie
 
 # runtime libraries for Odoo
 RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \
@@ -79,7 +79,7 @@ RUN printf &#x27;#!/usr/bin/env python3\nimport odoo\nodoo.cli.main()\n&#x27; &g
     &amp;&amp; mkdir -p /mnt/extra-addons &amp;&amp; chown -R odoo /var/lib/odoo /mnt/extra-addons
 
 USER odoo
-EXPOSE 8069 8072</code></pre></figure><p>Odoo 17&#x27;s <code>requirements.txt</code> pins versions for older Pythons. For 3.14, raise the pins of packages with C extensions (e.g. <code>gevent</code>, <code>greenlet</code>, <code>lxml</code>, <code>psycopg2</code>, <code>Pillow</code>, <code>reportlab</code>) to versions that ship 3.14 wheels. <code>wkhtmltopdf</code> (PDF reports) is installed separately as before.</p><h2>Procedure</h2><figure class="code"><figcaption>bash</figcaption><pre><code># 1) backup: database + filestore
+EXPOSE 8069 8072</code></pre></figure><p>Le <code>requirements.txt</code> d’Odoo 17 fige des versions pour des Python plus anciens. Pour 3.14, on relève les versions des paquets avec extensions C (p. ex. <code>gevent</code>, <code>greenlet</code>, <code>lxml</code>, <code>psycopg2</code>, <code>Pillow</code>, <code>reportlab</code>) vers celles qui publient des wheels pour 3.14. <code>wkhtmltopdf</code> (rapports PDF) s’installe séparément, comme avant.</p><h2>Déroulement</h2><figure class="code"><figcaption>bash</figcaption><pre><code># 1) backup: database + filestore
 docker compose exec -T db pg_dump -U odoo -Fc mydb &gt; mydb-$(date +%F).dump
 docker compose exec -T odoo tar czf - -C /var/lib/odoo filestore/mydb &gt; filestore-$(date +%F).tgz
 
@@ -92,12 +92,12 @@ docker compose run --rm --no-deps odoo \
 
 # 4) start and watch the log
 docker compose up -d odoo
-docker compose logs -f --tail=200 odoo | grep -E &quot;ERROR|Traceback|ImportError|Warning&quot;</code></pre></figure><ul><li>On stage, click through all key flows: quotations, invoices, inventory, PDF reports, e-mail (into a mail catcher), scheduled actions.</li><li>Watch the log for <code>ImportError</code>, <code>DeprecationWarning</code> and <code>SyntaxWarning</code> – older modules with invalid escape sequences in strings show up here first. Since Python 3.13 some old standard modules are gone as well (PEP 594).</li><li>A module update (<code>-u</code>) is not needed for a pure Python switch – the database schema does not change.</li></ul><h2>Rollback</h2><figure class="code"><figcaption>bash</figcaption><pre><code># rollback: previous image in docker-compose.yml (and the old site-packages path), then
-docker compose up -d odoo</code></pre></figure><p>Database and filestore stay untouched, so a rollback takes as long as a container restart.</p><aside class="post-cta"><h2>Je m’en occupe pour vous ?</h2><p>Je le mets en place dans votre système – d’abord sur une copie de test, avec retour arrière et compte rendu.</p><div class="cta ">
+docker compose logs -f --tail=200 odoo | grep -E &quot;ERROR|Traceback|ImportError|Warning&quot;</code></pre></figure><ul><li>En préproduction, parcourir tous les processus clés : devis, factures, stock, rapports PDF, e-mails (dans un mail catcher), actions planifiées.</li><li>Surveiller dans le journal <code>ImportError</code>, <code>DeprecationWarning</code> et <code>SyntaxWarning</code> – les anciens modules avec des séquences d’échappement invalides dans les chaînes apparaissent en premier. Depuis Python 3.13, quelques anciens modules standard ont aussi disparu (PEP 594).</li><li>Une mise à jour des modules (<code>-u</code>) n’est pas nécessaire pour un simple changement de Python – le schéma de la base ne change pas.</li></ul><h2>Retour arrière</h2><figure class="code"><figcaption>bash</figcaption><pre><code># rollback: previous image in docker-compose.yml (and the old site-packages path), then
+docker compose up -d odoo</code></pre></figure><p>La base et le filestore restent intacts : un retour arrière dure le temps d’un redémarrage de conteneur.</p><aside class="post-cta"><h2>Je m’en occupe pour vous ?</h2><p>Je le mets en place dans votre système – d’abord sur une copie de test, avec retour arrière et compte rendu.</p><div class="cta ">
 <a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Prendre rendez-vous – 30 min offertes</a>
 <a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
 <a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
-</div></aside><nav class="post-nav" aria-label="Blog &amp; guides"><a class="prev" href="/fr/blog/odoo-module-update-click-odoo-update" rel="prev"><small>← Article précédent</small><span>Updating Odoo modules: click-odoo-update or odoo -u</span></a><a class="next" href="/fr/blog/odoo-logging-options-cheatsheet" rel="next"><small>Article suivant →</small><span>Odoo logging: warn or warning, log_level or --log-level? A cheat sheet</span></a></nav><p class="post-back"><a href="/fr/blog/">← Tous les articles</a></p></article></main><footer class="foot">
+</div></aside><nav class="post-nav" aria-label="Blog &amp; guides"><a class="prev" href="/fr/blog/odoo-module-update-click-odoo-update" rel="prev"><small>← Article précédent</small><span>Mettre à jour les modules Odoo : click-odoo-update ou odoo -u</span></a><a class="all" href="/fr/blog/"><small>← Tous les articles</small></a><a class="next" href="/fr/blog/odoo-logging-options-cheatsheet" rel="next"><small>Article suivant →</small><span>Journaux Odoo : warn ou warning, log_level ou --log-level ? Aide-mémoire</span></a></nav></article></main><footer class="foot">
 <div class="wrap foot-in">
 <div><strong>Goldberg · Odoo Services</strong><br>Support, installation et intégration Odoo pour l&#x27;Allemagne, l&#x27;Autriche et la Suisse.</div>
 <div class="foot-links">
