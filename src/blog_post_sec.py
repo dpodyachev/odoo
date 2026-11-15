@@ -61,7 +61,9 @@ curl -s -u admin:WRONG -o /dev/null -w "%{http_code}\\n" https://2027.pp.ua/test
         ("nginx: ngx_http_auth_basic_module", "https://nginx.org/en/docs/http/ngx_http_auth_basic_module.html"),
         ("Apache: Authentication and Authorization", "https://httpd.apache.org/docs/2.4/howto/auth.html"),
         ("Odoo 17: System configuration (security)", "https://www.odoo.com/documentation/17.0/administration/on_premise/deploy.html"),
-        ("Demo: /test/ on this site (Cloudflare Pages Functions)", "https://2027.pp.ua/test/"),
+        ("Demo: /test/ – Basic Auth via Cloudflare Pages Functions (admin / @1hotkey)", "https://2027.pp.ua/test/"),
+        ("Demo: /test2/ – Cloudflare Access (e-mail code)", "https://2027.pp.ua/test2/"),
+        ("Blog: Cloudflare Access (Zero Trust) step by step", "@blog:cloudflare-access-zero-trust-step-by-step"),
     ],
     "t": {},
 }

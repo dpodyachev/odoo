@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cloudflare Access – вхід за кодом з e-mail · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="/uk/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="langs" aria-label="Language"><a href="/test2/de/" hreflang="de" lang="de" title="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/test2/en/" hreflang="en" lang="en" title="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/test2/fr/" hreflang="fr" lang="fr" title="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/test2/el/" hreflang="el" lang="el" title="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/test2/uk/" hreflang="uk" lang="uk" title="Українська" aria-current=true><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/test2/ru/" hreflang="ru" lang="ru" title="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+</div></header>
+<main class="sec blog"><article class="wrap narrow post">
+<h1>🛡️ Cloudflare Access – вхід за кодом з e-mail</h1>
+<p class="post-note">✅ Ви увійшли через Cloudflare Access. Спільного пароля немає: доступ має лише той, хто є в політиці й ввів код зі своєї пошти.</p>
+<h2>Що тут відбувається</h2>
+<ol><li>Cloudflare Access стоїть <b>перед</b> сайтом. Ще до того, як Cloudflare Pages віддасть сторінку, Access перевіряє, чи є у відвідувача дійсна сесія.</li><li>Без сесії Access перенаправляє на сторінку входу команди (<code>…cloudflareaccess.com</code>). Там вводите e-mail і отримуєте одноразовий код.</li><li>Політика «Owner only» дозволяє рівно одну адресу. Інші адреси навіть не отримують код.</li><li>Після входу Access ставить cookie на 24 години, стільки триває сесія.</li><li>Захищено <b>всі</b> адреси цієї сторінки: 2027.pp.ua, goldberg.pp.ua, www.goldberg.pp.ua і goldberg-odoo.pages.dev. Інакше сторінка була б відкрита через дзеркало.</li><li>У коді сайту для цього <b>нічого</b> немає – ні функції, ні секрету. Усе налаштовано в панелі Zero Trust.</li></ol>
+<h2>Коли Access, а коли Pages Functions?</h2>
+<div class="tablewrap"><table class="post-table"><thead><tr><th>Ситуація</th><th>Краще</th></tr></thead><tbody><tr><td>Тестова сторінка для клієнта, вистачить одного спільного пароля</td><td>Basic Auth (Pages Functions або nginx) – див. /test/</td></tr><tr><td>Кілька людей, у кожного свій доступ, відкликати окремо</td><td>Cloudflare Access</td></tr><tr><td>Вхід через Google, Microsoft, GitHub, корпоративний SSO</td><td>Cloudflare Access</td></tr><tr><td>Журнал: хто й коли входив</td><td>Cloudflare Access</td></tr><tr><td>Уся stage/тестова система (наприклад, Odoo stage) за входом</td><td>Cloudflare Access (+ origin доступний лише через Cloudflare)</td></tr><tr><td>Машинний доступ: API, вебхуки, скрипти</td><td>Basic Auth або Access із service token</td></tr><tr><td>Сайт не на Cloudflare</td><td>Basic Auth у nginx/Apache</td></tr></tbody></table></div>
+<p>Покроково в блозі: <a href="/uk/blog/cloudflare-access-zero-trust-step-by-step">Cloudflare Access (Zero Trust) покроково – і коли це краще за пароль</a></p>
+<p>Basic Auth / Pages Functions: <a href="/test/uk/">/test/</a></p>
+<p><a class="btn ghost" href="/cdn-cgi/access/logout">Вийти</a></p>
+<p class="post-back"><a href="/uk/">← На сайт</a></p>
+</article></main>
+</body>
+</html>

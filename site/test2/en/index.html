@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cloudflare Access – login with an e-mail code · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="/en/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="langs" aria-label="Language"><a href="/test2/de/" hreflang="de" lang="de" title="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/test2/en/" hreflang="en" lang="en" title="English" aria-current=true><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/test2/fr/" hreflang="fr" lang="fr" title="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/test2/el/" hreflang="el" lang="el" title="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/test2/uk/" hreflang="uk" lang="uk" title="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/test2/ru/" hreflang="ru" lang="ru" title="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+</div></header>
+<main class="sec blog"><article class="wrap narrow post">
+<h1>🛡️ Cloudflare Access – login with an e-mail code</h1>
+<p class="post-note">✅ You are signed in via Cloudflare Access. No shared password: only people listed in the policy who enter the code from their mailbox get in.</p>
+<h2>What happens here</h2>
+<ol><li>Cloudflare Access sits <b>in front of</b> the website. Before Cloudflare Pages serves the page, Access checks whether the visitor has a valid session.</li><li>Without a session, Access redirects to the team login page (<code>…cloudflareaccess.com</code>). You enter your e-mail address and receive a one-time code.</li><li>The policy &quot;Owner only&quot; allows exactly one address. Other addresses don&#x27;t even receive a code.</li><li>After login, Access sets a cookie for 24 hours – you stay signed in that long.</li><li><b>All</b> addresses of this page are protected: 2027.pp.ua, goldberg.pp.ua, www.goldberg.pp.ua and goldberg-odoo.pages.dev. Otherwise the page would be open through a mirror.</li><li>There is <b>nothing</b> for this in the website code – no function, no secret. Everything is configured in the Zero Trust dashboard.</li></ol>
+<h2>When Access, when Pages Functions?</h2>
+<div class="tablewrap"><table class="post-table"><thead><tr><th>Situation</th><th>Better</th></tr></thead><tbody><tr><td>A test page for a client, one shared password is enough</td><td>Basic Auth (Pages Functions or nginx) – see /test/</td></tr><tr><td>Several people, each with their own access, revocable individually</td><td>Cloudflare Access</td></tr><tr><td>Login with Google, Microsoft, GitHub, company SSO</td><td>Cloudflare Access</td></tr><tr><td>Audit log: who signed in when</td><td>Cloudflare Access</td></tr><tr><td>A whole stage/test system (e.g. Odoo stage) behind a login</td><td>Cloudflare Access (+ origin reachable only through Cloudflare)</td></tr><tr><td>Machine access: API, webhooks, scripts</td><td>Basic Auth, or Access with a service token</td></tr><tr><td>Website not on Cloudflare</td><td>nginx/Apache Basic Auth</td></tr></tbody></table></div>
+<p>Explained step by step in the blog: <a href="/en/blog/cloudflare-access-zero-trust-step-by-step">Cloudflare Access (Zero Trust) step by step – and when it beats a password</a></p>
+<p>Basic Auth / Pages Functions: <a href="/test/en/">/test/</a></p>
+<p><a class="btn ghost" href="/cdn-cgi/access/logout">Sign out</a></p>
+<p class="post-back"><a href="/en/">← Back to the website</a></p>
+</article></main>
+</body>
+</html>

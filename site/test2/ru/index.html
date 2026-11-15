@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cloudflare Access – вход по коду из e-mail · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="/ru/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="langs" aria-label="Language"><a href="/test2/de/" hreflang="de" lang="de" title="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/test2/en/" hreflang="en" lang="en" title="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/test2/fr/" hreflang="fr" lang="fr" title="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/test2/el/" hreflang="el" lang="el" title="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/test2/uk/" hreflang="uk" lang="uk" title="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/test2/ru/" hreflang="ru" lang="ru" title="Русский" aria-current=true><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+</div></header>
+<main class="sec blog"><article class="wrap narrow post">
+<h1>🛡️ Cloudflare Access – вход по коду из e-mail</h1>
+<p class="post-note">✅ Вы вошли через Cloudflare Access. Общего пароля нет: доступ есть только у того, кто указан в политике и ввёл код из своей почты.</p>
+<h2>Что здесь происходит</h2>
+<ol><li>Cloudflare Access стоит <b>перед</b> сайтом. Ещё до того, как Cloudflare Pages отдаст страницу, Access проверяет, есть ли у посетителя действующая сессия.</li><li>Без сессии Access перенаправляет на страницу входа команды (<code>…cloudflareaccess.com</code>). Там вводите e-mail и получаете одноразовый код.</li><li>Политика «Owner only» разрешает ровно один адрес. Другие адреса даже не получают код.</li><li>После входа Access ставит cookie на 24 часа, столько длится сессия.</li><li>Защищены <b>все</b> адреса этой страницы: 2027.pp.ua, goldberg.pp.ua, www.goldberg.pp.ua и goldberg-odoo.pages.dev. Иначе страница была бы открыта через зеркало.</li><li>В коде сайта для этого <b>ничего</b> нет – ни функции, ни секрета. Всё настроено в панели Zero Trust.</li></ol>
+<h2>Когда Access, а когда Pages Functions?</h2>
+<div class="tablewrap"><table class="post-table"><thead><tr><th>Ситуация</th><th>Лучше</th></tr></thead><tbody><tr><td>Тестовая страница для клиента, хватит одного общего пароля</td><td>Basic Auth (Pages Functions или nginx) – см. /test/</td></tr><tr><td>Несколько человек, у каждого свой доступ, отзывать по отдельности</td><td>Cloudflare Access</td></tr><tr><td>Вход через Google, Microsoft, GitHub, корпоративный SSO</td><td>Cloudflare Access</td></tr><tr><td>Журнал: кто и когда входил</td><td>Cloudflare Access</td></tr><tr><td>Вся stage/тестовая система (например, Odoo stage) за входом</td><td>Cloudflare Access (+ origin доступен только через Cloudflare)</td></tr><tr><td>Машинный доступ: API, вебхуки, скрипты</td><td>Basic Auth или Access с service token</td></tr><tr><td>Сайт не на Cloudflare</td><td>Basic Auth в nginx/Apache</td></tr></tbody></table></div>
+<p>Пошагово в блоге: <a href="/ru/blog/cloudflare-access-zero-trust-step-by-step">Cloudflare Access (Zero Trust) по шагам – и когда это лучше пароля</a></p>
+<p>Basic Auth / Pages Functions: <a href="/test/ru/">/test/</a></p>
+<p><a class="btn ghost" href="/cdn-cgi/access/logout">Выйти</a></p>
+<p class="post-back"><a href="/ru/">← На сайт</a></p>
+</article></main>
+</body>
+</html>

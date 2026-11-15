@@ -764,6 +764,8 @@ from blog_post_ssl import SSL as _C3  # noqa: E402  (все 6 языков вн�
 POSTS.append(_C3)
 from blog_post_sec import AUTH as _C4, PWD as _C5  # noqa: E402
 POSTS += [_C4, _C5]
+from blog_post_access import ACCESS as _C6  # noqa: E402
+POSTS.append(_C6)
 
 # переводы, вынесенные в отдельные файлы (blog_posts_<lang>.py)
 from blog_posts_fr import FR as _FR  # noqa: E402
@@ -774,3 +776,9 @@ from blog_posts_el import EL as _EL  # noqa: E402
 for _p in POSTS:
     if _p["slug"] in _EL:
         _p["t"]["el"] = _EL[_p["slug"]]
+
+
+def ACCESS_TITLE(lang):
+    """Заголовок статьи о Cloudflare Access на нужном языке (для ссылки со страницы /test2/)."""
+    p = next(x for x in POSTS if x["slug"] == "cloudflare-access-zero-trust-step-by-step")
+    return p["t"].get(lang, p["t"]["en"])["title"]

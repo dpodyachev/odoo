@@ -658,7 +658,8 @@ def blog_post(T, lang, post):
             out.append(f'<figure class="code"><figcaption>{E(cap)}</figcaption><pre><code>{E(code)}</code></pre></figure>')
         elif kind == "links":
             out.append(f"<h2>{inline(b[1])}</h2><ul class=\"post-links\">" + "".join(
-                f'<li><a href="{E(u)}" target="_blank" rel="noopener">{E(t)}</a></li>' for t, u in post.get("links", [])) + "</ul>")
+                (f'<li><a href="{url(lang, "blog/" + u[6:] + ".html")}">{E(t)}</a></li>' if u.startswith("@blog:")
+                 else f'<li><a href="{E(u)}" target="_blank" rel="noopener">{E(t)}</a></li>') for t, u in post.get("links", [])) + "</ul>")
         elif kind == "table":
             hd, *rows = b[1]
             out.append('<div class="tablewrap"><table class="post-table"><thead><tr>' + "".join(f"<th>{inline(c)}</th>" for c in hd)
@@ -726,7 +727,51 @@ def test_page(lang):
 <h2>{E(X["cmp_h"])}</h2>
 {table}
 <p class="note">{E(X["logout"])}</p>
-<p class="note">{E(X["next"])}</p>
+<p class="note">{E(TP.NEXT2[lang])} <a href="/test2/{lang}/">/test2/</a></p>
+<p class="post-back"><a href="{url(lang)}">{E(X["back"])}</a></p>
+</article></main>
+</body>
+</html>
+"""
+
+
+def test2_page(lang):
+    """Демо Cloudflare Access: /test2/<lang>/ (доступ проверяет Access, в коде сайта защиты нет)."""
+    X = TP.T2[lang]
+    langs = "".join(
+        f'<a href="/test2/{l}/" hreflang="{l}" lang="{l}" title="{E(C.LANG_NAMES[l])}"{" aria-current=true" if l == lang else ""}>'
+        f'{flag(l)}<span class="lc">{l.upper()}</span></a>' for l in C.LANGS)
+    hd, *rows = X["when"]
+    table = ('<div class="tablewrap"><table class="post-table"><thead><tr>' + "".join(f"<th>{E(c)}</th>" for c in hd)
+             + "</tr></thead><tbody>" + "".join("<tr>" + "".join(f"<td>{inline(c)}</td>" for c in r) + "</tr>" for r in rows)
+             + "</tbody></table></div>")
+    art = url(lang, "blog/cloudflare-access-zero-trust-step-by-step.html")
+    return f"""<!doctype html>
+<html lang="{lang}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>{E(X["title"])} · {E(C.BRAND)}</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="{asset('/assets/style.css')}">
+<script src="{asset('/assets/theme.js')}" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="{url(lang)}"><span class="logo">G</span><span>{E(C.BRAND)}<small>{E(C.BRAND_SUB)}</small></span></a>
+<nav class="langs" aria-label="Language">{langs}</nav>
+</div></header>
+<main class="sec blog"><article class="wrap narrow post">
+<h1>🛡️ {E(X["title"])}</h1>
+<p class="post-note">✅ {E(X["ok"])}</p>
+<h2>{E(X["how_h"])}</h2>
+<ol>{"".join(f"<li>{inline(x)}</li>" for x in X["how"])}</ol>
+<h2>{E(X["when_h"])}</h2>
+{table}
+<p>{E(X["article"])} <a href="{art}">{E(BP.ACCESS_TITLE(lang))}</a></p>
+<p>Basic Auth / Pages Functions: <a href="/test/{lang}/">/test/</a></p>
+<p><a class="btn ghost" href="/cdn-cgi/access/logout">{E(X["logout"])}</a></p>
 <p class="post-back"><a href="{url(lang)}">{E(X["back"])}</a></p>
 </article></main>
 </body>
@@ -771,13 +816,18 @@ def main():
             pages.append(url(lang, f"blog/{post['slug']}.html"))
     for lang in C.LANGS:
         write(f"test/{lang}/index.html", test_page(lang))
+        write(f"test2/{lang}/index.html", test2_page(lang))
+    write("test2/index.html", '<!doctype html><html lang="de"><head><meta charset="utf-8">'
+          '<meta name="robots" content="noindex, nofollow"><title>Test 2</title>'
+          f'<script src="{asset("/assets/test-lang.js")}"></script>'
+          '</head><body>' + " · ".join(f'<a href="/test2/{l}/">{E(C.LANG_NAMES[l])}</a>' for l in C.LANGS) + '</body></html>\n')
     write("test/index.html", '<!doctype html><html lang="de"><head><meta charset="utf-8">'
           '<meta name="robots" content="noindex, nofollow"><title>Test</title>'
           f'<script src="{asset("/assets/test-lang.js") if os.path.exists(os.path.join(OUT, "assets/test-lang.js")) else "/assets/test-lang.js"}"></script>'
           '</head><body>' + " · ".join(f'<a href="/test/{l}/">{E(C.LANG_NAMES[l])}</a>' for l in C.LANGS) + '</body></html>\n')
     write("assets/test-lang.js", LANG_JS.replace("__LANGS__", ", ".join(f'"{l}"' for l in C.LANGS))
           .replace("__DEF__", C.LANGS[0]).replace('location.replace("/" + pick + "/" + location.hash)',
-                                                   'location.replace("/test/" + pick + "/")'))
+                                                   'location.replace(location.pathname.replace(/\\/?$/, "/") + pick + "/")'))
     write("assets/lang.js", LANG_JS.replace("__LANGS__", ", ".join(f'"{l}"' for l in C.LANGS)).replace("__DEF__", C.LANGS[0]))
     alts = "\n".join(f'<link rel="alternate" hreflang="{l}" href="{C.BASE_URL}{url(l)}">' for l in C.LANGS)
     links = " · ".join(f'<a href="{url(l)}" lang="{l}">{flag(l)} {E(C.LANG_NAMES[l])}</a>' for l in C.LANGS)

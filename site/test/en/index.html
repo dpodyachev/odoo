@@ -69,7 +69,7 @@ printf &#x27;%s&#x27; &#x27;admin:NEW-PASSWORD&#x27; | npx wrangler pages secret
 <h2>Three approaches compared</h2>
 <div class="tablewrap"><table class="post-table"><thead><tr><th></th><th>Password in HTML/JavaScript</th><th>Basic Auth (Pages Functions)</th><th>Cloudflare Access</th></tr></thead><tbody><tr><td>Security</td><td>none – everything is in the source</td><td>good, checked on the server</td><td>very good: e-mail code, SSO, audit log</td></tr><tr><td>Users</td><td>–</td><td>one shared password</td><td>individual people / groups</td></tr><tr><td>Effort</td><td>minutes</td><td>one file + a secret</td><td>Zero Trust account (free up to 50 users)</td></tr><tr><td>Logout</td><td>–</td><td>close the browser window</td><td>logout link, configurable session length</td></tr></tbody></table></div>
 <p class="note">Logging out: Basic Auth has no real logout – close the browser or use a private window.</p>
-<p class="note">Variant with Cloudflare Access: /test2/ (in preparation).</p>
+<p class="note">The same page with Cloudflare Access (login with an e-mail code): <a href="/test2/en/">/test2/</a></p>
 <p class="post-back"><a href="/en/">← Back to the website</a></p>
 </article></main>
 </body>

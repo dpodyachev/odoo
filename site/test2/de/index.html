@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cloudflare Access – Anmeldung per E-Mail-Code · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="/de/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="langs" aria-label="Language"><a href="/test2/de/" hreflang="de" lang="de" title="Deutsch" aria-current=true><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/test2/en/" hreflang="en" lang="en" title="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/test2/fr/" hreflang="fr" lang="fr" title="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/test2/el/" hreflang="el" lang="el" title="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/test2/uk/" hreflang="uk" lang="uk" title="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/test2/ru/" hreflang="ru" lang="ru" title="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+</div></header>
+<main class="sec blog"><article class="wrap narrow post">
+<h1>🛡️ Cloudflare Access – Anmeldung per E-Mail-Code</h1>
+<p class="post-note">✅ Sie sind über Cloudflare Access angemeldet. Kein gemeinsames Passwort: Zugang hat nur, wer in der Richtlinie steht und den Code aus seinem Postfach eingibt.</p>
+<h2>Was hier passiert</h2>
+<ol><li>Cloudflare Access sitzt <b>vor</b> der Website. Noch bevor Cloudflare Pages die Seite ausliefert, prüft Access, ob der Besucher eine gültige Sitzung hat.</li><li>Ohne Sitzung leitet Access zur Anmeldeseite des Teams um (<code>…cloudflareaccess.com</code>). Dort gibt man seine E-Mail-Adresse ein und erhält einen einmaligen Code.</li><li>Die Richtlinie „Owner only“ erlaubt genau eine Adresse. Andere Adressen bekommen gar keinen Code.</li><li>Nach der Anmeldung setzt Access ein Cookie für 24 Stunden – so lange bleibt man angemeldet.</li><li>Geschützt sind <b>alle</b> Adressen dieser Seite: 2027.pp.ua, goldberg.pp.ua, www.goldberg.pp.ua und goldberg-odoo.pages.dev. Sonst wäre die Seite über einen Spiegel offen.</li><li>Im Code der Website gibt es dafür <b>nichts</b> – keine Funktion, kein Secret. Alles ist im Zero-Trust-Dashboard eingestellt.</li></ol>
+<h2>Wann Access, wann Pages Functions?</h2>
+<div class="tablewrap"><table class="post-table"><thead><tr><th>Situation</th><th>Besser</th></tr></thead><tbody><tr><td>Eine Testseite für Kunden, ein gemeinsames Passwort reicht</td><td>Basic Auth (Pages Functions oder nginx) – siehe /test/</td></tr><tr><td>Mehrere Personen, jede mit eigenem Zugang, Zugang einzeln entziehen</td><td>Cloudflare Access</td></tr><tr><td>Anmeldung über Google, Microsoft, GitHub, Firmen-SSO</td><td>Cloudflare Access</td></tr><tr><td>Protokoll: wer hat sich wann angemeldet</td><td>Cloudflare Access</td></tr><tr><td>Ganzes Stage-/Testsystem (z. B. Odoo-Stage) hinter Anmeldung</td><td>Cloudflare Access (+ Origin nur über Cloudflare erreichbar)</td></tr><tr><td>Maschinen-Zugriff: API, Webhooks, Skripte</td><td>Basic Auth oder Access mit Service-Token</td></tr><tr><td>Website ist nicht bei Cloudflare</td><td>nginx/Apache Basic Auth</td></tr></tbody></table></div>
+<p>Schritt für Schritt erklärt im Blog: <a href="/de/blog/cloudflare-access-zero-trust-step-by-step">Cloudflare Access (Zero Trust) Schritt für Schritt – und wann es besser ist als ein Passwort</a></p>
+<p>Basic Auth / Pages Functions: <a href="/test/de/">/test/</a></p>
+<p><a class="btn ghost" href="/cdn-cgi/access/logout">Abmelden</a></p>
+<p class="post-back"><a href="/de/">← Zur Website</a></p>
+</article></main>
+</body>
+</html>

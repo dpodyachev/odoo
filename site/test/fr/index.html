@@ -69,7 +69,7 @@ printf &#x27;%s&#x27; &#x27;admin:NEW-PASSWORD&#x27; | npx wrangler pages secret
 <h2>Trois approches comparées</h2>
 <div class="tablewrap"><table class="post-table"><thead><tr><th></th><th>Mot de passe en HTML/JavaScript</th><th>Basic Auth (Pages Functions)</th><th>Cloudflare Access</th></tr></thead><tbody><tr><td>Sécurité</td><td>aucune – tout est dans le code source</td><td>bonne, vérification côté serveur</td><td>très bonne : code par e-mail, SSO, journal</td></tr><tr><td>Utilisateurs</td><td>–</td><td>un mot de passe partagé</td><td>personnes / groupes individuels</td></tr><tr><td>Effort</td><td>quelques minutes</td><td>un fichier + un secret</td><td>compte Zero Trust (gratuit jusqu’à 50 utilisateurs)</td></tr><tr><td>Déconnexion</td><td>–</td><td>fermer la fenêtre du navigateur</td><td>lien de déconnexion, durée de session réglable</td></tr></tbody></table></div>
 <p class="note">Se déconnecter : Basic Auth n’a pas de vraie déconnexion – fermez le navigateur ou utilisez une fenêtre privée.</p>
-<p class="note">Variante avec Cloudflare Access : /test2/ (en préparation).</p>
+<p class="note">La même page avec Cloudflare Access (connexion par code e-mail) : <a href="/test2/fr/">/test2/</a></p>
 <p class="post-back"><a href="/fr/">← Retour au site</a></p>
 </article></main>
 </body>

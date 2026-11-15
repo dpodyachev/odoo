@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cloudflare Access – connexion par code e-mail · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="/fr/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="langs" aria-label="Language"><a href="/test2/de/" hreflang="de" lang="de" title="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/test2/en/" hreflang="en" lang="en" title="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/test2/fr/" hreflang="fr" lang="fr" title="Français" aria-current=true><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/test2/el/" hreflang="el" lang="el" title="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/test2/uk/" hreflang="uk" lang="uk" title="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/test2/ru/" hreflang="ru" lang="ru" title="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+</div></header>
+<main class="sec blog"><article class="wrap narrow post">
+<h1>🛡️ Cloudflare Access – connexion par code e-mail</h1>
+<p class="post-note">✅ Vous êtes connecté via Cloudflare Access. Pas de mot de passe partagé : seules les personnes inscrites dans la règle et qui saisissent le code reçu par e-mail entrent.</p>
+<h2>Ce qui se passe ici</h2>
+<ol><li>Cloudflare Access se place <b>devant</b> le site. Avant que Cloudflare Pages ne serve la page, Access vérifie que le visiteur a une session valide.</li><li>Sans session, Access redirige vers la page de connexion de l’équipe (<code>…cloudflareaccess.com</code>). On saisit son adresse e-mail et on reçoit un code à usage unique.</li><li>La règle « Owner only » autorise une seule adresse. Les autres ne reçoivent même pas de code.</li><li>Après la connexion, Access pose un cookie pour 24 heures – on reste connecté pendant ce temps.</li><li><b>Toutes</b> les adresses de cette page sont protégées : 2027.pp.ua, goldberg.pp.ua, www.goldberg.pp.ua et goldberg-odoo.pages.dev. Sinon la page serait ouverte via un miroir.</li><li>Il n’y a <b>rien</b> pour cela dans le code du site – ni fonction, ni secret. Tout est réglé dans le tableau de bord Zero Trust.</li></ol>
+<h2>Quand Access, quand Pages Functions ?</h2>
+<div class="tablewrap"><table class="post-table"><thead><tr><th>Situation</th><th>Mieux</th></tr></thead><tbody><tr><td>Une page de test pour un client, un mot de passe partagé suffit</td><td>Basic Auth (Pages Functions ou nginx) – voir /test/</td></tr><tr><td>Plusieurs personnes, chacune avec son accès, révocable individuellement</td><td>Cloudflare Access</td></tr><tr><td>Connexion via Google, Microsoft, GitHub, SSO d’entreprise</td><td>Cloudflare Access</td></tr><tr><td>Journal : qui s’est connecté et quand</td><td>Cloudflare Access</td></tr><tr><td>Tout un système de préproduction (p. ex. Odoo) derrière une connexion</td><td>Cloudflare Access (+ origine joignable uniquement via Cloudflare)</td></tr><tr><td>Accès machine : API, webhooks, scripts</td><td>Basic Auth, ou Access avec un service token</td></tr><tr><td>Site non hébergé chez Cloudflare</td><td>Basic Auth nginx/Apache</td></tr></tbody></table></div>
+<p>Expliqué pas à pas dans le blog : <a href="/fr/blog/cloudflare-access-zero-trust-step-by-step">Cloudflare Access (Zero Trust) pas à pas – et quand c’est mieux qu’un mot de passe</a></p>
+<p>Basic Auth / Pages Functions: <a href="/test/fr/">/test/</a></p>
+<p><a class="btn ghost" href="/cdn-cgi/access/logout">Se déconnecter</a></p>
+<p class="post-back"><a href="/fr/">← Retour au site</a></p>
+</article></main>
+</body>
+</html>

@@ -8,5 +8,5 @@
     if (l === "ua") l = "uk";
     if (supported.indexOf(l) >= 0) { pick = l; break; }
   }
-  location.replace("/test/" + pick + "/");
+  location.replace(location.pathname.replace(/\/?$/, "/") + pick + "/");
 })();

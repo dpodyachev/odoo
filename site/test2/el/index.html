@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cloudflare Access – σύνδεση με κωδικό e-mail · Goldberg</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=d76e4f61">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="/el/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="langs" aria-label="Language"><a href="/test2/de/" hreflang="de" lang="de" title="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/test2/en/" hreflang="en" lang="en" title="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/test2/fr/" hreflang="fr" lang="fr" title="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/test2/el/" hreflang="el" lang="el" title="Ελληνικά" aria-current=true><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/test2/uk/" hreflang="uk" lang="uk" title="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/test2/ru/" hreflang="ru" lang="ru" title="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+</div></header>
+<main class="sec blog"><article class="wrap narrow post">
+<h1>🛡️ Cloudflare Access – σύνδεση με κωδικό e-mail</h1>
+<p class="post-note">✅ Έχετε συνδεθεί μέσω Cloudflare Access. Χωρίς κοινό κωδικό: μπαίνουν μόνο όσοι αναφέρονται στην πολιτική και πληκτρολογούν τον κωδικό από το e-mail τους.</p>
+<h2>Τι συμβαίνει εδώ</h2>
+<ol><li>Το Cloudflare Access βρίσκεται <b>μπροστά</b> από το site. Πριν το Cloudflare Pages σερβίρει τη σελίδα, το Access ελέγχει αν ο επισκέπτης έχει έγκυρη συνεδρία.</li><li>Χωρίς συνεδρία, το Access ανακατευθύνει στη σελίδα σύνδεσης της ομάδας (<code>…cloudflareaccess.com</code>). Εκεί δίνετε το e-mail σας και λαμβάνετε κωδικό μίας χρήσης.</li><li>Η πολιτική «Owner only» επιτρέπει ακριβώς μία διεύθυνση. Άλλες διευθύνσεις δεν λαμβάνουν καν κωδικό.</li><li>Μετά τη σύνδεση, το Access ορίζει cookie για 24 ώρες – τόσο διαρκεί η σύνδεση.</li><li>Προστατεύονται <b>όλες</b> οι διευθύνσεις της σελίδας: 2027.pp.ua, goldberg.pp.ua, www.goldberg.pp.ua και goldberg-odoo.pages.dev. Αλλιώς η σελίδα θα ήταν ανοιχτή μέσω ενός mirror.</li><li>Στον κώδικα του site δεν υπάρχει <b>τίποτα</b> γι&#x27; αυτό – ούτε συνάρτηση ούτε secret. Όλα ρυθμίζονται στο dashboard του Zero Trust.</li></ol>
+<h2>Πότε Access, πότε Pages Functions;</h2>
+<div class="tablewrap"><table class="post-table"><thead><tr><th>Περίπτωση</th><th>Καλύτερα</th></tr></thead><tbody><tr><td>Δοκιμαστική σελίδα για πελάτη, αρκεί ένας κοινός κωδικός</td><td>Basic Auth (Pages Functions ή nginx) – βλ. /test/</td></tr><tr><td>Πολλά άτομα, το καθένα με δική του πρόσβαση, ανάκληση μεμονωμένα</td><td>Cloudflare Access</td></tr><tr><td>Σύνδεση με Google, Microsoft, GitHub, εταιρικό SSO</td><td>Cloudflare Access</td></tr><tr><td>Καταγραφή: ποιος συνδέθηκε και πότε</td><td>Cloudflare Access</td></tr><tr><td>Ολόκληρο σύστημα stage (π.χ. Odoo stage) πίσω από σύνδεση</td><td>Cloudflare Access (+ origin προσβάσιμο μόνο μέσω Cloudflare)</td></tr><tr><td>Πρόσβαση μηχανών: API, webhooks, scripts</td><td>Basic Auth ή Access με service token</td></tr><tr><td>Το site δεν είναι στο Cloudflare</td><td>Basic Auth σε nginx/Apache</td></tr></tbody></table></div>
+<p>Βήμα-βήμα στο blog: <a href="/el/blog/cloudflare-access-zero-trust-step-by-step">Cloudflare Access (Zero Trust) βήμα-βήμα – και πότε είναι καλύτερο από έναν κωδικό</a></p>
+<p>Basic Auth / Pages Functions: <a href="/test/el/">/test/</a></p>
+<p><a class="btn ghost" href="/cdn-cgi/access/logout">Αποσύνδεση</a></p>
+<p class="post-back"><a href="/el/">← Πίσω στο site</a></p>
+</article></main>
+</body>
+</html>
