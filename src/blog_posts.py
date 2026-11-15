@@ -784,3 +784,5 @@ def ACCESS_TITLE(lang):
     """Заголовок статьи о Cloudflare Access на нужном языке (для ссылки со страницы /test2/)."""
     p = next(x for x in POSTS if x["slug"] == "cloudflare-access-zero-trust-step-by-step")
     return p["t"].get(lang, p["t"]["en"])["title"]
+from blog_post_replica import REPLICA as _C8  # noqa: E402
+POSTS.append(_C8)

@@ -15,6 +15,7 @@
 <url><loc>https://2027.pp.ua/de/blog/password-leaks-brute-force-2fa-odoo</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/de/blog/cloudflare-access-zero-trust-step-by-step</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/de/blog/odoo-17-free-hosting-database-filestore</loc><lastmod>2026-11-15</lastmod></url>
+<url><loc>https://2027.pp.ua/de/blog/odoo-19-postgresql-read-replica</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/en/</loc><lastmod>2026-11-15</lastmod><xhtml:link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/"/><xhtml:link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/"/><xhtml:link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/"/><xhtml:link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/"/><xhtml:link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/"/><xhtml:link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/"/></url>
 <url><loc>https://2027.pp.ua/en/impressum</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/en/datenschutz</loc><lastmod>2026-11-15</lastmod></url>
@@ -30,6 +31,7 @@
 <url><loc>https://2027.pp.ua/en/blog/password-leaks-brute-force-2fa-odoo</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/en/blog/cloudflare-access-zero-trust-step-by-step</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/en/blog/odoo-17-free-hosting-database-filestore</loc><lastmod>2026-11-15</lastmod></url>
+<url><loc>https://2027.pp.ua/en/blog/odoo-19-postgresql-read-replica</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/</loc><lastmod>2026-11-15</lastmod><xhtml:link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/"/><xhtml:link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/"/><xhtml:link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/"/><xhtml:link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/"/><xhtml:link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/"/><xhtml:link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/"/></url>
 <url><loc>https://2027.pp.ua/fr/impressum</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/datenschutz</loc><lastmod>2026-11-15</lastmod></url>
@@ -45,6 +47,7 @@
 <url><loc>https://2027.pp.ua/fr/blog/password-leaks-brute-force-2fa-odoo</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/blog/cloudflare-access-zero-trust-step-by-step</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/blog/odoo-17-free-hosting-database-filestore</loc><lastmod>2026-11-15</lastmod></url>
+<url><loc>https://2027.pp.ua/fr/blog/odoo-19-postgresql-read-replica</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/el/</loc><lastmod>2026-11-15</lastmod><xhtml:link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/"/><xhtml:link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/"/><xhtml:link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/"/><xhtml:link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/"/><xhtml:link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/"/><xhtml:link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/"/></url>
 <url><loc>https://2027.pp.ua/el/impressum</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/el/datenschutz</loc><lastmod>2026-11-15</lastmod></url>
@@ -60,6 +63,7 @@
 <url><loc>https://2027.pp.ua/el/blog/password-leaks-brute-force-2fa-odoo</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/el/blog/cloudflare-access-zero-trust-step-by-step</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/el/blog/odoo-17-free-hosting-database-filestore</loc><lastmod>2026-11-15</lastmod></url>
+<url><loc>https://2027.pp.ua/el/blog/odoo-19-postgresql-read-replica</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/</loc><lastmod>2026-11-15</lastmod><xhtml:link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/"/><xhtml:link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/"/><xhtml:link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/"/><xhtml:link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/"/><xhtml:link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/"/><xhtml:link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/"/></url>
 <url><loc>https://2027.pp.ua/uk/impressum</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/datenschutz</loc><lastmod>2026-11-15</lastmod></url>
@@ -75,6 +79,7 @@
 <url><loc>https://2027.pp.ua/uk/blog/password-leaks-brute-force-2fa-odoo</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/blog/cloudflare-access-zero-trust-step-by-step</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/blog/odoo-17-free-hosting-database-filestore</loc><lastmod>2026-11-15</lastmod></url>
+<url><loc>https://2027.pp.ua/uk/blog/odoo-19-postgresql-read-replica</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/</loc><lastmod>2026-11-15</lastmod><xhtml:link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/"/><xhtml:link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/"/><xhtml:link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/"/><xhtml:link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/"/><xhtml:link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/"/><xhtml:link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/"/></url>
 <url><loc>https://2027.pp.ua/ru/impressum</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/datenschutz</loc><lastmod>2026-11-15</lastmod></url>
@@ -90,4 +95,5 @@
 <url><loc>https://2027.pp.ua/ru/blog/password-leaks-brute-force-2fa-odoo</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/blog/cloudflare-access-zero-trust-step-by-step</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/blog/odoo-17-free-hosting-database-filestore</loc><lastmod>2026-11-15</lastmod></url>
+<url><loc>https://2027.pp.ua/ru/blog/odoo-19-postgresql-read-replica</loc><lastmod>2026-11-15</lastmod></url>
 </urlset>

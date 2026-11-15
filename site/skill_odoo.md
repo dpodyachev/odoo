@@ -224,6 +224,7 @@ SELECT relname, n_dead_tup, last_autovacuum FROM pg_stat_user_tables ORDER BY n_
 - An index created by hand in SQL is invisible to Odoo and lost if the field is recreated – prefer `index=` in code; a hand index: `CREATE INDEX CONCURRENTLY ...` (no table lock).
 - Big tables to watch: `mail_message`, `mail_tracking_value`, `ir_attachment`, `bus_bus`, `mail_mail`, `ir_logging` (if `log_db` is on), queue_job's `queue_job`. Archive/clean via Odoo (autovacuum crons, queue_job cleanup), not with blind DELETE.
 - PostgreSQL basics on a dedicated DB server: `shared_buffers` ≈ 25 % RAM, `effective_cache_size` ≈ 50–75 % RAM, `random_page_cost = 1.1` on SSD, moderate `work_mem` (it is per sort/hash and per connection).
+- Odoo 18/19 can send read-only requests to a PostgreSQL read replica (`db_replica_host`) – often slower, not faster; see skill `odoo-replica`: https://2027.pp.ua/skill_odoo_replica.md
 - Odoo side: `workers > 0` on production (never `--dev` there), enough workers for concurrent users but RAM = workers × `limit_memory_hard` must fit; heavy reports/imports in a cron or queue job, not in the HTTP request; stored compute fields with wide `@api.depends` trigger mass recomputations – check them first when writes are slow.
 
 ## 11. E-mail (outgoing and incoming)

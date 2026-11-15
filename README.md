@@ -44,4 +44,4 @@ npx -y wrangler@3.114.0 pages deploy site --project-name goldberg-odoo --branch 
 
 ## Odoo skills for AI agents
 
-`skills/odoo-ops/SKILL.md` – Odoo 17 operations (logs, module updates, backups, cron/queue jobs, stage restore, workers, nginx, PostgreSQL, migration, performance, e-mail, OCA), published at https://2027.pp.ua/skill_odoo.md. `skills/odoo-security/SKILL.md` – hardening and protection, published at https://2027.pp.ua/skill_odoo_security.md; site overview for AI: https://2027.pp.ua/llms.txt. Copy a folder into `.claude/skills/` to use it as a Claude Code skill.
+`skills/odoo-ops/SKILL.md` – Odoo 17 operations (logs, module updates, backups, cron/queue jobs, stage restore, workers, nginx, PostgreSQL, migration, performance, e-mail, OCA), published at https://2027.pp.ua/skill_odoo.md. `skills/odoo-security/SKILL.md` – hardening and protection, published at https://2027.pp.ua/skill_odoo_security.md. `skills/odoo-replica/SKILL.md` – Odoo 18/19 with a PostgreSQL read replica, published at https://2027.pp.ua/skill_odoo_replica.md; site overview for AI: https://2027.pp.ua/llms.txt. Copy a folder into `.claude/skills/` to use it as a Claude Code skill.

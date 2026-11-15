@@ -8,6 +8,7 @@ Articles exist in German, English, French, Greek, Ukrainian and Russian (/de/, /
 
 - [Odoo operations skill (Markdown, SKILL.md format)](https://2027.pp.ua/skill_odoo.md): what to look for in the Odoo log, updating modules (click-odoo-update, odoo -u), backups (database + filestore), stopping cron and queue jobs and why, safe stage restore, workers/limits, nginx websocket, PostgreSQL lock checks, version migration (upgrade service, OpenUpgrade), performance and indexes, e-mail queue and deliverability, OCA modules.
 - [Odoo security skill (Markdown, SKILL.md format)](https://2027.pp.ua/skill_odoo_security.md): hardening checklist – network exposure, nginx/TLS, database manager, odoo.conf, users/2FA, login cooldown and fail2ban, API keys, access rights and record rules, secure custom code (SQL injection, XSS, sudo, CSRF), secrets and backups, updates, monitoring and incident response.
+- [Odoo 18/19 read replica skill (Markdown, SKILL.md format)](https://2027.pp.ua/skill_odoo_replica.md): db_replica_host, how Odoo routes requests between primary and replica (readonly routes, @api.readonly), why it can be slower, measuring, streaming replication, when it pays off.
 
 ## Odoo and operations articles (English)
 
@@ -22,6 +23,7 @@ Articles exist in German, English, French, Greek, Ukrainian and Russian (/de/, /
 - [Leaked passwords? How to check – and how to protect Odoo against guessing, with 2FA](https://2027.pp.ua/en/blog/password-leaks-brute-force-2fa-odoo): Where to check whether an e-mail address or password appears in data breaches without revealing the password – and what Odoo does itself: login brake, password length, two-factor login, API keys, fail2ban.
 - [Cloudflare Access (Zero Trust) step by step – and when it beats a password](https://2027.pp.ua/en/blog/cloudflare-access-zero-trust-step-by-step): Login with an e-mail code or SSO in front of any website or test system – without a line of code. Setup in five steps, comparison with Basic Auth via Pages Functions, pitfalls and Odoo practice.
 - [Running Odoo 17 for free: server, database, filestore – every option and its catch](https://2027.pp.ua/en/blog/odoo-17-free-hosting-database-filestore): Where Odoo 17 runs for free, why the database does not belong in Cloudflare, how the filestore ends up in R2, and how Cloudflare Tunnel, Access and R2 secure the setup.
+- [Odoo 19 with a PostgreSQL read replica: write to the primary, read from the replica – and why it can get slower](https://2027.pp.ua/en/blog/odoo-19-postgresql-read-replica): Since Odoo 18, two lines in odoo.conf send read-only requests to a replica. How Odoo decides per request (from the source), why my tests were slower, how to measure it and when it pays off.
 
 ## Services
 

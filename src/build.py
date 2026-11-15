@@ -943,7 +943,8 @@ def write(path, text):
 
 
 SKILLS_DIR = os.path.join(os.path.dirname(HERE), "skills")
-SKILL_ALIAS = {"odoo-ops": "skill_odoo.md", "odoo-security": "skill_odoo_security.md"}   # короткие адреса на сайте
+SKILL_ALIAS = {"odoo-ops": "skill_odoo.md", "odoo-security": "skill_odoo_security.md",
+              "odoo-replica": "skill_odoo_replica.md"}   # короткие адреса на сайте
 
 
 def write_ai_files():
@@ -969,7 +970,9 @@ def write_ai_files():
              "performance and indexes, e-mail queue and deliverability, OCA modules.",
              f"- [Odoo security skill (Markdown, SKILL.md format)]({C.BASE_URL}/skill_odoo_security.md): hardening checklist – network exposure, "
              "nginx/TLS, database manager, odoo.conf, users/2FA, login cooldown and fail2ban, API keys, access rights and record rules, "
-             "secure custom code (SQL injection, XSS, sudo, CSRF), secrets and backups, updates, monitoring and incident response.", "",
+             "secure custom code (SQL injection, XSS, sudo, CSRF), secrets and backups, updates, monitoring and incident response.",
+             f"- [Odoo 18/19 read replica skill (Markdown, SKILL.md format)]({C.BASE_URL}/skill_odoo_replica.md): db_replica_host, how Odoo routes "
+             "requests between primary and replica (readonly routes, @api.readonly), why it can be slower, measuring, streaming replication, when it pays off.", "",
              "## Odoo and operations articles (English)", ""]
     for p in posts:
         t = p["t"].get("en") or next(iter(p["t"].values()))
