@@ -465,3 +465,5 @@ html.lb-open { overflow: hidden; }
 .soc-ico:hover { color: var(--brand); }
 .btn.soc-ico { padding-left: 14px; padding-right: 14px; }
 .foot-soc { display: inline-flex; gap: 14px; align-items: center; }
+.nojs-ci { margin: 0 0 24px; }
+.nojs-ci img { display: block; max-width: 100%; height: auto; margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; }

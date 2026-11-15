@@ -642,13 +642,62 @@ def index(T, lang):
 
 
 NOSCRIPT_CONTACTS = {
-    "de": "Anschrift und Kontaktdaten werden zum Schutz vor Spam-Bots per JavaScript angezeigt. Bitte JavaScript aktivieren.",
-    "en": "Address and contact details are shown via JavaScript to protect against spam bots. Please enable JavaScript.",
-    "fr": "L'adresse et les coordonnées sont affichées via JavaScript pour les protéger des robots de spam. Veuillez activer JavaScript.",
-    "el": "Η διεύθυνση και τα στοιχεία επικοινωνίας εμφανίζονται μέσω JavaScript για προστασία από spam bots. Ενεργοποιήστε τη JavaScript.",
-    "uk": "Адреса й контакти показуються через JavaScript для захисту від спам-ботів. Увімкніть JavaScript.",
-    "ru": "Адрес и контакты показываются через JavaScript для защиты от спам-ботов. Включите JavaScript.",
+    "de": "JavaScript ist deaktiviert – Anschrift und Kontaktdaten werden zum Schutz vor Spam-Bots daher als Bild angezeigt:",
+    "en": "JavaScript is disabled – to protect against spam bots, the address and contact details are shown as an image:",
+    "fr": "JavaScript est désactivé – pour se protéger des robots de spam, l'adresse et les coordonnées sont affichées sous forme d'image :",
+    "el": "Η JavaScript είναι απενεργοποιημένη – για προστασία από spam bots, η διεύθυνση και τα στοιχεία επικοινωνίας εμφανίζονται ως εικόνα:",
+    "uk": "JavaScript вимкнено – для захисту від спам-ботів адреса й контакти показані зображенням:",
+    "ru": "JavaScript выключен – для защиты от спам-ботов адрес и контакты показаны картинкой:",
 }
+NOSCRIPT_NOIMG = {
+    "de": "JavaScript ist deaktiviert – Anschrift und Kontaktdaten können nicht geladen werden. Bitte JavaScript aktivieren.",
+    "en": "JavaScript is disabled – the address and contact details cannot be loaded. Please enable JavaScript.",
+    "fr": "JavaScript est désactivé – l'adresse et les coordonnées ne peuvent pas être chargées. Veuillez activer JavaScript.",
+    "el": "Η JavaScript είναι απενεργοποιημένη – η διεύθυνση και τα στοιχεία επικοινωνίας δεν μπορούν να φορτωθούν.",
+    "uk": "JavaScript вимкнено – адресу й контакти не вдається завантажити. Увімкніть JavaScript.",
+    "ru": "JavaScript выключен – адрес и контакты не могут подгрузиться. Включите JavaScript.",
+}
+CONTACT_IMG = None   # имя PNG с контактами для <noscript> (создаётся при сборке, если есть Pillow)
+
+
+def write_contact_image():
+    """PNG с адресом и контактами для страниц без JS (Impressum). Нужен Pillow; без него — только текст-подсказка.
+    Файл в .gitignore: генерируется в GitHub Action перед деплоем, в репозиторий не попадает."""
+    global CONTACT_IMG
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+    except ImportError:
+        print("Pillow не установлен — картинка контактов для <noscript> не создана")
+        return
+    P = C.PRIVATE
+    lines = [C.OWNER_NAME, P.get("street", ""), P.get("city", ""), C.OWNER_COUNTRY, "",
+             "E-Mail: " + P.get("email", ""), "Telegram: " + P.get("telegram_handle", ""),
+             "Tel.: " + P.get("phone_display", ""), "WhatsApp: " + P.get("whatsapp", "").split("//")[-1]]
+    fdir = "/usr/share/fonts/truetype/dejavu/"
+    sc = 2
+    font = ImageFont.truetype(fdir + "DejaVuSans.ttf", 16 * sc)
+    bold = ImageFont.truetype(fdir + "DejaVuSans-Bold.ttf", 16 * sc)
+    lh, pad = 26 * sc, 18 * sc
+    w = max(int(ImageDraw.Draw(Image.new("RGB", (1, 1))).textlength(l, font=bold)) for l in lines) + 2 * pad
+    img = Image.new("RGB", (w, lh * len(lines) + 2 * pad - 6 * sc), "#ffffff")
+    d = ImageDraw.Draw(img)
+    for i, l in enumerate(lines):
+        d.text((pad, pad + i * lh), l, fill="#1d1a22", font=bold if i == 0 else font)
+    data = img.tobytes()
+    name = f"assets/ci-{hashlib.sha1(data).hexdigest()[:10]}.png"
+    for old in os.listdir(os.path.join(OUT, "assets")):
+        if old.startswith("ci-") and old.endswith(".png"):
+            os.remove(os.path.join(OUT, "assets", old))
+    img.save(os.path.join(OUT, name), optimize=True)
+    CONTACT_IMG = (name, img.width // sc, img.height // sc)
+
+
+def noscript_contacts(lang):
+    if CONTACT_IMG:
+        n, w, h = CONTACT_IMG
+        return (f'<noscript><div class="note nojs-ci"><p>{E(NOSCRIPT_CONTACTS.get(lang, NOSCRIPT_CONTACTS["en"]))}</p>'
+                f'<img src="/{n}" width="{w}" height="{h}" alt="Kontakt / Contact"></div></noscript>')
+    return f'<noscript><p class="note nojs-ci">{E(NOSCRIPT_NOIMG.get(lang, NOSCRIPT_NOIMG["en"]))}</p></noscript>'
 
 
 def legal_page(T, lang, page, key):
@@ -661,10 +710,10 @@ def legal_page(T, lang, page, key):
         "phone": ('<a data-ch="tel:{phone}" data-cx="{phone_display}"></a>' if C.PHONE else "—"),
         "whatsapp": ('<a data-ch="{whatsapp}" data-cx="{whatsapp_text}" target="_blank" rel="noopener"></a>' if C.WHATSAPP else "—"),
     }
-    body = L["html"].format(**data) + f'<noscript><p class="note">{E(NOSCRIPT_CONTACTS.get(lang, NOSCRIPT_CONTACTS["en"]))}</p></noscript>'
+    body = L["html"].format(**data)
     note = f'<p class="note legalnote">{E(T["legal_note"])} <a href="{url("de", page)}">Deutsch</a></p>' if lang != "de" else ""
     return (head(T, lang, page, f'{L["title"]} · {C.BRAND}', L["title"]) + header(T, lang, page)
-            + f'<main class="sec"><div class="wrap narrow legal"><h1>{E(L["title"])}</h1>{note}{body}</div></main>'
+            + f'<main class="sec"><div class="wrap narrow legal"><h1>{E(L["title"])}</h1>{note}{noscript_contacts(lang)}{body}</div></main>'
             + footer(T, lang, page))
 
 
@@ -894,6 +943,7 @@ def main():
     if not C.PRIVATE:
         sys.exit("ОШИБКА: нет личных данных — создайте src/private.json или задайте SITE_PRIVATE (base64 JSON), см. config.py")
     write_contacts_js()
+    write_contact_image()
     pages = []
     for lang in C.LANGS:
         T = importlib.import_module(f"lang_{lang}").T

@@ -32,6 +32,7 @@ jobs:
           SITE_PRIVATE: ${{ secrets.SITE_PRIVATE }}
         run: |
           [ -n "$SITE_PRIVATE" ] || { echo "::error::нет секрета SITE_PRIVATE (Settings → Secrets → Actions)"; exit 1; }
+          pip install -q pillow   # картинка контактов для страниц без JS (Impressum)
           python3 src/build.py
 
       - uses: actions/setup-node@v5
