@@ -127,12 +127,31 @@ def book_url():
     return C.CAL_URL or C.TELEGRAM
 
 
+SOCIAL_SVG = {  # значки контактов: адрес/ник — в подсказке и aria-label
+    "mail": '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/>',
+    "tg": '<path d="M21.5 3.5 2.8 10.7c-.9.4-.9 1.6.1 1.9l4.6 1.5 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.8 3.5c.7.5 1.7.1 1.9-.7L22.9 4.9c.2-1-.6-1.8-1.4-1.4z"/><path d="m7.5 14.1 10-6.6-7.6 8.1"/>',
+    "li": '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V17M8 7.3v.1M12 17v-6.5M12 13.3c0-1.6 1.1-2.8 2.5-2.8S17 11.5 17 13v4"/>',
+}
+
+
+def social(kind, cls=""):
+    href, label, ext = {
+        "mail": (f"mailto:{C.EMAIL}", f"E-Mail: {C.EMAIL}", ""),
+        "tg": (C.TELEGRAM, f"Telegram: {C.TELEGRAM_HANDLE}", ' target="_blank" rel="noopener"'),
+        "li": (getattr(C, "LINKEDIN", ""), "LinkedIn", ' target="_blank" rel="noopener me"'),
+    }[kind]
+    if not href:
+        return ""
+    return (f'<a class="soc-ico{(" " + cls) if cls else ""}" href="{E(href)}" title="{E(label)}" aria-label="{E(label)}"{ext}>'
+            f'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" '
+            f'stroke-linejoin="round" aria-hidden="true">{SOCIAL_SVG[kind]}</svg></a>')
+
 def cta(T, cls="", li=False):
     return f"""<div class="cta {cls}">
 <a class="btn primary" href="{E(book_url())}" target="_blank" rel="noopener">{E(T["cta_book"])}</a>
-<a class="btn" href="{E(C.TELEGRAM)}" target="_blank" rel="noopener">Telegram {E(C.TELEGRAM_HANDLE)}</a>
-<a class="btn ghost" href="mailto:{E(C.EMAIL)}">{E(C.EMAIL)}</a>
-{f'<a class="btn ghost" href="{E(C.LINKEDIN)}" target="_blank" rel="noopener me">LinkedIn</a>' if li and getattr(C, "LINKEDIN", "") else ""}
+{social("tg", "btn")}
+{social("mail", "btn ghost")}
+{social("li", "btn ghost") if li else ""}
 </div>"""
 
 
@@ -144,9 +163,7 @@ def footer(T, lang, page):
 <a href="{url(lang, 'blog/')}">{E(T["nav"]["blog"])}</a>
 <a href="{url(lang, 'impressum.html')}">{E(T["impressum"])}</a>
 <a href="{url(lang, 'datenschutz.html')}">{E(T["privacy"])}</a>
-<a href="mailto:{E(C.EMAIL)}">{E(C.EMAIL)}</a>
-<a href="{E(C.TELEGRAM)}" target="_blank" rel="noopener">Telegram</a>
-{f'<a href="{E(C.LINKEDIN)}" target="_blank" rel="noopener me">LinkedIn</a>' if getattr(C, "LINKEDIN", "") else ""}
+<span class="foot-soc">{social("mail")}{social("tg")}{social("li")}</span>
 </div>
 {langswitch(lang, page)}
 <div class="small">© {YEAR} {E(C.BRAND)}. {E(T["footer_note"])}</div>
@@ -513,7 +530,7 @@ def index(T, lang):
 <div class="wrap">
 <p class="reader-intro"><b>{E(C.BRAND)} · {E(C.BRAND_SUB)}</b> — {E(T["kicker"])}</p>
 <p class="reader-intro">{E(T["sub"])}</p>
-<p class="reader-intro">Telegram: <a href="{E(C.TELEGRAM)}">{E(C.TELEGRAM_HANDLE)}</a> · LinkedIn: <a href="{E(C.LINKEDIN)}">dpodyachev</a> · E-Mail: <a href="mailto:{E(C.EMAIL)}">{E(C.EMAIL)}</a> · <a href="{E(book_url())}">{E(T["cta_book"])}</a></p>
+<p class="reader-intro"><span class="foot-soc">{social("tg")}{social("li")}{social("mail")}</span> · <a href="{E(book_url())}">{E(T["cta_book"])}</a></p>
 <h2>{E(T["prices_title"])}</h2>
 <p class="intro">{E(T["prices_intro"])}</p>
 {offer(T)}

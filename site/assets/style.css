@@ -460,3 +460,8 @@ html.lb-open { overflow: hidden; }
 .bk-mode button.on { background: var(--brand-soft); color: var(--brand); }
 .bk-src { margin: 8px 0 0; overflow-wrap: anywhere; }
 .bk-form [hidden] { display: none !important; }
+.soc-ico { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; color: var(--ink); }
+.soc-ico svg { width: 22px; height: 22px; }
+.soc-ico:hover { color: var(--brand); }
+.btn.soc-ico { padding-left: 14px; padding-right: 14px; }
+.foot-soc { display: inline-flex; gap: 14px; align-items: center; }
