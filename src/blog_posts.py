@@ -766,6 +766,8 @@ from blog_post_sec import AUTH as _C4, PWD as _C5  # noqa: E402
 POSTS += [_C4, _C5]
 from blog_post_access import ACCESS as _C6  # noqa: E402
 POSTS.append(_C6)
+from blog_post_free import FREE as _C7  # noqa: E402  (все 6 языков внутри)
+POSTS.append(_C7)
 
 # переводы, вынесенные в отдельные файлы (blog_posts_<lang>.py)
 from blog_posts_fr import FR as _FR  # noqa: E402
