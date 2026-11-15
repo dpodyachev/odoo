@@ -3,7 +3,7 @@ T = {
     "meta_desc": "Odoo services for companies in Germany, Austria and Switzerland: installation, support, troubleshooting, "
                  "updates, DATEV, e-invoicing (XRechnung/ZUGFeRD), Shopware, JTL, DHL, DPD. Fixed prices, remote from Stuttgart.",
     "nav": {"services": "Services", "dach": "DATEV & e-invoicing", "bot": "Monitoring", "prices": "Pricing",
-            "about": "About", "contact": "Contact"},
+            "about": "About", "blog": 'Blog & how-tos', "contact": "Contact"},
     "kicker": "Odoo · Germany · Austria · Switzerland",
     "h1": "Odoo support <span>that just works.</span>",
     "sub": "Installation, support, troubleshooting and integrations for Odoo Community and Enterprise – "
@@ -240,6 +240,8 @@ agreement (Art. 28 GDPR).</p>
     "mon_note": 'Runs alongside the monitoring bot or on its own. Setup at a fixed price, operation within a support plan.',
     "lt_title": 'Load testing with Locust',
     "lt_intro": 'Can your Odoo handle 50, 100 or 300 concurrent users – and what happens at month-end closing? I simulate real workflows with Locust, measure the limits and show where it gets stuck. Always on a test copy, never on the live system.',
+    "lt_types_title": 'Which tests – and what they show',
+    "lt_types": [('Performance testing', "The umbrella term: how fast and stable Odoo responds under defined conditions – your system's real performance instead of guesses."), ('Load testing', 'The expected number of users on a normal day: are the targets met, e.g. p95 under 1 second?'), ('Stress testing', 'Beyond the limit: where does the system break, how does it show – and does it recover on its own?'), ('Spike testing', 'A sudden rush: month-end closing, a newsletter, a sales day – can Odoo take the jump?'), ('Endurance / soak testing', 'Normal load for many hours: memory leaks, growing queues, worker restarts.'), ('Volume testing', 'Large amounts of data: millions of journal items, big warehouses, long lists and reports.'), ('Scalability testing', 'What do more workers, CPU, RAM or a second server really bring – measured, not estimated.')],
     "lt": [('locust', 'Scenarios based on your workflows', 'Sales create quotations, the warehouse validates deliveries, accounting issues invoices, customers order in the web shop – weighted, with realistic pauses.'), ('JSON-RPC · HTTP', 'Real Odoo calls', 'Login, search, list and form views, create, confirm, PDF reports – via the same interface the browser uses. Test data is generated automatically.'), ('ramp-up', 'Load stages & peaks', 'Step by step from 10 to 50, 100, 300 users; sustained load over hours (memory leaks) and peaks such as month-end or sales days.'), ('p95 · p99', 'Measurable metrics', 'Response times (median, p95, p99), error rate and requests per second – live in the Locust UI and in Grafana next to CPU, RAM and PostgreSQL.'), ('workers · pg', 'Finding bottlenecks', 'Number of workers and memory limits, slow SQL queries and missing indexes, locks, connections (pgbouncer), nginx, slow modules and computed fields.'), ('report', 'Report with before/after', 'How many users the system handles today, where the limit is, what each measure gains – re-measured every time. You keep the scenarios for future upgrades.')],
     "lt_code": 'Example scenario (locustfile.py)',
     "lt_note": 'Ideal before go-live, before a version upgrade or when Odoo is "sometimes slow". Fixed price after a short scenario review.',

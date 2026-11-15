@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Restoring a backup on stage – without cron jobs and queue jobs firing · Goldberg</title>
+<meta name="description" content="Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.">
+<link rel="canonical" href="https://2027.pp.ua/fr/blog/odoo-stage-restore-stop-cron-jobs">
+<link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/odoo-stage-restore-stop-cron-jobs">
+<link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/odoo-stage-restore-stop-cron-jobs">
+<link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/blog/odoo-stage-restore-stop-cron-jobs">
+<link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/blog/odoo-stage-restore-stop-cron-jobs">
+<link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/odoo-stage-restore-stop-cron-jobs">
+<link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/odoo-stage-restore-stop-cron-jobs">
+<link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/odoo-stage-restore-stop-cron-jobs">
+<meta property="og:title" content="Restoring a backup on stage – without cron jobs and queue jobs firing · Goldberg">
+<meta property="og:description" content="Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2027.pp.ua/fr/blog/odoo-stage-restore-stop-cron-jobs">
+<meta name="theme-color" content="#3b2a4a">
+<meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=2a86eeb2">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Restoring a backup on stage – without cron jobs and queue jobs firing", "description": "Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.", "datePublished": "2026-11-15", "inLanguage": "en", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua"}, "mainEntityOfPage": "https://2027.pp.ua/fr/blog/odoo-stage-restore-stop-cron-jobs"}</script>
+</head>
+<body>
+<header class="top">
+<div class="wrap top-in">
+<a class="brand" href="/fr/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="menu"><a class="nav-icon multi" href="/fr/#services" title="Services" aria-label="Services"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7.8" stroke-width="3" stroke-dasharray="3 3.125" stroke-linecap="butt"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7z"/></svg></a><a class="nav-icon" href="/fr/#dach" title="DATEV &amp; e-facture" aria-label="DATEV &amp; e-facture"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5M14 3l5 5v4M14 3v5h5"/><path d="M8.5 11h5M8.5 14.5h3"/><path d="m14.5 18.5 2 2 4-4.5"/></svg></a><a class="nav-icon radar" href="/fr/#bot" title="Supervision" aria-label="Supervision"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.2" opacity=".55"/><g class="sweep"><path d="M12 12 18.5 5.5A9.2 9.2 0 0 1 21.2 12z" fill="currentColor" stroke="none" opacity=".28"/><path d="M12 12l6.5-6.5"/></g><circle cx="15.6" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon cur" href="/fr/#prices" title="Tarifs" aria-label="Tarifs"><span aria-hidden="true">€</span></a><a class="nav-icon" href="/fr/#about" title="À propos" aria-label="À propos"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/></svg></a><a class="nav-icon" href="/fr/blog/" title="Blog &amp; guides" aria-label="Blog &amp; guides" aria-current=page><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon" href="/fr/#contact" title="Contact" aria-label="Contact"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a></nav>
+<nav class="langs" aria-label="Language"><a href="/de/blog/odoo-stage-restore-stop-cron-jobs" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/odoo-stage-restore-stop-cron-jobs" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/odoo-stage-restore-stop-cron-jobs" hreflang="fr" lang="fr" title="Français" aria-label="Français" aria-current="true"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/odoo-stage-restore-stop-cron-jobs" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/odoo-stage-restore-stop-cron-jobs" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/odoo-stage-restore-stop-cron-jobs" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<button type="button" class="theme" hidden aria-label="Thème clair / sombre" title="Thème clair / sombre">🌙</button>
+</div>
+</header>
+<main class="sec blog"><article class="wrap narrow post" lang="en"><p class="post-back"><a href="/fr/blog/">← Tous les articles</a></p><p class="post-meta">15.11.2026 · 2 min de lecture · <span class="post-tag">Stage</span><span class="post-tag">Backup</span><span class="post-tag">Cron</span><span class="post-tag">queue_job</span></p><h1>Restoring a backup on stage – without cron jobs and queue jobs firing</h1><p class="post-note">Cet article n’est pas encore disponible en français – voici la version anglaise.</p><p class="intro">Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.</p><p>The production database is restored on stage to test an update. Odoo starts – and immediately processes everything that became &quot;due&quot; during the downtime: dunning and invoice e-mails, syncs with the shop, bank or carriers, queued jobs. With real customer data and real credentials. The classic stage accident.</p><p>The core point: <b>Odoo starts its cron threads and the job runner right at startup.</b> Switching things off in the UI is too late. Everything has to happen <b>before</b> Odoo sees the database for the first time.</p><h2>1. Restore – Odoo stays stopped</h2><figure class="code"><figcaption>bash</figcaption><pre><code>docker compose stop odoo                       # Odoo must NOT be running yet
+
+docker compose exec -T db dropdb   -U odoo --if-exists mydb_stage
+docker compose exec -T db createdb -U odoo mydb_stage
+docker compose exec -T db pg_restore -U odoo -d mydb_stage --no-owner &lt; mydb.dump
+
+# neutralise BEFORE the first start (SQL below)
+docker compose exec -T db psql -U odoo -d mydb_stage -v ON_ERROR_STOP=1 &lt; stage-safety.sql
+
+# filestore: the folder name must match the database name
+#   .../filestore/mydb  -&gt;  .../filestore/mydb_stage
+
+docker compose start odoo</code></pre></figure><h2>2. Neutralise with SQL</h2><figure class="code"><figcaption>stage-safety.sql</figcaption><pre><code>BEGIN;
+-- 1. remember what was active (to re-enable selectively later)
+CREATE TABLE IF NOT EXISTS zz_stage_cron_before AS
+    SELECT id, cron_name, active FROM ir_cron;
+
+-- 2. all scheduled actions off
+UPDATE ir_cron SET active = false WHERE active;
+
+-- 3. queue_job (if installed): nothing waiting may run
+UPDATE queue_job SET state = &#x27;cancelled&#x27;
+ WHERE state IN (&#x27;pending&#x27;, &#x27;enqueued&#x27;, &#x27;started&#x27;, &#x27;wait_dependencies&#x27;);
+
+-- 4. no outgoing / incoming mail
+UPDATE ir_mail_server   SET active = false;
+UPDATE fetchmail_server SET active = false;
+
+-- 5. stage URL and its own database UUID
+UPDATE ir_config_parameter SET value = &#x27;https://stage.example.com&#x27; WHERE key = &#x27;web.base.url&#x27;;
+UPDATE ir_config_parameter SET value = gen_random_uuid()::text   WHERE key = &#x27;database.uuid&#x27;;
+COMMIT;</code></pre></figure><p class="post-note">The tables <code>queue_job</code> and <code>fetchmail_server</code> only exist when the modules are installed – drop those lines otherwise. The <code>zz_stage_cron_before</code> list helps to re-enable individual crons on stage later on purpose.</p><p>Since Odoo 16 there is also the built-in <code>neutralize</code> command: among other things it deactivates scheduled actions, mail servers and payment providers and shows a &quot;neutralized&quot; banner. I use it as the base and add the SQL for third-party modules such as <code>queue_job</code>.</p><figure class="code"><figcaption>bash · Odoo 16+</figcaption><pre><code>docker compose run --rm odoo odoo neutralize -c /etc/odoo/odoo.conf -d mydb_stage</code></pre></figure><h2>3. A stage config as a second safety net</h2><figure class="code"><figcaption>etc/odoo.conf (stage)</figcaption><pre><code>[options]
+; no cron thread at all on stage
+max_cron_threads = 0
+; without queue_job here the job runner does not start
+server_wide_modules = base,web
+; every e-mail ends up in Mailpit - nothing leaves the server
+smtp_server = mailpit
+smtp_port = 1025</code></pre></figure><p>Even if a database is restored without neutralising, nothing can leave the server with this config: no cron thread, no job runner, e-mail only in the mail catcher.</p><h2>4. Verify</h2><figure class="code"><figcaption>sql</figcaption><pre><code>SELECT count(*) FROM ir_cron WHERE active;                 -- expected: 0
+SELECT state, count(*) FROM queue_job GROUP BY state;      -- no pending / enqueued
+SELECT key, value FROM ir_config_parameter WHERE key = &#x27;web.base.url&#x27;;</code></pre></figure><ul><li>Release stage for testing only when all three queries look right.</li><li>Replace credentials for external services (shop, bank, shipping, payments) on stage with sandbox keys, or remove them.</li><li>Keep the whole procedure as a script – a fresh stage is then a matter of minutes, and no step is forgotten.</li></ul><aside class="post-cta"><h2>Je m’en occupe pour vous ?</h2><p>Je le mets en place dans votre système – d’abord sur une copie de test, avec retour arrière et compte rendu.</p><div class="cta ">
+<a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Prendre rendez-vous – 30 min offertes</a>
+<a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
+<a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
+</div></aside><p class="post-back"><a href="/fr/blog/">← Tous les articles</a></p></article></main><footer class="foot">
+<div class="wrap foot-in">
+<div><strong>Goldberg · Odoo Services</strong><br>Support, installation et intégration Odoo pour l&#x27;Allemagne, l&#x27;Autriche et la Suisse.</div>
+<div class="foot-links">
+<a href="/fr/blog/">Blog &amp; guides</a>
+<a href="/fr/impressum">Mentions légales</a>
+<a href="/fr/datenschutz">Confidentialité</a>
+<a href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
+<a href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram</a>
+</div>
+<nav class="langs" aria-label="Language"><a href="/de/blog/odoo-stage-restore-stop-cron-jobs" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/odoo-stage-restore-stop-cron-jobs" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/odoo-stage-restore-stop-cron-jobs" hreflang="fr" lang="fr" title="Français" aria-label="Français" aria-current="true"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/odoo-stage-restore-stop-cron-jobs" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/odoo-stage-restore-stop-cron-jobs" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/odoo-stage-restore-stop-cron-jobs" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<div class="small">© 2026 Goldberg. Ce site n&#x27;utilise ni cookies ni suivi.</div>
+</div>
+</footer>
+</body>
+</html>

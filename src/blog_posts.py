@@ -1,0 +1,542 @@
+# Статьи блога. Каждая статья: slug, date, tags, code (общие для всех языков блоки кода) и t[lang] = title/summary/body.
+# body — список блоков: ("p", текст) ("h", подзаголовок) ("code", ключ) ("ul"/"ol", [пункты]) ("note", текст)
+# ("table", [[заголовки], [строка], ...]). В тексте: `код` и **жирный**. Нет перевода для языка — показывается EN с пометкой.
+# Имена баз/серверов в примерах нейтральные (mydb, stage.example.com) — без данных клиентов.
+
+POSTS = []
+
+# ---------------------------------------------------------------------------------------------------------------------
+POSTS.append({
+    "slug": "odoo-17-python-3-14-docker",
+    "date": "2026-11-15",
+    "tags": ["Docker", "Python 3.14", "Odoo 17"],
+    "code": {
+        "compose": ("docker-compose.yml", """services:
+  odoo:
+    image: odoo17-py314:latest          # new image: Python 3.14 + dependencies, no Odoo code inside
+    restart: unless-stopped
+    depends_on: [db]
+    command: odoo -c /etc/odoo/odoo.conf
+    volumes:
+      # Odoo 17 source from Git, mounted where Python 3.14 looks for packages
+      - ./extra_addons/odoo:/usr/local/lib/python3.14/site-packages/odoo
+      - ./extra_addons/custom:/mnt/extra-addons
+      - ./etc/odoo.conf:/etc/odoo/odoo.conf:ro
+      - odoo-data:/var/lib/odoo
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  odoo-data:
+  db-data:"""),
+        "dockerfile": ("docker/odoo17-py314/Dockerfile", """FROM python:3.14-slim-trixie
+
+# runtime libraries for Odoo
+RUN apt-get update && apt-get install -y --no-install-recommends \\
+        libpq5 libxml2 libxslt1.1 libjpeg62-turbo libldap2 libsasl2-2 \\
+        fonts-dejavu-core node-less \\
+    && rm -rf /var/lib/apt/lists/*
+
+# Python dependencies: Odoo 17 requirements, pins raised to versions with 3.14 support
+COPY requirements-py314.txt /tmp/
+RUN apt-get update && apt-get install -y --no-install-recommends \\
+        build-essential libpq-dev libldap2-dev libsasl2-dev \\
+    && pip install --no-cache-dir -r /tmp/requirements-py314.txt \\
+    && apt-get purge -y build-essential libpq-dev libldap2-dev libsasl2-dev \\
+    && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+
+# 'odoo' command - the code itself comes from the mounted Git checkout
+RUN printf '#!/usr/bin/env python3\\nimport odoo\\nodoo.cli.main()\\n' > /usr/local/bin/odoo \\
+    && chmod +x /usr/local/bin/odoo \\
+    && useradd -m -d /var/lib/odoo -u 101 odoo \\
+    && mkdir -p /mnt/extra-addons && chown -R odoo /var/lib/odoo /mnt/extra-addons
+
+USER odoo
+EXPOSE 8069 8072"""),
+        "steps": ("bash", """# 1) backup: database + filestore
+docker compose exec -T db pg_dump -U odoo -Fc mydb > mydb-$(date +%F).dump
+docker compose exec -T odoo tar czf - -C /var/lib/odoo filestore/mydb > filestore-$(date +%F).tgz
+
+# 2) build the new image (keep the old one for rollback)
+docker build -t odoo17-py314:latest ./docker/odoo17-py314
+
+# 3) does Odoo import under 3.14?
+docker compose run --rm --no-deps odoo \\
+    python3 -c "import sys, odoo; print(sys.version.split()[0], odoo.release.version)"
+
+# 4) start and watch the log
+docker compose up -d odoo
+docker compose logs -f --tail=200 odoo | grep -E "ERROR|Traceback|ImportError|Warning\""""),
+        "rollback": ("bash", """# rollback: previous image in docker-compose.yml (and the old site-packages path), then
+docker compose up -d odoo"""),
+    },
+    "t": {
+        "de": {
+            "title": "Odoo 17 auf Python 3.14 umstellen – mit docker-compose",
+            "summary": "Eigenes Image odoo17-py314, Odoo-Quellcode aus Git in site-packages gemountet, Prüfung auf Stage und Rücksprung in einer Minute.",
+            "body": [
+                ("p", "Ein bestehendes Odoo 17 läuft in Docker – und soll auf eine neuere Python-Version, hier **3.14**. Gründe: Sicherheitsupdates des Basis-Images, neuere Bibliotheken für eigene Module, oft auch spürbar schnellere Python-Laufzeit. Odoo 17 wurde für Python 3.10–3.12 entwickelt, 3.14 ist offiziell nicht freigegeben – deshalb gilt: **erst Stage, dann Produktion**."),
+                ("h", "Die Idee: Image und Odoo-Code trennen"),
+                ("p", "Das neue Image `odoo17-py314:latest` enthält nur Python 3.14 und die Abhängigkeiten. Der Odoo-Code selbst kommt aus einem Git-Checkout und wird dorthin gemountet, wo Python Pakete sucht: `./extra_addons/odoo:/usr/local/lib/python3.14/site-packages/odoo`. So lassen sich Odoo-Patches per `git pull` einspielen, ohne das Image neu zu bauen."),
+                ("code", "compose"),
+                ("note", "Wichtig: Der Pfad enthält die Python-Version. Beim Wechsel von 3.12 auf 3.14 muss auch `python3.12` → `python3.14` im Volume angepasst werden – sonst findet Python das Paket `odoo` nicht."),
+                ("h", "Das Image"),
+                ("code", "dockerfile"),
+                ("p", "Die `requirements.txt` von Odoo 17 pinnt Versionen für ältere Python-Versionen. Für 3.14 werden die Pins für Pakete mit C-Erweiterungen (z. B. `gevent`, `greenlet`, `lxml`, `psycopg2`, `Pillow`, `reportlab`) auf Versionen angehoben, für die es 3.14-Wheels gibt. `wkhtmltopdf` (PDF-Berichte) wird wie bisher separat installiert."),
+                ("h", "Ablauf"),
+                ("code", "steps"),
+                ("ul", [
+                    "Auf Stage alle wichtigen Abläufe durchklicken: Angebote, Rechnungen, Lager, PDF-Berichte, E-Mail (in den Mail-Catcher), geplante Aktionen.",
+                    "Im Log auf `ImportError`, `DeprecationWarning` und `SyntaxWarning` achten – ältere Module mit ungültigen Escape-Sequenzen in Strings fallen hier zuerst auf. Seit Python 3.13 fehlen außerdem einige alte Standardmodule (PEP 594).",
+                    "Ein Modul-Update (`-u`) ist für den reinen Python-Wechsel nicht nötig – das Datenbankschema ändert sich nicht.",
+                ]),
+                ("h", "Rücksprung"),
+                ("code", "rollback"),
+                ("p", "Weil Datenbank und Filestore unverändert bleiben, dauert der Rücksprung so lange wie ein Container-Neustart."),
+            ],
+        },
+        "en": {
+            "title": "Moving Odoo 17 to Python 3.14 – with docker-compose",
+            "summary": "A custom odoo17-py314 image, Odoo source from Git mounted into site-packages, testing on stage and a one-minute rollback.",
+            "body": [
+                ("p", "An existing Odoo 17 runs in Docker and should move to a newer Python, here **3.14**. Reasons: security updates of the base image, newer libraries for custom modules, and often a noticeably faster Python runtime. Odoo 17 was built for Python 3.10–3.12; 3.14 is not officially supported – so the rule is **stage first, production second**."),
+                ("h", "The idea: separate the image from the Odoo code"),
+                ("p", "The new image `odoo17-py314:latest` only contains Python 3.14 and the dependencies. The Odoo code comes from a Git checkout and is mounted where Python looks for packages: `./extra_addons/odoo:/usr/local/lib/python3.14/site-packages/odoo`. Odoo patches are then a `git pull` away, without rebuilding the image."),
+                ("code", "compose"),
+                ("note", "Important: the path contains the Python version. When moving from 3.12 to 3.14, change `python3.12` → `python3.14` in the volume too – otherwise Python will not find the `odoo` package."),
+                ("h", "The image"),
+                ("code", "dockerfile"),
+                ("p", "Odoo 17's `requirements.txt` pins versions for older Pythons. For 3.14, raise the pins of packages with C extensions (e.g. `gevent`, `greenlet`, `lxml`, `psycopg2`, `Pillow`, `reportlab`) to versions that ship 3.14 wheels. `wkhtmltopdf` (PDF reports) is installed separately as before."),
+                ("h", "Procedure"),
+                ("code", "steps"),
+                ("ul", [
+                    "On stage, click through all key flows: quotations, invoices, inventory, PDF reports, e-mail (into a mail catcher), scheduled actions.",
+                    "Watch the log for `ImportError`, `DeprecationWarning` and `SyntaxWarning` – older modules with invalid escape sequences in strings show up here first. Since Python 3.13 some old standard modules are gone as well (PEP 594).",
+                    "A module update (`-u`) is not needed for a pure Python switch – the database schema does not change.",
+                ]),
+                ("h", "Rollback"),
+                ("code", "rollback"),
+                ("p", "Database and filestore stay untouched, so a rollback takes as long as a container restart."),
+            ],
+        },
+        "uk": {
+            "title": "Перехід Odoo 17 на Python 3.14 у docker-compose",
+            "summary": "Власний образ odoo17-py314, код Odoo з Git змонтовано в site-packages, перевірка на stage і відкат за хвилину.",
+            "body": [
+                ("p", "Наявний Odoo 17 працює в Docker, і його треба перевести на новіший Python, тут **3.14**. Навіщо: оновлення безпеки базового образу, свіжі бібліотеки для власних модулів, часто помітно швидший Python. Odoo 17 розроблявся під Python 3.10–3.12, 3.14 офіційно не підтримується. Тому правило: **спершу stage, потім прод**."),
+                ("h", "Ідея: розділити образ і код Odoo"),
+                ("p", "Новий образ `odoo17-py314:latest` містить лише Python 3.14 і залежності. Код Odoo береться з Git-репозиторію і монтується туди, де Python шукає пакети: `./extra_addons/odoo:/usr/local/lib/python3.14/site-packages/odoo`. Патчі Odoo тоді ставляться через `git pull`, без перезбирання образу."),
+                ("code", "compose"),
+                ("note", "Важливо: у шляху є версія Python. При переході з 3.12 на 3.14 змініть у volume `python3.12` → `python3.14`, інакше Python не знайде пакет `odoo`."),
+                ("h", "Образ"),
+                ("code", "dockerfile"),
+                ("p", "`requirements.txt` в Odoo 17 фіксує версії для старіших Python. Для 3.14 піднімаємо версії пакетів із C-розширеннями (`gevent`, `greenlet`, `lxml`, `psycopg2`, `Pillow`, `reportlab` тощо) до тих, що мають wheels для 3.14. `wkhtmltopdf` (PDF-звіти) ставиться окремо, як і раніше."),
+                ("h", "Порядок дій"),
+                ("code", "steps"),
+                ("ul", [
+                    "На stage пройти всі ключові процеси: пропозиції, рахунки, склад, PDF-звіти, пошта (у mail catcher), заплановані дії.",
+                    "У лозі стежити за `ImportError`, `DeprecationWarning` і `SyntaxWarning`. Старі модулі з некоректними escape-послідовностями в рядках вилізуть першими. З Python 3.13 також прибрано кілька старих стандартних модулів (PEP 594).",
+                    "Оновлення модулів (`-u`) для самої зміни Python не потрібне: схема бази не змінюється.",
+                ]),
+                ("h", "Відкат"),
+                ("code", "rollback"),
+                ("p", "База і filestore не змінюються, тому відкат триває стільки ж, скільки перезапуск контейнера."),
+            ],
+        },
+        "ru": {
+            "title": "Перевод Odoo 17 на Python 3.14 в docker-compose",
+            "summary": "Свой образ odoo17-py314, код Odoo из Git смонтирован в site-packages, проверка на stage и откат за минуту.",
+            "body": [
+                ("p", "Существующий Odoo 17 работает в Docker, и его нужно перевести на более новый Python, здесь **3.14**. Зачем: обновления безопасности базового образа, свежие библиотеки для собственных модулей, часто заметно более быстрый Python. Odoo 17 разрабатывался под Python 3.10–3.12, 3.14 официально не поддерживается. Поэтому правило: **сначала stage, потом прод**."),
+                ("h", "Идея: разделить образ и код Odoo"),
+                ("p", "Новый образ `odoo17-py314:latest` содержит только Python 3.14 и зависимости. Код Odoo берётся из Git-репозитория и монтируется туда, где Python ищет пакеты: `./extra_addons/odoo:/usr/local/lib/python3.14/site-packages/odoo`. Патчи Odoo тогда ставятся через `git pull`, без пересборки образа."),
+                ("code", "compose"),
+                ("note", "Важно: в пути есть версия Python. При переходе с 3.12 на 3.14 поменяйте в volume `python3.12` → `python3.14`, иначе Python не найдёт пакет `odoo`."),
+                ("h", "Образ"),
+                ("code", "dockerfile"),
+                ("p", "`requirements.txt` в Odoo 17 фиксирует версии для старых Python. Для 3.14 поднимаем версии пакетов с C-расширениями (`gevent`, `greenlet`, `lxml`, `psycopg2`, `Pillow`, `reportlab` и др.) до тех, у которых есть wheels под 3.14. `wkhtmltopdf` (PDF-отчёты) ставится отдельно, как и раньше."),
+                ("h", "Порядок действий"),
+                ("code", "steps"),
+                ("ul", [
+                    "На stage пройти все ключевые процессы: предложения, счета, склад, PDF-отчёты, почта (в mail catcher), запланированные действия.",
+                    "В логе следить за `ImportError`, `DeprecationWarning` и `SyntaxWarning`. Старые модули с некорректными escape-последовательностями в строках вылезут первыми. С Python 3.13 также убрано несколько старых стандартных модулей (PEP 594).",
+                    "Обновление модулей (`-u`) для самой смены Python не нужно: схема базы не меняется.",
+                ]),
+                ("h", "Откат"),
+                ("code", "rollback"),
+                ("p", "База и filestore не меняются, поэтому откат занимает столько же, сколько перезапуск контейнера."),
+            ],
+        },
+    },
+})
+
+# ---------------------------------------------------------------------------------------------------------------------
+POSTS.append({
+    "slug": "odoo-module-update-click-odoo-update",
+    "date": "2026-11-15",
+    "tags": ["Updates", "click-odoo-update", "odoo -u"],
+    "code": {
+        "click": ("bash · click-odoo-update", """# once per container (user site-packages): pip install --user click-odoo-contrib
+
+# which modules changed since the last update?
+docker compose exec odoo /var/lib/odoo/.local/bin/click-odoo-update \\
+    -c /etc/odoo/odoo.conf -d mydb --list-only
+
+# update exactly those modules
+docker compose exec odoo /var/lib/odoo/.local/bin/click-odoo-update \\
+    -c /etc/odoo/odoo.conf -d mydb --i18n-overwrite
+
+# workers must load the new Python code
+docker compose restart odoo"""),
+        "odoo": ("bash · odoo -u", """docker compose stop odoo
+
+docker compose run --rm odoo odoo -c /etc/odoo/odoo.conf -d mydb \\
+    -u all \\
+    --workers=0 --no-http \\
+    --stop-after-init \\
+    --i18n-overwrite \\
+    --without-demo=all
+
+docker compose start odoo"""),
+        "some": ("bash", """# only selected modules instead of everything
+... -u sale_custom,stock_custom --workers=0 --no-http --stop-after-init"""),
+    },
+    "t": {
+        "de": {
+            "title": "Odoo-Module aktualisieren: click-odoo-update oder odoo -u",
+            "summary": "Zwei bewährte Wege für Modul-Updates in Docker – nur geänderte Module per Prüfsumme oder vollständig ohne offene Ports. Mit Erklärung aller Schalter.",
+            "body": [
+                ("p", "Neuer Code liegt auf dem Server – jetzt muss die Datenbank nachziehen: neue Felder, Ansichten, Daten, Übersetzungen. Ich nutze zwei Wege, je nach Situation."),
+                ("h", "a) click-odoo-update – nur das, was sich geändert hat"),
+                ("p", "`click-odoo-update` aus `click-odoo-contrib` berechnet für jedes Modul eine Prüfsumme der Dateien und speichert sie in der Datenbank. Beim nächsten Lauf werden **nur Module mit geänderter Prüfsumme** aktualisiert. Bei Systemen mit Hunderten Modulen ist das der Unterschied zwischen Minuten und Sekunden."),
+                ("code", "click"),
+                ("ul", [
+                    "`--list-only` zeigt vorher, was aktualisiert würde – ideal für einen Blick vor dem eigentlichen Lauf.",
+                    "`--i18n-overwrite` lädt Übersetzungen der Module neu und **überschreibt** dabei in der Datenbank geänderte Texte. Bewusst einsetzen, wenn Anwender Bezeichnungen selbst angepasst haben.",
+                    "Danach Odoo neu starten – laufende Worker kennen den neuen Python-Code sonst nicht.",
+                ]),
+                ("h", "b) Über Odoo selbst – ohne offene Ports"),
+                ("p", "Der klassische Weg mit `-u`, aber als einmaliger Lauf in einem separaten Container, der keinen Port öffnet und sich danach selbst beendet:"),
+                ("code", "odoo"),
+                ("table", [
+                    ["Schalter", "Wozu"],
+                    ["`-u all`", "alle installierten Module aktualisieren (oder eine Liste: `-u modul_a,modul_b`)"],
+                    ["`--workers=0`", "ein einziger Prozess – keine parallelen Worker während der Migration"],
+                    ["`--no-http`", "kein Webserver: kein Portkonflikt mit dem laufenden Odoo, keine Nutzer im halbfertigen Zustand"],
+                    ["`--stop-after-init`", "nach dem Update beenden statt weiterlaufen"],
+                    ["`--i18n-overwrite`", "Übersetzungen neu laden und überschreiben (siehe oben)"],
+                    ["`--without-demo=all`", "niemals Demodaten laden"],
+                ]),
+                ("note", "Häufiger Stolperstein: In `odoo --help` steht `--without-demo=WITHOUT_DEMO`. `WITHOUT_DEMO` ist nur der Platzhalter – der richtige Wert ist `all` (oder eine Modulliste)."),
+                ("code", "some"),
+                ("h", "Was wann?"),
+                ("table", [
+                    ["", "click-odoo-update", "odoo -u … --stop-after-init"],
+                    ["Was wird aktualisiert", "nur geänderte Module", "alles oder gezielte Liste"],
+                    ["Dauer bei vielen Modulen", "Sekunden bis Minuten", "Minuten bis Stunden"],
+                    ["Ausfallzeit", "Neustart der Worker", "für die Dauer des Updates"],
+                    ["Wann", "tägliche Deployments, Hotfixes", "Versionssprünge, nach Upgrades, wenn Prüfsummen fehlen"],
+                ]),
+                ("p", "In beiden Fällen gilt: vorher Backup, zuerst auf Stage, und den Log des Laufs aufheben – er ist das Protokoll der Migration."),
+            ],
+        },
+        "en": {
+            "title": "Updating Odoo modules: click-odoo-update or odoo -u",
+            "summary": "Two proven ways to update modules in Docker – only changed modules via checksum, or a full update with no open ports. Every flag explained.",
+            "body": [
+                ("p", "New code is on the server – now the database has to catch up: new fields, views, data, translations. I use two ways, depending on the situation."),
+                ("h", "a) click-odoo-update – only what changed"),
+                ("p", "`click-odoo-update` from `click-odoo-contrib` computes a checksum of each module's files and stores it in the database. On the next run it updates **only modules whose checksum changed**. On systems with hundreds of modules that is the difference between minutes and seconds."),
+                ("code", "click"),
+                ("ul", [
+                    "`--list-only` shows what would be updated – perfect for a look before the real run.",
+                    "`--i18n-overwrite` reloads module translations and **overwrites** texts that were changed in the database. Use it deliberately if users customised labels themselves.",
+                    "Restart Odoo afterwards – running workers do not know the new Python code otherwise.",
+                ]),
+                ("h", "b) Through Odoo itself – with no open ports"),
+                ("p", "The classic `-u` way, but as a one-off run in a separate container that opens no port and exits when done:"),
+                ("code", "odoo"),
+                ("table", [
+                    ["Flag", "Purpose"],
+                    ["`-u all`", "update all installed modules (or a list: `-u module_a,module_b`)"],
+                    ["`--workers=0`", "a single process – no parallel workers during the migration"],
+                    ["`--no-http`", "no web server: no port clash with the running Odoo, no users in a half-migrated state"],
+                    ["`--stop-after-init`", "exit after the update instead of serving"],
+                    ["`--i18n-overwrite`", "reload and overwrite translations (see above)"],
+                    ["`--without-demo=all`", "never load demo data"],
+                ]),
+                ("note", "Common pitfall: `odoo --help` shows `--without-demo=WITHOUT_DEMO`. `WITHOUT_DEMO` is just the placeholder – the correct value is `all` (or a module list)."),
+                ("code", "some"),
+                ("h", "Which one when?"),
+                ("table", [
+                    ["", "click-odoo-update", "odoo -u … --stop-after-init"],
+                    ["What is updated", "changed modules only", "everything or a chosen list"],
+                    ["Duration with many modules", "seconds to minutes", "minutes to hours"],
+                    ["Downtime", "worker restart", "for the whole update"],
+                    ["When", "daily deployments, hotfixes", "version jumps, after upgrades, when checksums are missing"],
+                ]),
+                ("p", "Either way: backup first, stage first, and keep the log of the run – it is the record of the migration."),
+            ],
+        },
+        "uk": {
+            "title": "Оновлення модулів Odoo: click-odoo-update або odoo -u",
+            "summary": "Два перевірені способи оновлювати модулі в Docker: лише змінені модулі за контрольною сумою або повне оновлення без відкритих портів. З поясненням усіх ключів.",
+            "body": [
+                ("p", "Новий код уже на сервері, тепер базу треба підтягнути: нові поля, в'юхи, дані, переклади. Я користуюся двома способами, залежно від ситуації."),
+                ("h", "а) click-odoo-update – лише те, що змінилося"),
+                ("p", "`click-odoo-update` з пакета `click-odoo-contrib` рахує контрольну суму файлів кожного модуля і зберігає її в базі. Під час наступного запуску оновлюються **лише модулі зі зміненою сумою**. На системах із сотнями модулів це різниця між хвилинами і секундами."),
+                ("code", "click"),
+                ("ul", [
+                    "`--list-only` заздалегідь показує, що буде оновлено. Зручно подивитися перед справжнім запуском.",
+                    "`--i18n-overwrite` перезавантажує переклади модулів і **перезаписує** змінені в базі тексти. Використовуйте свідомо, якщо користувачі самі правили назви.",
+                    "Після цього перезапустіть Odoo, інакше робочі процеси не побачать новий Python-код.",
+                ]),
+                ("h", "б) Через сам Odoo – без відкритих портів"),
+                ("p", "Класичний шлях з `-u`, але як разовий запуск в окремому контейнері, який не відкриває порт і сам завершується:"),
+                ("code", "odoo"),
+                ("table", [
+                    ["Ключ", "Навіщо"],
+                    ["`-u all`", "оновити всі встановлені модулі (або список: `-u module_a,module_b`)"],
+                    ["`--workers=0`", "один процес, без паралельних воркерів під час міграції"],
+                    ["`--no-http`", "без вебсервера: немає конфлікту портів із робочим Odoo, користувачі не потрапляють у напівоновлену систему"],
+                    ["`--stop-after-init`", "завершитися після оновлення, а не працювати далі"],
+                    ["`--i18n-overwrite`", "перезавантажити й перезаписати переклади (див. вище)"],
+                    ["`--without-demo=all`", "ніколи не завантажувати демо-дані"],
+                ]),
+                ("note", "Типова пастка: у `odoo --help` написано `--without-demo=WITHOUT_DEMO`. `WITHOUT_DEMO` – це лише підказка, правильне значення `all` (або список модулів)."),
+                ("code", "some"),
+                ("h", "Що й коли?"),
+                ("table", [
+                    ["", "click-odoo-update", "odoo -u … --stop-after-init"],
+                    ["Що оновлюється", "лише змінені модулі", "усе або вибраний список"],
+                    ["Тривалість при багатьох модулях", "секунди–хвилини", "хвилини–години"],
+                    ["Простій", "перезапуск воркерів", "увесь час оновлення"],
+                    ["Коли", "щоденні деплої, хотфікси", "зміна версії, після апгрейдів, коли немає контрольних сум"],
+                ]),
+                ("p", "В обох випадках: спершу бекап, спершу stage, і збережіть лог запуску – це протокол міграції."),
+            ],
+        },
+        "ru": {
+            "title": "Обновление модулей Odoo: click-odoo-update или odoo -u",
+            "summary": "Два проверенных способа обновлять модули в Docker: только изменённые модули по контрольной сумме или полное обновление без открытых портов. С разбором всех ключей.",
+            "body": [
+                ("p", "Новый код уже на сервере, теперь базу нужно подтянуть: новые поля, вьюхи, данные, переводы. Я пользуюсь двумя способами, в зависимости от ситуации."),
+                ("h", "а) click-odoo-update – только то, что изменилось"),
+                ("p", "`click-odoo-update` из пакета `click-odoo-contrib` считает контрольную сумму файлов каждого модуля и хранит её в базе. При следующем запуске обновляются **только модули с изменившейся суммой**. На системах с сотнями модулей это разница между минутами и секундами."),
+                ("code", "click"),
+                ("ul", [
+                    "`--list-only` заранее показывает, что будет обновлено. Удобно посмотреть перед настоящим запуском.",
+                    "`--i18n-overwrite` перезагружает переводы модулей и **перезаписывает** изменённые в базе тексты. Используйте осознанно, если пользователи сами правили названия.",
+                    "После этого перезапустите Odoo, иначе рабочие процессы не увидят новый Python-код.",
+                ]),
+                ("h", "б) Через сам Odoo – без открытых портов"),
+                ("p", "Классический путь с `-u`, но как разовый запуск в отдельном контейнере, который не открывает порт и сам завершается:"),
+                ("code", "odoo"),
+                ("table", [
+                    ["Ключ", "Зачем"],
+                    ["`-u all`", "обновить все установленные модули (или список: `-u module_a,module_b`)"],
+                    ["`--workers=0`", "один процесс, без параллельных воркеров во время миграции"],
+                    ["`--no-http`", "без веб-сервера: нет конфликта портов с работающим Odoo, пользователи не попадают в полуобновлённую систему"],
+                    ["`--stop-after-init`", "завершиться после обновления, а не работать дальше"],
+                    ["`--i18n-overwrite`", "перезагрузить и перезаписать переводы (см. выше)"],
+                    ["`--without-demo=all`", "никогда не загружать демо-данные"],
+                ]),
+                ("note", "Частая ловушка: в `odoo --help` написано `--without-demo=WITHOUT_DEMO`. `WITHOUT_DEMO` – это только подсказка, правильное значение `all` (или список модулей)."),
+                ("code", "some"),
+                ("h", "Что и когда?"),
+                ("table", [
+                    ["", "click-odoo-update", "odoo -u … --stop-after-init"],
+                    ["Что обновляется", "только изменённые модули", "всё или выбранный список"],
+                    ["Длительность при многих модулях", "секунды–минуты", "минуты–часы"],
+                    ["Простой", "перезапуск воркеров", "всё время обновления"],
+                    ["Когда", "ежедневные деплои, хотфиксы", "смена версии, после апгрейдов, когда нет контрольных сумм"],
+                ]),
+                ("p", "В обоих случаях: сначала бэкап, сначала stage, и сохраните лог запуска – это протокол миграции."),
+            ],
+        },
+    },
+})
+
+# ---------------------------------------------------------------------------------------------------------------------
+POSTS.append({
+    "slug": "odoo-stage-restore-stop-cron-jobs",
+    "date": "2026-11-15",
+    "tags": ["Stage", "Backup", "Cron", "queue_job"],
+    "code": {
+        "restore": ("bash", """docker compose stop odoo                       # Odoo must NOT be running yet
+
+docker compose exec -T db dropdb   -U odoo --if-exists mydb_stage
+docker compose exec -T db createdb -U odoo mydb_stage
+docker compose exec -T db pg_restore -U odoo -d mydb_stage --no-owner < mydb.dump
+
+# neutralise BEFORE the first start (SQL below)
+docker compose exec -T db psql -U odoo -d mydb_stage -v ON_ERROR_STOP=1 < stage-safety.sql
+
+# filestore: the folder name must match the database name
+#   .../filestore/mydb  ->  .../filestore/mydb_stage
+
+docker compose start odoo"""),
+        "sql": ("stage-safety.sql", """BEGIN;
+-- 1. remember what was active (to re-enable selectively later)
+CREATE TABLE IF NOT EXISTS zz_stage_cron_before AS
+    SELECT id, cron_name, active FROM ir_cron;
+
+-- 2. all scheduled actions off
+UPDATE ir_cron SET active = false WHERE active;
+
+-- 3. queue_job (if installed): nothing waiting may run
+UPDATE queue_job SET state = 'cancelled'
+ WHERE state IN ('pending', 'enqueued', 'started', 'wait_dependencies');
+
+-- 4. no outgoing / incoming mail
+UPDATE ir_mail_server   SET active = false;
+UPDATE fetchmail_server SET active = false;
+
+-- 5. stage URL and its own database UUID
+UPDATE ir_config_parameter SET value = 'https://stage.example.com' WHERE key = 'web.base.url';
+UPDATE ir_config_parameter SET value = gen_random_uuid()::text   WHERE key = 'database.uuid';
+COMMIT;"""),
+        "neutralize": ("bash · Odoo 16+", """docker compose run --rm odoo odoo neutralize -c /etc/odoo/odoo.conf -d mydb_stage"""),
+        "conf": ("etc/odoo.conf (stage)", """[options]
+; no cron thread at all on stage
+max_cron_threads = 0
+; without queue_job here the job runner does not start
+server_wide_modules = base,web
+; every e-mail ends up in Mailpit - nothing leaves the server
+smtp_server = mailpit
+smtp_port = 1025"""),
+        "check": ("sql", """SELECT count(*) FROM ir_cron WHERE active;                 -- expected: 0
+SELECT state, count(*) FROM queue_job GROUP BY state;      -- no pending / enqueued
+SELECT key, value FROM ir_config_parameter WHERE key = 'web.base.url';"""),
+    },
+    "t": {
+        "de": {
+            "title": "Backup auf Stage einspielen – ohne dass Cron-Jobs und Queue-Jobs losrennen",
+            "summary": "Warum Stage-Systeme Mahnungen an echte Kunden schicken können, und die Reihenfolge, mit der das nicht passiert: SQL vor dem ersten Start, neutralize, Stage-Konfiguration.",
+            "body": [
+                ("p", "Die Produktionsdatenbank wird auf Stage eingespielt, um ein Update zu testen. Odoo startet – und arbeitet sofort alles ab, was während der Ausfallzeit „fällig“ geworden ist: Mahnungen und Rechnungen per E-Mail, Abgleich mit Shop, Bank oder Versanddienstleister, Queue-Jobs aus der Warteschlange. Mit echten Kundendaten und echten Zugangsdaten. Der klassische Stage-Unfall."),
+                ("p", "Der Kern: **Odoo startet Cron-Threads und den Job-Runner gleich beim Start.** Abschalten in der Oberfläche ist zu spät. Alles muss passieren, **bevor** Odoo die Datenbank zum ersten Mal sieht."),
+                ("h", "1. Einspielen – Odoo bleibt gestoppt"),
+                ("code", "restore"),
+                ("h", "2. Neutralisieren per SQL"),
+                ("code", "sql"),
+                ("note", "Die Tabellen `queue_job` und `fetchmail_server` gibt es nur, wenn die Module installiert sind – fehlende Zeilen vorher entfernen. Die Liste `zz_stage_cron_before` hilft, auf Stage später gezielt einzelne Crons wieder einzuschalten."),
+                ("p", "Seit Odoo 16 gibt es zusätzlich den eingebauten Befehl `neutralize`: er deaktiviert u. a. geplante Aktionen, Mailserver und Zahlungsanbieter und blendet ein Banner „neutralisiert“ ein. Ich nutze ihn als Basis und ergänze das SQL für Drittmodule wie `queue_job`."),
+                ("code", "neutralize"),
+                ("h", "3. Stage-Konfiguration als zweite Sicherung"),
+                ("code", "conf"),
+                ("p", "Selbst wenn eine neue Datenbank ohne Neutralisierung eingespielt wird, kann mit dieser Konfiguration nichts nach außen gehen: kein Cron-Thread, kein Job-Runner, Mails nur im Mail-Catcher."),
+                ("h", "4. Prüfen"),
+                ("code", "check"),
+                ("ul", [
+                    "Erst wenn alle drei Abfragen stimmen, Stage für Tests freigeben.",
+                    "Zugangsdaten zu externen Diensten (Shop, Bank, Versand, Zahlungen) auf Stage durch Sandbox-Schlüssel ersetzen oder entfernen.",
+                    "Den ganzen Ablauf als Skript ablegen – dann ist ein frisches Stage eine Sache von Minuten, und kein Schritt wird vergessen.",
+                ]),
+            ],
+        },
+        "en": {
+            "title": "Restoring a backup on stage – without cron jobs and queue jobs firing",
+            "summary": "Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.",
+            "body": [
+                ("p", "The production database is restored on stage to test an update. Odoo starts – and immediately processes everything that became \"due\" during the downtime: dunning and invoice e-mails, syncs with the shop, bank or carriers, queued jobs. With real customer data and real credentials. The classic stage accident."),
+                ("p", "The core point: **Odoo starts its cron threads and the job runner right at startup.** Switching things off in the UI is too late. Everything has to happen **before** Odoo sees the database for the first time."),
+                ("h", "1. Restore – Odoo stays stopped"),
+                ("code", "restore"),
+                ("h", "2. Neutralise with SQL"),
+                ("code", "sql"),
+                ("note", "The tables `queue_job` and `fetchmail_server` only exist when the modules are installed – drop those lines otherwise. The `zz_stage_cron_before` list helps to re-enable individual crons on stage later on purpose."),
+                ("p", "Since Odoo 16 there is also the built-in `neutralize` command: among other things it deactivates scheduled actions, mail servers and payment providers and shows a \"neutralized\" banner. I use it as the base and add the SQL for third-party modules such as `queue_job`."),
+                ("code", "neutralize"),
+                ("h", "3. A stage config as a second safety net"),
+                ("code", "conf"),
+                ("p", "Even if a database is restored without neutralising, nothing can leave the server with this config: no cron thread, no job runner, e-mail only in the mail catcher."),
+                ("h", "4. Verify"),
+                ("code", "check"),
+                ("ul", [
+                    "Release stage for testing only when all three queries look right.",
+                    "Replace credentials for external services (shop, bank, shipping, payments) on stage with sandbox keys, or remove them.",
+                    "Keep the whole procedure as a script – a fresh stage is then a matter of minutes, and no step is forgotten.",
+                ]),
+            ],
+        },
+        "uk": {
+            "title": "Розгортання бекапу на stage – так, щоб cron і queue_job не запустилися",
+            "summary": "Чому stage може надіслати нагадування про оплату справжнім клієнтам, і порядок дій, за якого цього не станеться: SQL до першого старту, neutralize, конфіг stage.",
+            "body": [
+                ("p", "Продакшн-базу розгортають на stage, щоб протестувати оновлення. Odoo стартує і одразу виконує все, що «настало» за час простою: листи з нагадуваннями й рахунками, синхронізацію з магазином, банком чи службою доставки, завдання з черги. Зі справжніми даними клієнтів і справжніми доступами. Класична аварія на stage."),
+                ("p", "Головне: **Odoo запускає cron-потоки і job runner одразу під час старту.** Вимикати в інтерфейсі вже пізно. Усе треба зробити **до того**, як Odoo вперше побачить базу."),
+                ("h", "1. Розгортання – Odoo зупинено"),
+                ("code", "restore"),
+                ("h", "2. Нейтралізація через SQL"),
+                ("code", "sql"),
+                ("note", "Таблиці `queue_job` і `fetchmail_server` існують лише тоді, коли встановлено відповідні модулі. Інакше приберіть ці рядки. Список `zz_stage_cron_before` допоможе потім свідомо ввімкнути окремі cron на stage."),
+                ("p", "Починаючи з Odoo 16 є ще вбудована команда `neutralize`: вона, серед іншого, вимикає заплановані дії, поштові сервери та платіжних провайдерів і показує банер «neutralized». Я беру її за основу і доповнюю SQL для сторонніх модулів, як-от `queue_job`."),
+                ("code", "neutralize"),
+                ("h", "3. Конфіг stage як друга страховка"),
+                ("code", "conf"),
+                ("p", "Навіть якщо базу розгорнуть без нейтралізації, з таким конфігом нічого не піде назовні: немає cron-потоку, немає job runner, пошта лише в mail catcher."),
+                ("h", "4. Перевірка"),
+                ("code", "check"),
+                ("ul", [
+                    "Віддавати stage на тестування лише тоді, коли всі три запити показують правильний результат.",
+                    "Доступи до зовнішніх сервісів (магазин, банк, доставка, платежі) на stage замінити на sandbox-ключі або прибрати.",
+                    "Увесь порядок дій зберегти як скрипт: тоді свіжий stage – справа кількох хвилин, і жоден крок не забудеться.",
+                ]),
+            ],
+        },
+        "ru": {
+            "title": "Развёртывание бэкапа на stage – так, чтобы cron и queue_job не запустились",
+            "summary": "Почему stage может разослать напоминания об оплате реальным клиентам, и порядок действий, при котором этого не случится: SQL до первого старта, neutralize, конфиг stage.",
+            "body": [
+                ("p", "Продакшн-базу разворачивают на stage, чтобы протестировать обновление. Odoo стартует и сразу выполняет всё, что «наступило» за время простоя: письма с напоминаниями и счетами, синхронизацию с магазином, банком или службой доставки, задания из очереди. С реальными данными клиентов и реальными доступами. Классическая авария на stage."),
+                ("p", "Главное: **Odoo запускает cron-потоки и job runner сразу при старте.** Выключать в интерфейсе уже поздно. Всё нужно сделать **до того**, как Odoo впервые увидит базу."),
+                ("h", "1. Развёртывание – Odoo остановлен"),
+                ("code", "restore"),
+                ("h", "2. Нейтрализация через SQL"),
+                ("code", "sql"),
+                ("note", "Таблицы `queue_job` и `fetchmail_server` есть только тогда, когда установлены соответствующие модули. Иначе уберите эти строки. Список `zz_stage_cron_before` поможет потом осознанно включить отдельные cron на stage."),
+                ("p", "Начиная с Odoo 16 есть ещё встроенная команда `neutralize`: она, среди прочего, выключает запланированные действия, почтовые серверы и платёжных провайдеров и показывает баннер «neutralized». Я беру её за основу и дополняю SQL для сторонних модулей, например `queue_job`."),
+                ("code", "neutralize"),
+                ("h", "3. Конфиг stage как вторая страховка"),
+                ("code", "conf"),
+                ("p", "Даже если базу развернут без нейтрализации, с таким конфигом ничего не уйдёт наружу: нет cron-потока, нет job runner, почта только в mail catcher."),
+                ("h", "4. Проверка"),
+                ("code", "check"),
+                ("ul", [
+                    "Отдавать stage на тестирование только тогда, когда все три запроса показывают правильный результат.",
+                    "Доступы к внешним сервисам (магазин, банк, доставка, платежи) на stage заменить на sandbox-ключи или убрать.",
+                    "Весь порядок действий сохранить как скрипт: тогда свежий stage – дело нескольких минут, и ни один шаг не забудется.",
+                ]),
+            ],
+        },
+    },
+})
+
+# Надписи раздела по языкам
+UI = {
+    "de": {"title": "Blog & How-tos", "intro": "Fälle aus der Praxis und Anleitungen rund um Odoo, Docker und PostgreSQL – so, wie ich sie selbst umsetze.",
+           "read": "Weiterlesen", "back": "← Alle Artikel", "fallback": "", "min": "Min. Lesezeit",
+           "cta_title": "Soll ich das für Sie übernehmen?", "cta_text": "Ich setze das in Ihrem System um – zuerst auf einer Testkopie, mit Rücksprung und Protokoll."},
+    "en": {"title": "Blog & how-tos", "intro": "Real cases and step-by-step guides on Odoo, Docker and PostgreSQL – the way I do it myself.",
+           "read": "Read more", "back": "← All articles", "fallback": "", "min": "min read",
+           "cta_title": "Want me to do this for you?", "cta_text": "I'll implement it in your system – on a test copy first, with rollback and a written record."},
+    "fr": {"title": "Blog & guides", "intro": "Cas réels et guides pas à pas sur Odoo, Docker et PostgreSQL – tels que je les applique moi-même.",
+           "read": "Lire la suite", "back": "← Tous les articles", "fallback": "Cet article n’est pas encore disponible en français – voici la version anglaise.", "min": "min de lecture",
+           "cta_title": "Je m’en occupe pour vous ?", "cta_text": "Je le mets en place dans votre système – d’abord sur une copie de test, avec retour arrière et compte rendu."},
+    "el": {"title": "Blog & οδηγοί", "intro": "Πραγματικές περιπτώσεις και οδηγοί βήμα-βήμα για Odoo, Docker και PostgreSQL – όπως τα εφαρμόζω ο ίδιος.",
+           "read": "Περισσότερα", "back": "← Όλα τα άρθρα", "fallback": "Το άρθρο δεν είναι ακόμη διαθέσιμο στα ελληνικά – ακολουθεί η αγγλική έκδοση.", "min": "λεπτά ανάγνωσης",
+           "cta_title": "Να το αναλάβω εγώ;", "cta_text": "Το υλοποιώ στο σύστημά σας – πρώτα σε αντίγραφο δοκιμών, με δυνατότητα επαναφοράς και αναφορά."},
+    "uk": {"title": "Блог і how-to", "intro": "Реальні випадки й покрокові інструкції з Odoo, Docker і PostgreSQL – так, як я роблю це сам.",
+           "read": "Читати далі", "back": "← Усі статті", "fallback": "", "min": "хв читання",
+           "cta_title": "Зробити це для вас?", "cta_text": "Я впроваджу це у вашій системі – спершу на тестовій копії, з можливістю відкату й протоколом."},
+    "ru": {"title": "Блог и how-to", "intro": "Реальные случаи и пошаговые инструкции по Odoo, Docker и PostgreSQL – так, как я делаю это сам.",
+           "read": "Читать дальше", "back": "← Все статьи", "fallback": "", "min": "мин чтения",
+           "cta_title": "Сделать это для вас?", "cta_text": "Я внедрю это в вашей системе – сначала на тестовой копии, с возможностью отката и протоколом."},
+}

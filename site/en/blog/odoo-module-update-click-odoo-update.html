@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Updating Odoo modules: click-odoo-update or odoo -u · Goldberg</title>
+<meta name="description" content="Two proven ways to update modules in Docker – only changed modules via checksum, or a full update with no open ports. Every flag explained.">
+<link rel="canonical" href="https://2027.pp.ua/en/blog/odoo-module-update-click-odoo-update">
+<link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/odoo-module-update-click-odoo-update">
+<link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/odoo-module-update-click-odoo-update">
+<link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/blog/odoo-module-update-click-odoo-update">
+<link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/blog/odoo-module-update-click-odoo-update">
+<link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/odoo-module-update-click-odoo-update">
+<link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/odoo-module-update-click-odoo-update">
+<link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/odoo-module-update-click-odoo-update">
+<meta property="og:title" content="Updating Odoo modules: click-odoo-update or odoo -u · Goldberg">
+<meta property="og:description" content="Two proven ways to update modules in Docker – only changed modules via checksum, or a full update with no open ports. Every flag explained.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2027.pp.ua/en/blog/odoo-module-update-click-odoo-update">
+<meta name="theme-color" content="#3b2a4a">
+<meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v=2a86eeb2">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Updating Odoo modules: click-odoo-update or odoo -u", "description": "Two proven ways to update modules in Docker – only changed modules via checksum, or a full update with no open ports. Every flag explained.", "datePublished": "2026-11-15", "inLanguage": "en", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua"}, "mainEntityOfPage": "https://2027.pp.ua/en/blog/odoo-module-update-click-odoo-update"}</script>
+</head>
+<body>
+<header class="top">
+<div class="wrap top-in">
+<a class="brand" href="/en/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="menu"><a class="nav-icon multi" href="/en/#services" title="Services" aria-label="Services"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7.8" stroke-width="3" stroke-dasharray="3 3.125" stroke-linecap="butt"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7z"/></svg></a><a class="nav-icon" href="/en/#dach" title="DATEV &amp; e-invoicing" aria-label="DATEV &amp; e-invoicing"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5M14 3l5 5v4M14 3v5h5"/><path d="M8.5 11h5M8.5 14.5h3"/><path d="m14.5 18.5 2 2 4-4.5"/></svg></a><a class="nav-icon radar" href="/en/#bot" title="Monitoring" aria-label="Monitoring"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.2" opacity=".55"/><g class="sweep"><path d="M12 12 18.5 5.5A9.2 9.2 0 0 1 21.2 12z" fill="currentColor" stroke="none" opacity=".28"/><path d="M12 12l6.5-6.5"/></g><circle cx="15.6" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon cur" href="/en/#prices" title="Pricing" aria-label="Pricing"><span aria-hidden="true">$</span></a><a class="nav-icon" href="/en/#about" title="About" aria-label="About"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/></svg></a><a class="nav-icon" href="/en/blog/" title="Blog &amp; how-tos" aria-label="Blog &amp; how-tos" aria-current=page><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon" href="/en/#contact" title="Contact" aria-label="Contact"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a></nav>
+<nav class="langs" aria-label="Language"><a href="/de/blog/odoo-module-update-click-odoo-update" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/odoo-module-update-click-odoo-update" hreflang="en" lang="en" title="English" aria-label="English" aria-current="true"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/odoo-module-update-click-odoo-update" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/odoo-module-update-click-odoo-update" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/odoo-module-update-click-odoo-update" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/odoo-module-update-click-odoo-update" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<button type="button" class="theme" hidden aria-label="Light / dark theme" title="Light / dark theme">🌙</button>
+</div>
+</header>
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/en/blog/">← All articles</a></p><p class="post-meta">2026-11-15 · 2 min read · <span class="post-tag">Updates</span><span class="post-tag">click-odoo-update</span><span class="post-tag">odoo -u</span></p><h1>Updating Odoo modules: click-odoo-update or odoo -u</h1><p class="intro">Two proven ways to update modules in Docker – only changed modules via checksum, or a full update with no open ports. Every flag explained.</p><p>New code is on the server – now the database has to catch up: new fields, views, data, translations. I use two ways, depending on the situation.</p><h2>a) click-odoo-update – only what changed</h2><p><code>click-odoo-update</code> from <code>click-odoo-contrib</code> computes a checksum of each module&#x27;s files and stores it in the database. On the next run it updates <b>only modules whose checksum changed</b>. On systems with hundreds of modules that is the difference between minutes and seconds.</p><figure class="code"><figcaption>bash · click-odoo-update</figcaption><pre><code># once per container (user site-packages): pip install --user click-odoo-contrib
+
+# which modules changed since the last update?
+docker compose exec odoo /var/lib/odoo/.local/bin/click-odoo-update \
+    -c /etc/odoo/odoo.conf -d mydb --list-only
+
+# update exactly those modules
+docker compose exec odoo /var/lib/odoo/.local/bin/click-odoo-update \
+    -c /etc/odoo/odoo.conf -d mydb --i18n-overwrite
+
+# workers must load the new Python code
+docker compose restart odoo</code></pre></figure><ul><li><code>--list-only</code> shows what would be updated – perfect for a look before the real run.</li><li><code>--i18n-overwrite</code> reloads module translations and <b>overwrites</b> texts that were changed in the database. Use it deliberately if users customised labels themselves.</li><li>Restart Odoo afterwards – running workers do not know the new Python code otherwise.</li></ul><h2>b) Through Odoo itself – with no open ports</h2><p>The classic <code>-u</code> way, but as a one-off run in a separate container that opens no port and exits when done:</p><figure class="code"><figcaption>bash · odoo -u</figcaption><pre><code>docker compose stop odoo
+
+docker compose run --rm odoo odoo -c /etc/odoo/odoo.conf -d mydb \
+    -u all \
+    --workers=0 --no-http \
+    --stop-after-init \
+    --i18n-overwrite \
+    --without-demo=all
+
+docker compose start odoo</code></pre></figure><div class="tablewrap"><table class="post-table"><thead><tr><th>Flag</th><th>Purpose</th></tr></thead><tbody><tr><td><code>-u all</code></td><td>update all installed modules (or a list: <code>-u module_a,module_b</code>)</td></tr><tr><td><code>--workers=0</code></td><td>a single process – no parallel workers during the migration</td></tr><tr><td><code>--no-http</code></td><td>no web server: no port clash with the running Odoo, no users in a half-migrated state</td></tr><tr><td><code>--stop-after-init</code></td><td>exit after the update instead of serving</td></tr><tr><td><code>--i18n-overwrite</code></td><td>reload and overwrite translations (see above)</td></tr><tr><td><code>--without-demo=all</code></td><td>never load demo data</td></tr></tbody></table></div><p class="post-note">Common pitfall: <code>odoo --help</code> shows <code>--without-demo=WITHOUT_DEMO</code>. <code>WITHOUT_DEMO</code> is just the placeholder – the correct value is <code>all</code> (or a module list).</p><figure class="code"><figcaption>bash</figcaption><pre><code># only selected modules instead of everything
+... -u sale_custom,stock_custom --workers=0 --no-http --stop-after-init</code></pre></figure><h2>Which one when?</h2><div class="tablewrap"><table class="post-table"><thead><tr><th></th><th>click-odoo-update</th><th>odoo -u … --stop-after-init</th></tr></thead><tbody><tr><td>What is updated</td><td>changed modules only</td><td>everything or a chosen list</td></tr><tr><td>Duration with many modules</td><td>seconds to minutes</td><td>minutes to hours</td></tr><tr><td>Downtime</td><td>worker restart</td><td>for the whole update</td></tr><tr><td>When</td><td>daily deployments, hotfixes</td><td>version jumps, after upgrades, when checksums are missing</td></tr></tbody></table></div><p>Either way: backup first, stage first, and keep the log of the run – it is the record of the migration.</p><aside class="post-cta"><h2>Want me to do this for you?</h2><p>I&#x27;ll implement it in your system – on a test copy first, with rollback and a written record.</p><div class="cta ">
+<a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Book a call – 30 min free</a>
+<a class="btn" href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram @podyachev</a>
+<a class="btn ghost" href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
+</div></aside><p class="post-back"><a href="/en/blog/">← All articles</a></p></article></main><footer class="foot">
+<div class="wrap foot-in">
+<div><strong>Goldberg · Odoo Services</strong><br>Odoo support, installation and integration for Germany, Austria and Switzerland.</div>
+<div class="foot-links">
+<a href="/en/blog/">Blog &amp; how-tos</a>
+<a href="/en/impressum">Legal notice</a>
+<a href="/en/datenschutz">Privacy</a>
+<a href="mailto:dpodiatschev@gmail.com">dpodiatschev@gmail.com</a>
+<a href="https://t.me/podyachev" target="_blank" rel="noopener">Telegram</a>
+</div>
+<nav class="langs" aria-label="Language"><a href="/de/blog/odoo-module-update-click-odoo-update" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/odoo-module-update-click-odoo-update" hreflang="en" lang="en" title="English" aria-label="English" aria-current="true"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/odoo-module-update-click-odoo-update" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/odoo-module-update-click-odoo-update" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/odoo-module-update-click-odoo-update" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/odoo-module-update-click-odoo-update" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<div class="small">© 2026 Goldberg. This website uses no cookies and no tracking.</div>
+</div>
+</footer>
+</body>
+</html>

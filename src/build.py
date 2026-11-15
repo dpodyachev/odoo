@@ -14,6 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import config as C  # noqa: E402
 import europe_map as M  # noqa: E402
+import blog_posts as BP  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(HERE), "site")
 E = html.escape
@@ -102,10 +103,13 @@ def header(T, lang, page):
                     '<path d="M8.5 11h5M8.5 14.5h3"/>', '<path d="m14.5 18.5 2 2 4-4.5"/>'),
         "about": svg('<rect x="3" y="7" width="18" height="13" rx="2"/>', '<path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/>'),
         "contact": svg('<rect x="3" y="5" width="18" height="14" rx="2"/>', '<path d="m3.5 6.5 8.5 6.5 8.5-6.5"/>'),
+        "blog": svg('<circle cx="12" cy="12" r="9.2"/>', '<path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/>',
+                    '<circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/>'),
     }
     cls = {"services": "nav-icon multi", "prices": "nav-icon cur", "bot": "nav-icon radar"}
     nav = "".join(
-        f'<a class="{cls.get(k, "nav-icon")}" href="{url(lang)}#{k}" title="{E(v)}" aria-label="{E(v)}">{icons[k]}</a>' if k in icons
+        f'<a class="{cls.get(k, "nav-icon")}" href="{url(lang, "blog/") if k == "blog" else url(lang) + "#" + k}" '
+        f'title="{E(v)}" aria-label="{E(v)}"{" aria-current=page" if k == "blog" and page.startswith("blog/") else ""}>{icons[k]}</a>' if k in icons
         else f'<a href="{url(lang)}#{k}">{E(v)}</a>' for k, v in T["nav"].items())
     return f"""<header class="top">
 <div class="wrap top-in">
@@ -135,6 +139,7 @@ def footer(T, lang, page):
 <div class="wrap foot-in">
 <div><strong>{E(C.BRAND)} · {E(C.BRAND_SUB)}</strong><br>{E(T["footer_tag"])}</div>
 <div class="foot-links">
+<a href="{url(lang, 'blog/')}">{E(T["nav"]["blog"])}</a>
 <a href="{url(lang, 'impressum.html')}">{E(T["impressum"])}</a>
 <a href="{url(lang, 'datenschutz.html')}">{E(T["privacy"])}</a>
 <a href="mailto:{E(C.EMAIL)}">{E(C.EMAIL)}</a>
@@ -464,6 +469,8 @@ def index(T, lang):
 <div class="wrap">
 <h2>{E(T["lt_title"])}</h2>
 <p class="intro">{E(T["lt_intro"])}</p>
+<h3 class="sub">{E(T["lt_types_title"])}</h3>
+<dl class="lt-types">{"".join(f'<div><dt>{E(n)}</dt><dd>{E(d)}</dd></div>' for n, d in T["lt_types"])}</dl>
 <div class="grid3">{lt}</div>
 {lt_shots(T)}
 <figure class="code"><figcaption>{E(T["lt_code"])}</figcaption><pre><code>{E(LOCUST_SAMPLE)}</code></pre></figure>
@@ -571,6 +578,85 @@ def legal_page(T, lang, page, key):
             + footer(T, lang, page))
 
 
+def inline(text):
+    """Экранирование + `код` и **жирный** в текстах статей."""
+    t = E(text)
+    t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
+    return re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+
+
+def post_lang(post, lang):
+    return lang if lang in post["t"] else "en"
+
+
+def read_min(post, lang):
+    tx = post["t"][post_lang(post, lang)]
+    words = sum(len(str(b[1]).split()) for b in tx["body"]) + sum(len(c[1].split()) // 3 for c in post["code"].values())
+    return max(2, round(words / 180))
+
+
+def fmt_date(d, lang):
+    y, m, dd = d.split("-")
+    return f"{dd}.{m}.{y}" if lang != "en" else f"{y}-{m}-{dd}"
+
+
+def blog_index(T, lang):
+    U = BP.UI[lang]
+    page = "blog/"
+    cards = "".join(
+        f'<article class="post-card"><p class="post-meta">{fmt_date(p["date"], lang)} · {read_min(p, lang)} {E(U["min"])}</p>'
+        f'<h2><a href="{url(lang, "blog/" + p["slug"] + ".html")}">{E(p["t"][post_lang(p, lang)]["title"])}</a></h2>'
+        f'<p>{E(p["t"][post_lang(p, lang)]["summary"])}</p>'
+        f'<p class="post-tags">{"".join(f"<span>{E(t)}</span>" for t in p["tags"])}</p>'
+        f'<a class="more" href="{url(lang, "blog/" + p["slug"] + ".html")}">{E(U["read"])} →</a></article>'
+        for p in sorted(BP.POSTS, key=lambda p: p["date"], reverse=True))
+    return (head(T, lang, page, f'{U["title"]} · {C.BRAND} {C.BRAND_SUB}', U["intro"]) + header(T, lang, page)
+            + f'<main class="sec blog"><div class="wrap narrow"><h1>{E(U["title"])}</h1><p class="intro">{E(U["intro"])}</p>'
+            + f'<div class="post-list">{cards}</div></div></main>' + footer(T, lang, page))
+
+
+def blog_post(T, lang, post):
+    U = BP.UI[lang]
+    pl = post_lang(post, lang)
+    tx = post["t"][pl]
+    page = "blog/" + post["slug"] + ".html"
+    out = []
+    for b in tx["body"]:
+        kind = b[0]
+        if kind == "p":
+            out.append(f"<p>{inline(b[1])}</p>")
+        elif kind == "h":
+            out.append(f"<h2>{inline(b[1])}</h2>")
+        elif kind == "note":
+            out.append(f'<p class="post-note">{inline(b[1])}</p>')
+        elif kind in ("ul", "ol"):
+            out.append(f"<{kind}>" + "".join(f"<li>{inline(x)}</li>" for x in b[1]) + f"</{kind}>")
+        elif kind == "code":
+            cap, code = post["code"][b[1]]
+            out.append(f'<figure class="code"><figcaption>{E(cap)}</figcaption><pre><code>{E(code)}</code></pre></figure>')
+        elif kind == "table":
+            hd, *rows = b[1]
+            out.append('<div class="tablewrap"><table class="post-table"><thead><tr>' + "".join(f"<th>{inline(c)}</th>" for c in hd)
+                       + "</tr></thead><tbody>" + "".join("<tr>" + "".join(f"<td>{inline(c)}</td>" for c in r) + "</tr>" for r in rows)
+                       + "</tbody></table></div>")
+    note = f'<p class="post-note">{E(U["fallback"])}</p>' if pl != lang and U["fallback"] else ""
+    ld = json.dumps({"@context": "https://schema.org", "@type": "BlogPosting", "headline": tx["title"],
+                     "description": tx["summary"], "datePublished": post["date"], "inLanguage": pl,
+                     "author": {"@type": "Person", "name": C.OWNER_NAME.split(" –")[0], "url": C.BASE_URL},
+                     "mainEntityOfPage": C.BASE_URL + url(lang, page)}, ensure_ascii=False).replace("</", "<\\/")
+    return (head(T, lang, page, f'{tx["title"]} · {C.BRAND}', tx["summary"]).replace(
+                '</head>', f'<script type="application/ld+json">{ld}</script>\n</head>', 1)
+            + header(T, lang, page)
+            + f'<main class="sec blog"><article class="wrap narrow post"{"" if pl == lang else f' lang="{pl}"'}>'
+            + f'<p class="post-back"><a href="{url(lang, "blog/")}">{E(U["back"])}</a></p>'
+            + f'<p class="post-meta">{fmt_date(post["date"], lang)} · {read_min(post, lang)} {E(U["min"])} · '
+            + "".join(f'<span class="post-tag">{E(t)}</span>' for t in post["tags"]) + "</p>"
+            + f'<h1>{E(tx["title"])}</h1>{note}<p class="intro">{E(tx["summary"])}</p>' + "".join(out)
+            + f'<aside class="post-cta"><h2>{E(U["cta_title"])}</h2><p>{E(U["cta_text"])}</p>{cta(T)}</aside>'
+            + f'<p class="post-back"><a href="{url(lang, "blog/")}">{E(U["back"])}</a></p></article></main>'
+            + footer(T, lang, page))
+
+
 LANG_JS = """// Выбор языка по настройкам браузера; по умолчанию — __DEF__. Ничего не сохраняет (без cookies/localStorage).
 // Файл генерируется src/build.py из config.LANGS.
 (function () {
@@ -601,6 +687,11 @@ def main():
         write(f"{lang}/impressum.html", legal_page(T, lang, "impressum.html", "impressum_page"))
         write(f"{lang}/datenschutz.html", legal_page(T, lang, "datenschutz.html", "privacy_page"))
         pages += [url(lang), url(lang, "impressum.html"), url(lang, "datenschutz.html")]
+        write(f"{lang}/blog/index.html", blog_index(T, lang))
+        pages.append(url(lang, "blog/"))
+        for post in BP.POSTS:
+            write(f"{lang}/blog/{post['slug']}.html", blog_post(T, lang, post))
+            pages.append(url(lang, f"blog/{post['slug']}.html"))
     write("assets/lang.js", LANG_JS.replace("__LANGS__", ", ".join(f'"{l}"' for l in C.LANGS)).replace("__DEF__", C.LANGS[0]))
     alts = "\n".join(f'<link rel="alternate" hreflang="{l}" href="{C.BASE_URL}{url(l)}">' for l in C.LANGS)
     links = " · ".join(f'<a href="{url(l)}" lang="{l}">{flag(l)} {E(C.LANG_NAMES[l])}</a>' for l in C.LANGS)
