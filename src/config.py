@@ -57,6 +57,10 @@ FLAGS = {"de": "de", "en": "gb", "fr": "fr", "el": "gr", "uk": "ua", "ru": "ru"}
 # верификация поисковиков: <meta name="..." content="..."> на всех страницах
 SITE_VERIFY = {"msvalidate.01": "D751EC3EE3CBDD643934E8536E0E6939"}  # Bing Webmaster Tools
 
+# IndexNow (Bing, Yandex, Seznam, Naver …): ключ публичный, файл /<ключ>.txt создаёт build.py,
+# после деплоя GitHub Action отправляет список URL из sitemap.xml. Пусто — выключено.
+INDEXNOW_KEY = "39731d66220babc103a1e35f4f79b3ce"
+
 # значок пункта меню «Цены» (подпись — во всплывающей подсказке); по умолчанию €
 PRICE_ICON = {"en": "$", "uk": "₴", "ru": "₴"}
 

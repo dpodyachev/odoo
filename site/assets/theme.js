@@ -9,3 +9,21 @@
     paint(); btn.hidden = false;
   });
 })();
+
+// Переключатель языков: остаёмся в том же разделе (#loadtest и т. п.). Берём #hash из адреса,
+// а если его нет — раздел, который сейчас на экране. id разделов одинаковы во всех языках.
+(function () {
+  function here() {
+    var best = "";
+    document.querySelectorAll("main section[id], section[id]").forEach(function (s) {
+      if (s.getBoundingClientRect().top <= 120) best = s.id;
+    });
+    return best && window.scrollY > 200 ? "#" + best : "";
+  }
+  document.querySelectorAll(".langs a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      var h = location.hash || here();
+      if (h) a.href = a.href.split("#")[0] + h;
+    });
+  });
+})();

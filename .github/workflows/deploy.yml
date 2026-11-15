@@ -61,3 +61,16 @@ jobs:
           set -o pipefail
           npx -y wrangler@3.114.0 pages deploy site --project-name goldberg-odoo --branch main --commit-dirty=true 2>&1 | tee wrangler.log || {
             echo "::error::wrangler: $(grep -v '^\s*$' wrangler.log | grep -iE 'error|fail|auth|denied|code' | head -8 | tr '\n' ' ' | cut -c1-900)"; exit 1; }
+
+      - name: IndexNow (Bing и др. узнают о новых/изменённых страницах)
+        continue-on-error: true
+        run: |
+          KEY=$(python3 -c "import sys; sys.path.insert(0,'src'); import config as C; print(getattr(C,'INDEXNOW_KEY',''))")
+          [ -n "$KEY" ] || { echo "IndexNow выключен"; exit 0; }
+          HOST=$(python3 -c "import sys; sys.path.insert(0,'src'); import config as C; print(C.BASE_URL.split('//')[1])")
+          sleep 20   # даём Cloudflare раздать новый деплой (файл ключа должен открываться)
+          URLS=$(grep -oE '<loc>[^<]+' site/sitemap.xml | sed 's/<loc>//' | python3 -c "import sys,json; print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))")
+          BODY="{\"host\":\"$HOST\",\"key\":\"$KEY\",\"keyLocation\":\"https://$HOST/$KEY.txt\",\"urlList\":$URLS}"
+          CODE=$(curl -s -o r.txt -w '%{http_code}' -X POST https://api.indexnow.org/indexnow -H 'Content-Type: application/json; charset=utf-8' -d "$BODY")
+          echo "IndexNow HTTP $CODE $(head -c 300 r.txt)"
+          case "$CODE" in 200|202) echo "::notice::IndexNow: $CODE, отправлено $(echo "$URLS" | grep -o http | wc -l) URL";; *) echo "::warning::IndexNow: HTTP $CODE";; esac

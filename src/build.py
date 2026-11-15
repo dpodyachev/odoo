@@ -633,8 +633,17 @@ def main():
 <p>Seite nicht gefunden · Page not found</p><p><a class="btn primary" href="/">{E(C.BRAND)} · {E(C.BRAND_SUB)}</a></p></div></main></body></html>
 """)
     today = datetime.date.today().isoformat()
-    write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-          + "".join(f"<url><loc>{C.BASE_URL}{p}</loc><lastmod>{today}</lastmod></url>\n" for p in pages) + "</urlset>\n")
+    def alternates(p):  # hreflang для главных страниц: все языки + x-default
+        if p.count("/") != 2 or not p.endswith("/"):
+            return ""
+        return "".join(f'<xhtml:link rel="alternate" hreflang="{l}" href="{C.BASE_URL}/{l}/"/>' for l in C.LANGS) + \
+            f'<xhtml:link rel="alternate" hreflang="x-default" href="{C.BASE_URL}/{C.LANGS[0]}/"/>'
+    write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n'
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
+          + "".join(f"<url><loc>{C.BASE_URL}{p}</loc><lastmod>{today}</lastmod>{alternates(p)}</url>\n" for p in pages)
+          + "</urlset>\n")
+    if getattr(C, "INDEXNOW_KEY", ""):
+        write(f"{C.INDEXNOW_KEY}.txt", C.INDEXNOW_KEY)
     write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {C.BASE_URL}/sitemap.xml\n")
     print("ok:", len(pages), "pages →", OUT)
 
