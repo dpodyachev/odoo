@@ -186,7 +186,7 @@ T = {
 <h2>Στοιχεία σύμφωνα με την § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Επικοινωνία</h2>
-<p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Τηλ.: {phone}<br>WhatsApp: {whatsapp}</p>
+<p>E-mail: {email}<br>Telegram: {telegram}<br>Τηλ.: {phone}<br>WhatsApp: {whatsapp}</p>
 <h2>ΦΠΑ</h2>
 <p>{vat}</p>
 <h2>Υπεύθυνος περιεχομένου σύμφωνα με την § 18 παρ. 2 MStV</h2>
@@ -203,7 +203,7 @@ T = {
         "title": "Πολιτική απορρήτου",
         "html": """
 <h2>1. Υπεύθυνος επεξεργασίας</h2>
-<p>{name}, {street}, {city}, {country}<br>E-mail: <a href="mailto:{email}">{email}</a></p>
+<p>{name}, {street}, {city}, {country}<br>E-mail: {email}</p>
 <h2>2. Με λίγα λόγια</h2>
 <p>Αυτός ο ιστότοπος <b>δεν ορίζει cookies</b>, <b>δεν χρησιμοποιεί tracking</b>, analytics, διαφημιστικά pixels,
 ενσωματωμένο περιεχόμενο τρίτων ή εξωτερικές γραμματοσειρές. Δεν υπάρχει φόρμα επικοινωνίας. Ούτε ο τοπικός χώρος

@@ -32,6 +32,53 @@ ICONS = {
 }
 
 
+CONTACTS_KEY = b"goldberg-odoo"
+
+
+def write_contacts_js():
+    """Личные контакты → site/assets/contacts.js в виде XOR+base64 (перевёрнутая строка): в HTML их нет,
+    браузер подставляет их в элементы с data-ch (href), data-ct (title/aria-label), data-cx (текст)."""
+    import base64
+    P = dict(C.PRIVATE)
+    P["whatsapp_text"] = P.get("whatsapp", "").split("//")[-1]
+    raw = json.dumps(P, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    enc = base64.b64encode(bytes(b ^ CONTACTS_KEY[i % len(CONTACTS_KEY)] for i, b in enumerate(raw))).decode()[::-1]
+    js = ('''(function () {
+  var s = atob("%s".split("").reverse().join("")), k = "%s", b = new Uint8Array(s.length);
+  for (var i = 0; i < s.length; i++) b[i] = s.charCodeAt(i) ^ k.charCodeAt(i %% k.length);
+  var C = JSON.parse(new TextDecoder().decode(b)); window.GC = C;
+  function f(t) { return t.replace(/\\{(\\w+)\\}/g, function (_, n) { return C[n] || ""; }); }
+  function run() {
+    document.querySelectorAll("[data-ch],[data-ct],[data-cx]").forEach(function (e) {
+      var v = e.getAttribute("data-ch"); if (v) e.setAttribute("href", f(v));
+      v = e.getAttribute("data-ct"); if (v) { e.title = f(v); e.setAttribute("aria-label", f(v)); }
+      v = e.getAttribute("data-cx"); if (v) e.textContent = f(v);
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
+})();
+''' % (enc, CONTACTS_KEY.decode()))
+    with open(os.path.join(OUT, "assets", "contacts.js"), "w", encoding="utf-8") as fh:
+        fh.write(js)
+
+
+def check_no_private():
+    """Сборка падает, если личные данные попали в site/ открытым текстом."""
+    needles = {v for k, v in C.PRIVATE.items() if v and len(v) >= 6}
+    needles |= {v.split("//")[-1] for v in needles if "//" in v}
+    needles |= {v.lstrip("+") for v in needles if v.startswith("+")}
+    bad = []
+    for root, _d, files in os.walk(OUT):
+        for fn in files:
+            if fn.endswith((".html", ".js", ".json", ".xml", ".txt", ".css")) and fn != "contacts.js":
+                path = os.path.join(root, fn)
+                with open(path, encoding="utf-8", errors="ignore") as fh:
+                    t = fh.read()
+                bad += [os.path.relpath(path, OUT) for n in needles if n in t]
+    if bad:
+        sys.exit("ОШИБКА: личные данные открытым текстом в: " + ", ".join(sorted(set(bad))[:10]))
+
+
 def asset(path):
     """/assets/x?v=<hash>: браузер кэширует assets на сутки, хэш сбрасывает кэш при изменении файла."""
     with open(os.path.join(OUT, path.lstrip("/")), "rb") as fh:
@@ -69,6 +116,7 @@ def head(T, lang, page, title, desc):
 {VERIFY}<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{asset('/assets/style.css')}">
 <script src="{asset('/assets/theme.js')}" defer></script>
+<script src="{asset('/assets/contacts.js')}" defer></script>
 </head>
 <body>
 """
@@ -137,16 +185,20 @@ SOCIAL_SVG = {  # значки контактов: адрес/ник — в по
 
 
 def social(kind, cls=""):
-    href, label, ext = {
-        "mail": (f"mailto:{C.EMAIL}", f"E-Mail: {C.EMAIL}", ""),
-        "tg": (C.TELEGRAM, f"Telegram: {C.TELEGRAM_HANDLE}", ' target="_blank" rel="noopener"'),
-        "tel": (f"tel:{getattr(C, 'PHONE', '')}" if getattr(C, "PHONE", "") else "", f"Tel.: {getattr(C, 'PHONE', '')}", ""),
-        "wa": (getattr(C, "WHATSAPP", ""), "WhatsApp", ' target="_blank" rel="noopener"'),
-        "li": (getattr(C, "LINKEDIN", ""), "LinkedIn", ' target="_blank" rel="noopener me"'),
+    """Значок контакта. Личные (mail/tg/wa/tel) — без адреса в HTML: href/подсказку подставляет contacts.js."""
+    href, label, ext, on = {
+        "mail": ("mailto:{email}", "E-Mail: {email}", "", C.EMAIL),
+        "tg": ("{telegram}", "Telegram: {telegram_handle}", ' target="_blank" rel="noopener"', C.TELEGRAM),
+        "wa": ("{whatsapp}", "WhatsApp", ' target="_blank" rel="noopener"', C.WHATSAPP),
+        "tel": ("tel:{phone}", "Tel.: {phone_display}", "", C.PHONE),
+        "li": (getattr(C, "LINKEDIN", ""), "LinkedIn", ' target="_blank" rel="noopener me"', getattr(C, "LINKEDIN", "")),
     }[kind]
-    if not href:
+    if not on:
         return ""
-    return (f'<a class="soc-ico{(" " + cls) if cls else ""}" href="{E(href)}" title="{E(label)}" aria-label="{E(label)}"{ext}>'
+    generic = {"mail": "E-Mail", "tg": "Telegram", "wa": "WhatsApp", "tel": "Tel.", "li": "LinkedIn"}[kind]
+    attrs = (f'href="{E(href)}" title="{generic}" aria-label="{generic}"' if kind == "li"
+             else f'data-ch="{E(href)}" data-ct="{E(label)}" title="{generic}" aria-label="{generic}"')
+    return (f'<a class="soc-ico{(" " + cls) if cls else ""}" {attrs}{ext}>'
             f'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" '
             f'stroke-linejoin="round" aria-hidden="true">{SOCIAL_SVG[kind]}</svg></a>')
 
@@ -253,7 +305,7 @@ def echeck(T):
     data = {k: X[k] for k in ("answers", "score", "levels", "mail_subject", "mail_intro", "mail_outro")}
     data["q"] = [(tag, tip) for tag, _q, _h, tip in X["q"]]
     data["title"] = X["title"]
-    data["cal"], data["email"] = book_url(), C.EMAIL
+    data["cal"] = book_url()   # e-mail берёт echeck.js из window.GC (contacts.js)
     js = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
     return f"""<section id="echeck" class="sec echeck-sec extra">
 <div class="wrap narrow">
@@ -276,8 +328,8 @@ def echeck(T):
 <p>{E(X["cta_text"])}</p>
 <div class="cta">
 <a class="btn primary ec-book" href="{E(book_url())}" target="_blank" rel="noopener">{E(X["cta_book"])}</a>
-<a class="btn ec-mail" href="mailto:{E(C.EMAIL)}">{E(X["cta_mail"])}</a>
-<a class="btn ec-tg" href="{E(C.TELEGRAM)}" target="_blank" rel="noopener">{E(X["cta_tg"])}</a>
+<a class="btn ec-mail" data-ch="mailto:{{email}}">{E(X["cta_mail"])}</a>
+<a class="btn ec-tg" data-ch="{{telegram}}" target="_blank" rel="noopener">{E(X["cta_tg"])}</a>
 </div>
 <p class="small ec-copied" hidden>✅ {E(X["copied"])}</p>
 </div>
@@ -589,17 +641,27 @@ def index(T, lang):
     return "".join(s)
 
 
+NOSCRIPT_CONTACTS = {
+    "de": "Anschrift und Kontaktdaten werden zum Schutz vor Spam-Bots per JavaScript angezeigt. Bitte JavaScript aktivieren.",
+    "en": "Address and contact details are shown via JavaScript to protect against spam bots. Please enable JavaScript.",
+    "fr": "L'adresse et les coordonnées sont affichées via JavaScript pour les protéger des robots de spam. Veuillez activer JavaScript.",
+    "el": "Η διεύθυνση και τα στοιχεία επικοινωνίας εμφανίζονται μέσω JavaScript για προστασία από spam bots. Ενεργοποιήστε τη JavaScript.",
+    "uk": "Адреса й контакти показуються через JavaScript для захисту від спам-ботів. Увімкніть JavaScript.",
+    "ru": "Адрес и контакты показываются через JavaScript для защиты от спам-ботов. Включите JavaScript.",
+}
+
+
 def legal_page(T, lang, page, key):
     L = T[key]
     data = {
-        "name": E(C.OWNER_NAME), "street": E(C.OWNER_STREET), "city": E(C.OWNER_CITY),
-        "country": E(C.OWNER_COUNTRY), "email": E(C.EMAIL),
+        "name": E(C.OWNER_NAME), "street": '<span data-cx="{street}"></span>', "city": '<span data-cx="{city}"></span>',
+        "country": E(C.OWNER_COUNTRY), "email": '<a data-ch="mailto:{email}" data-cx="{email}"></a>',
         "vat": E(T["kleinunternehmer"] if C.VAT_ID == "KLEINUNTERNEHMER" else C.VAT_ID),
-        "telegram": E(C.TELEGRAM_HANDLE), "brand": E(C.BRAND),
-        "phone": (f'<a href="tel:{E(C.PHONE)}">{E(C.PHONE_DISPLAY)}</a>' if getattr(C, "PHONE", "") else "—"),
-        "whatsapp": (f'<a href="{E(C.WHATSAPP)}" target="_blank" rel="noopener">{E(C.WHATSAPP.split("//")[-1])}</a>' if getattr(C, "WHATSAPP", "") else "—"),
+        "telegram": '<a data-ch="{telegram}" data-cx="{telegram_handle}" target="_blank" rel="noopener"></a>', "brand": E(C.BRAND),
+        "phone": ('<a data-ch="tel:{phone}" data-cx="{phone_display}"></a>' if C.PHONE else "—"),
+        "whatsapp": ('<a data-ch="{whatsapp}" data-cx="{whatsapp_text}" target="_blank" rel="noopener"></a>' if C.WHATSAPP else "—"),
     }
-    body = L["html"].format(**data)
+    body = L["html"].format(**data) + f'<noscript><p class="note">{E(NOSCRIPT_CONTACTS.get(lang, NOSCRIPT_CONTACTS["en"]))}</p></noscript>'
     note = f'<p class="note legalnote">{E(T["legal_note"])} <a href="{url("de", page)}">Deutsch</a></p>' if lang != "de" else ""
     return (head(T, lang, page, f'{L["title"]} · {C.BRAND}', L["title"]) + header(T, lang, page)
             + f'<main class="sec"><div class="wrap narrow legal"><h1>{E(L["title"])}</h1>{note}{body}</div></main>'
@@ -733,6 +795,7 @@ def test_page(lang):
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{asset('/assets/style.css')}">
 <script src="{asset('/assets/theme.js')}" defer></script>
+<script src="{asset('/assets/contacts.js')}" defer></script>
 </head>
 <body>
 <header class="top"><div class="wrap top-in">
@@ -781,6 +844,7 @@ def test2_page(lang):
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{asset('/assets/style.css')}">
 <script src="{asset('/assets/theme.js')}" defer></script>
+<script src="{asset('/assets/contacts.js')}" defer></script>
 </head>
 <body>
 <header class="top"><div class="wrap top-in">
@@ -827,6 +891,9 @@ def write(path, text):
 
 
 def main():
+    if not C.PRIVATE:
+        sys.exit("ОШИБКА: нет личных данных — создайте src/private.json или задайте SITE_PRIVATE (base64 JSON), см. config.py")
+    write_contacts_js()
     pages = []
     for lang in C.LANGS:
         T = importlib.import_module(f"lang_{lang}").T
@@ -907,6 +974,7 @@ def main():
     if getattr(C, "INDEXNOW_KEY", ""):
         write(f"{C.INDEXNOW_KEY}.txt", C.INDEXNOW_KEY)
     write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /test/\nDisallow: /test2/\nDisallow: /status/\nDisallow: /backup/\nSitemap: {C.BASE_URL}/sitemap.xml\n")
+    check_no_private()
     print("ok:", len(pages), "pages →", OUT)
 
 

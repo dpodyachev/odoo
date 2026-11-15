@@ -2,19 +2,37 @@
 BASE_URL = "https://2027.pp.ua"         # основной домен (canonical/hreflang/sitemap); зеркала на других доменах ссылаются сюда
 BRAND = "Goldberg"                        # название в шапке
 BRAND_SUB = "Odoo Services"
-TELEGRAM = "https://t.me/podyachev"
-TELEGRAM_HANDLE = "@podyachev"
-EMAIL = "dpodiatschev@gmail.com"
-PHONE = "+491703002845"        # пусто — не показывать
-PHONE_DISPLAY = "+49 170 3002845"
-WHATSAPP = "https://wa.me/491703002845"
+
+# Личные контакты НЕ хранятся в git (репозиторий публичный): src/private.json (в .gitignore) или
+# переменная окружения SITE_PRIVATE = base64(JSON) — в GitHub Action из секрета SITE_PRIVATE.
+# Ключи: telegram, telegram_handle, email, phone, phone_display, whatsapp, street, city.
+# На сайте они попадают только в закодированном виде (assets/contacts.js) и подставляются в браузере.
+def _load_private():
+    import base64, json, os
+    f = os.path.join(os.path.dirname(os.path.abspath(__file__)), "private.json")
+    if os.path.exists(f):
+        with open(f, encoding="utf-8") as fh:
+            return json.load(fh)
+    if os.environ.get("SITE_PRIVATE", "").strip():
+        return json.loads(base64.b64decode(os.environ["SITE_PRIVATE"].strip()).decode("utf-8"))
+    return None
+
+
+PRIVATE = _load_private()
+_P = PRIVATE or {}
+TELEGRAM = _P.get("telegram", "")
+TELEGRAM_HANDLE = _P.get("telegram_handle", "")
+EMAIL = _P.get("email", "")
+PHONE = _P.get("phone", "")              # пусто — значок не показывать
+PHONE_DISPLAY = _P.get("phone_display", PHONE)
+WHATSAPP = _P.get("whatsapp", "")
 LINKEDIN = "https://www.linkedin.com/in/dpodyachev"     # пусто — не показывать
 CAL_URL = "https://cal.com/dmytro-podiatschev-xvsnlm"                              # ссылка Cal.com (https://cal.com/<имя>/30min); пусто — кнопка «Termin buchen» ведёт в Telegram
 
-# Данные для Impressum — ОБЯЗАТЕЛЬНО заполнить перед публикацией (§ 5 DDG)
+# Данные для Impressum — ОБЯЗАТЕЛЬНО заполнить перед публикацией (§ 5 DDG); улица и город — в private.json
 OWNER_NAME = "Dmytro Podiatschev – Schwaben Odoo Service"
-OWNER_STREET = "Weimarer Straße 47"
-OWNER_CITY = "71065 Sindelfingen"
+OWNER_STREET = _P.get("street", "")
+OWNER_CITY = _P.get("city", "")
 OWNER_COUNTRY = "Deutschland"
 # Одна из строк: USt-IdNr. / Kleinunternehmer §19 UStG / пусто
 VAT_ID = "KLEINUNTERNEHMER"   # маркер: тексты по-языкам в lang_*.py (kleinunternehmer)

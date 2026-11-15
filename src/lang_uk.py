@@ -180,7 +180,7 @@ T = {
 <h2>Відомості згідно з § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Контакти</h2>
-<p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Тел.: {phone}<br>WhatsApp: {whatsapp}</p>
+<p>E-mail: {email}<br>Telegram: {telegram}<br>Тел.: {phone}<br>WhatsApp: {whatsapp}</p>
 <h2>ПДВ</h2>
 <p>{vat}</p>
 <h2>Відповідальний за зміст згідно з § 18 абз. 2 MStV</h2>
@@ -197,7 +197,7 @@ T = {
         "title": "Політика конфіденційності",
         "html": """
 <h2>1. Відповідальний</h2>
-<p>{name}, {street}, {city}, {country}<br>E-mail: <a href="mailto:{email}">{email}</a></p>
+<p>{name}, {street}, {city}, {country}<br>E-mail: {email}</p>
 <h2>2. Коротко</h2>
 <p>Сайт <b>не встановлює cookies</b>, <b>не використовує трекінг</b>, аналітику, рекламні пікселі, вбудований контент третіх осіб
 і зовнішні шрифти. Форми зворотного зв'язку немає. Локальне сховище браузера (Local Storage) теж не використовується.</p>

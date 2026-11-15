@@ -184,7 +184,7 @@ T = {
 <h2>Angaben gemäß § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Kontakt</h2>
-<p>E-Mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Telefon: {phone}<br>WhatsApp: {whatsapp}</p>
+<p>E-Mail: {email}<br>Telegram: {telegram}<br>Telefon: {phone}<br>WhatsApp: {whatsapp}</p>
 <h2>Umsatzsteuer</h2>
 <p>{vat}</p>
 <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
@@ -201,7 +201,7 @@ Für diese Inhalte ist der jeweilige Anbieter verantwortlich.</p>
         "title": "Datenschutzerklärung",
         "html": """
 <h2>1. Verantwortlicher</h2>
-<p>{name}, {street}, {city}, {country}<br>E-Mail: <a href="mailto:{email}">{email}</a></p>
+<p>{name}, {street}, {city}, {country}<br>E-Mail: {email}</p>
 <h2>2. Kurz gesagt</h2>
 <p>Diese Website setzt <b>keine Cookies</b>, verwendet <b>kein Tracking</b>, keine Analyse-Tools, keine Werbe-Pixel,
 keine eingebetteten Inhalte Dritter und keine extern geladenen Schriften. Es gibt kein Kontaktformular.

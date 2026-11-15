@@ -180,7 +180,7 @@ T = {
 <h2>Сведения согласно § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Контакты</h2>
-<p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Тел.: {phone}<br>WhatsApp: {whatsapp}</p>
+<p>E-mail: {email}<br>Telegram: {telegram}<br>Тел.: {phone}<br>WhatsApp: {whatsapp}</p>
 <h2>НДС</h2>
 <p>{vat}</p>
 <h2>Ответственный за содержание согласно § 18 абз. 2 MStV</h2>
@@ -197,7 +197,7 @@ T = {
         "title": "Политика конфиденциальности",
         "html": """
 <h2>1. Ответственный</h2>
-<p>{name}, {street}, {city}, {country}<br>E-mail: <a href="mailto:{email}">{email}</a></p>
+<p>{name}, {street}, {city}, {country}<br>E-mail: {email}</p>
 <h2>2. Коротко</h2>
 <p>Сайт <b>не устанавливает cookies</b>, <b>не использует трекинг</b>, аналитику, рекламные пиксели, встроенный контент третьих лиц
 и внешние шрифты. Формы обратной связи нет. Локальное хранилище браузера (Local Storage) тоже не используется.</p>

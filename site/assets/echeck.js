@@ -29,7 +29,7 @@
       summary = D.title + ": " + total + "/10\n" + lines.join("\n");
       var sep = D.cal.indexOf("?") < 0 ? "?" : "&";
       res.querySelector(".ec-book").href = D.cal + sep + "notes=" + encodeURIComponent(summary);
-      res.querySelector(".ec-mail").href = "mailto:" + D.email + "?subject=" + encodeURIComponent(fmt(D.mail_subject, total)) +
+      res.querySelector(".ec-mail").href = "mailto:" + ((window.GC || {}).email || "") + "?subject=" + encodeURIComponent(fmt(D.mail_subject, total)) +
         "&body=" + encodeURIComponent(D.mail_intro + "\n\n" + summary + "\n\n" + D.mail_outro + "\n");
       res.hidden = false; res.focus({ preventScroll: true });
       res.scrollIntoView({ behavior: "smooth", block: "start" });

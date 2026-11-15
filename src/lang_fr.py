@@ -183,7 +183,7 @@ T = {
 <h2>Informations selon le § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Contact</h2>
-<p>E-mail : <a href="mailto:{email}">{email}</a><br>Telegram : {telegram}<br>Tél. : {phone}<br>WhatsApp : {whatsapp}</p>
+<p>E-mail : {email}<br>Telegram : {telegram}<br>Tél. : {phone}<br>WhatsApp : {whatsapp}</p>
 <h2>TVA</h2>
 <p>{vat}</p>
 <h2>Responsable du contenu selon le § 18 al. 2 MStV</h2>
@@ -200,7 +200,7 @@ Le fournisseur concerné en est responsable.</p>
         "title": "Politique de confidentialité",
         "html": """
 <h2>1. Responsable du traitement</h2>
-<p>{name}, {street}, {city}, {country}<br>E-mail : <a href="mailto:{email}">{email}</a></p>
+<p>{name}, {street}, {city}, {country}<br>E-mail : {email}</p>
 <h2>2. En bref</h2>
 <p>Ce site <b>ne dépose aucun cookie</b>, n'utilise <b>aucun suivi</b>, aucun outil d'analyse, aucun pixel publicitaire,
 aucun contenu tiers intégré ni police chargée de l'extérieur. Il n'y a pas de formulaire de contact.

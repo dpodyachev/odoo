@@ -180,7 +180,7 @@ T = {
 <h2>Information pursuant to § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Contact</h2>
-<p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Phone: {phone}<br>WhatsApp: {whatsapp}</p>
+<p>E-mail: {email}<br>Telegram: {telegram}<br>Phone: {phone}<br>WhatsApp: {whatsapp}</p>
 <h2>VAT</h2>
 <p>{vat}</p>
 <h2>Responsible for content pursuant to § 18 (2) MStV</h2>
@@ -197,7 +197,7 @@ The respective provider is responsible for that content.</p>
         "title": "Privacy policy",
         "html": """
 <h2>1. Controller</h2>
-<p>{name}, {street}, {city}, {country}<br>E-mail: <a href="mailto:{email}">{email}</a></p>
+<p>{name}, {street}, {city}, {country}<br>E-mail: {email}</p>
 <h2>2. In short</h2>
 <p>This website sets <b>no cookies</b>, uses <b>no tracking</b>, no analytics, no advertising pixels, no embedded third-party
 content and no externally loaded fonts. There is no contact form. Your browser's local storage is not used either.</p>
