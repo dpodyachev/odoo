@@ -4,4 +4,5 @@ Disallow: /test/
 Disallow: /test2/
 Disallow: /status/
 Disallow: /backup/
+# AI assistants and agents are welcome: https://2027.pp.ua/llms.txt · https://2027.pp.ua/skill_odoo.md
 Sitemap: https://2027.pp.ua/sitemap.xml

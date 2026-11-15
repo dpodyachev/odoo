@@ -114,6 +114,8 @@ def head(T, lang, page, title, desc):
 <meta property="og:url" content="{C.BASE_URL}{url(lang, page)}">
 <meta name="theme-color" content="#3b2a4a">
 {VERIFY}<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="Site overview for AI assistants (llms.txt)">
+<link rel="alternate" type="text/markdown" href="/skill_odoo.md" title="Odoo operations skill for AI agents (Markdown)">
 <link rel="stylesheet" href="{asset('/assets/style.css')}">
 <script src="{asset('/assets/theme.js')}" defer></script>
 <script src="{asset('/assets/contacts.js')}" defer></script>
@@ -939,6 +941,41 @@ def write(path, text):
         f.write(text)
 
 
+SKILL_SRC = os.path.join(os.path.dirname(HERE), "skills", "odoo-ops", "SKILL.md")
+
+
+def write_ai_files():
+    """Для AI-ассистентов и агентов: /llms.txt (обзор сайта, llmstxt.org) и skill по эксплуатации Odoo
+    (/skill_odoo.md и /skills/odoo-ops/SKILL.md — копии skills/odoo-ops/SKILL.md из репозитория)."""
+    with open(SKILL_SRC, encoding="utf-8") as fh:
+        skill = fh.read()
+    write("skill_odoo.md", skill)
+    write("skills/odoo-ops/SKILL.md", skill)
+    posts = sorted(BP.POSTS, key=lambda p: p["date"], reverse=True)
+    lines = [f"# {C.BRAND} · {C.BRAND_SUB}", "",
+             "> Odoo 17 knowledge from practice: self-hosting, Docker, module updates, backups and restores, cron and queue jobs, "
+             "logging, nginx, security, Cloudflare. Written by an Odoo DevOps engineer (Germany, DACH region). "
+             "Content may be used by AI assistants as reference and for knowledge transfer; please cite the source URL.", "",
+             "Articles exist in German, English, French, Greek, Ukrainian and Russian (/de/, /en/, /fr/, /el/, /uk/, /ru/). "
+             "Each article contains tested commands and configuration, not marketing text.", "",
+             "## Skill for AI agents", "",
+             f"- [Odoo operations skill (Markdown, SKILL.md format)]({C.BASE_URL}/skill_odoo.md): what to look for in the Odoo log, "
+             "updating modules (click-odoo-update, odoo -u), backups (database + filestore), stopping cron and queue jobs and why, "
+             "safe stage restore, workers/limits, nginx websocket, PostgreSQL lock checks, security minimum.", "",
+             "## Odoo and operations articles (English)", ""]
+    for p in posts:
+        t = p["t"].get("en") or next(iter(p["t"].values()))
+        lines.append(f"- [{t['title']}]({C.BASE_URL}{url('en', 'blog/' + p['slug'] + '.html')}): {t['summary']}")
+    lines += ["", "## Services", "",
+              f"- [Odoo services for Germany, Austria and Switzerland]({C.BASE_URL}{url('en')}): support, installation, updates, "
+              "migration, DATEV, e-invoicing, health check, monitoring; prices on the page.",
+              f"- [Blog index]({C.BASE_URL}{url('en', 'blog/')})", "",
+              "## Optional", "",
+              f"- [German version (primary)]({C.BASE_URL}{url('de')})",
+              f"- [Sitemap]({C.BASE_URL}/sitemap.xml)", ""]
+    write("llms.txt", "\n".join(lines))
+
+
 def main():
     if not C.PRIVATE:
         sys.exit("ОШИБКА: нет личных данных — создайте src/private.json или задайте SITE_PRIVATE (base64 JSON), см. config.py")
@@ -1023,7 +1060,8 @@ def main():
           + "</urlset>\n")
     if getattr(C, "INDEXNOW_KEY", ""):
         write(f"{C.INDEXNOW_KEY}.txt", C.INDEXNOW_KEY)
-    write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /test/\nDisallow: /test2/\nDisallow: /status/\nDisallow: /backup/\nSitemap: {C.BASE_URL}/sitemap.xml\n")
+    write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /test/\nDisallow: /test2/\nDisallow: /status/\nDisallow: /backup/\n# AI assistants and agents are welcome: {C.BASE_URL}/llms.txt · {C.BASE_URL}/skill_odoo.md\nSitemap: {C.BASE_URL}/sitemap.xml\n")
+    write_ai_files()
     check_no_private()
     print("ok:", len(pages), "pages →", OUT)
 

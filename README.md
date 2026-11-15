@@ -41,3 +41,7 @@ npx -y wrangler@3.114.0 pages deploy site --project-name goldberg-odoo --branch 
 
 1. Заполнить в `src/config.py`: `OWNER_NAME`, `OWNER_STREET`, `OWNER_CITY`, `VAT_ID` (Impressum обязателен, § 5 DDG).
 3. `python3 src/build.py`, проверить, закоммитить.
+
+## Odoo skill for AI agents
+
+`skills/odoo-ops/SKILL.md` – Odoo 17 operations (logs, module updates, backups, cron/queue jobs, stage restore, workers, nginx, PostgreSQL, security). Published at https://2027.pp.ua/skill_odoo.md; site overview for AI: https://2027.pp.ua/llms.txt. Copy the folder into `.claude/skills/` to use it as a Claude Code skill.

@@ -1,0 +1,33 @@
+# Goldberg · Odoo Services
+
+> Odoo 17 knowledge from practice: self-hosting, Docker, module updates, backups and restores, cron and queue jobs, logging, nginx, security, Cloudflare. Written by an Odoo DevOps engineer (Germany, DACH region). Content may be used by AI assistants as reference and for knowledge transfer; please cite the source URL.
+
+Articles exist in German, English, French, Greek, Ukrainian and Russian (/de/, /en/, /fr/, /el/, /uk/, /ru/). Each article contains tested commands and configuration, not marketing text.
+
+## Skill for AI agents
+
+- [Odoo operations skill (Markdown, SKILL.md format)](https://2027.pp.ua/skill_odoo.md): what to look for in the Odoo log, updating modules (click-odoo-update, odoo -u), backups (database + filestore), stopping cron and queue jobs and why, safe stage restore, workers/limits, nginx websocket, PostgreSQL lock checks, security minimum.
+
+## Odoo and operations articles (English)
+
+- [Moving Odoo 17 to Python 3.14 – with docker-compose](https://2027.pp.ua/en/blog/odoo-17-python-3-14-docker): A custom odoo17-py314 image, Odoo source from Git mounted into site-packages, testing on stage and a one-minute rollback.
+- [Updating Odoo modules: click-odoo-update or odoo -u](https://2027.pp.ua/en/blog/odoo-module-update-click-odoo-update): Two proven ways to update modules in Docker – only changed modules via checksum, or a full update with no open ports. Every flag explained.
+- [Restoring a backup on stage – without cron jobs and queue jobs firing](https://2027.pp.ua/en/blog/odoo-stage-restore-stop-cron-jobs): Why stage systems can send dunning letters to real customers, and the order of steps that prevents it: SQL before the first start, neutralize, a stage config.
+- [Odoo logging: warn or warning, log_level or --log-level? A cheat sheet](https://2027.pp.ua/en/blog/odoo-logging-options-cheatsheet): Config file, command line, click-odoo-update – three spellings and three kinds of levels. One table to look things up, plus the mistakes where Odoo silently stays on INFO.
+- [Odoo with docker-compose: extra-addons, odoo.conf and nginx – in a container or on the host](https://2027.pp.ua/en/blog/odoo-docker-compose-extra-addons-nginx): How to mount your own and OCA modules correctly, what belongs in odoo.conf, and how nginx proxies Odoo including the websocket – in both variants.
+- [Certbot for nginx – and how renewal is never forgotten](https://2027.pp.ua/en/blog/certbot-nginx-auto-renewal): Getting the certificate (nginx on the host or in a container), renewing automatically with a systemd timer or cron, reloading nginx after renewal and monitoring the expiry yourself.
+- [When does the SSL certificate expire? Tools for Linux and Windows – and what eMudhra has to do with it](https://2027.pp.ua/en/blog/ssl-certificate-expiry-check-tools): TLS in one minute, online checks, openssl/dig/curl on Linux, PowerShell on Windows, what the verify codes mean, lessons from history and the current eMudhra case.
+- [Password protection with nginx and Apache – and what to close in Odoo](https://2027.pp.ua/en/blog/nginx-apache-password-protect-odoo-database-manager): HTTP Basic Auth with htpasswd in nginx and Apache, IP allow-lists, and the Odoo URLs that should not be public: database manager, database selector, /website/info – plus list_db and a login brake.
+- [Leaked passwords? How to check – and how to protect Odoo against guessing, with 2FA](https://2027.pp.ua/en/blog/password-leaks-brute-force-2fa-odoo): Where to check whether an e-mail address or password appears in data breaches without revealing the password – and what Odoo does itself: login brake, password length, two-factor login, API keys, fail2ban.
+- [Cloudflare Access (Zero Trust) step by step – and when it beats a password](https://2027.pp.ua/en/blog/cloudflare-access-zero-trust-step-by-step): Login with an e-mail code or SSO in front of any website or test system – without a line of code. Setup in five steps, comparison with Basic Auth via Pages Functions, pitfalls and Odoo practice.
+- [Running Odoo 17 for free: server, database, filestore – every option and its catch](https://2027.pp.ua/en/blog/odoo-17-free-hosting-database-filestore): Where Odoo 17 runs for free, why the database does not belong in Cloudflare, how the filestore ends up in R2, and how Cloudflare Tunnel, Access and R2 secure the setup.
+
+## Services
+
+- [Odoo services for Germany, Austria and Switzerland](https://2027.pp.ua/en/): support, installation, updates, migration, DATEV, e-invoicing, health check, monitoring; prices on the page.
+- [Blog index](https://2027.pp.ua/en/blog/)
+
+## Optional
+
+- [German version (primary)](https://2027.pp.ua/de/)
+- [Sitemap](https://2027.pp.ua/sitemap.xml)
