@@ -186,7 +186,7 @@ T = {
 <h2>Στοιχεία σύμφωνα με την § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Επικοινωνία</h2>
-<p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}</p>
+<p>E-mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Τηλ./WhatsApp: {phone}</p>
 <h2>ΦΠΑ</h2>
 <p>{vat}</p>
 <h2>Υπεύθυνος περιεχομένου σύμφωνα με την § 18 παρ. 2 MStV</h2>

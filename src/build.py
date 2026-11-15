@@ -596,6 +596,7 @@ def legal_page(T, lang, page, key):
         "country": E(C.OWNER_COUNTRY), "email": E(C.EMAIL),
         "vat": E(T["kleinunternehmer"] if C.VAT_ID == "KLEINUNTERNEHMER" else C.VAT_ID),
         "telegram": E(C.TELEGRAM_HANDLE), "brand": E(C.BRAND),
+        "phone": (f'<a href="tel:{E(C.PHONE)}">{E(C.PHONE_DISPLAY)}</a>' if getattr(C, "PHONE", "") else "—"),
     }
     body = L["html"].format(**data)
     note = f'<p class="note legalnote">{E(T["legal_note"])} <a href="{url("de", page)}">Deutsch</a></p>' if lang != "de" else ""

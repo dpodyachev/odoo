@@ -184,7 +184,7 @@ T = {
 <h2>Angaben gemäß § 5 DDG</h2>
 <p>{name}<br>{street}<br>{city}<br>{country}</p>
 <h2>Kontakt</h2>
-<p>E-Mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}</p>
+<p>E-Mail: <a href="mailto:{email}">{email}</a><br>Telegram: {telegram}<br>Telefon/WhatsApp: {phone}</p>
 <h2>Umsatzsteuer</h2>
 <p>{vat}</p>
 <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
