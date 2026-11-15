@@ -1,22 +1,22 @@
 // /backup/ – list + direct multipart upload to R2 via pre-signed URLs (API: /backup/api/*, Basic Auth).
 (function () {
   var L = {
-    de: { s3: "Per S3-Tool hochgeladen (aws s3 / rclone), ohne Beschreibung:", upload: "+ Hochladen", up_title: "Neue Datei", f_title: "Titel", drop: "Datei auswählen oder hierher ziehen", f_desc: "Beschreibung",
+    de: { m_file: "Datei", m_url: "Per URL", f_url: "Link (http/https)", url_note: "Der Server lädt die Datei von der URL direkt nach R2 – das kann dauern.", nourl: "Bitte eine URL angeben.", fetching: "Server lädt herunter…", src: "Quelle", s3: "Per S3-Tool hochgeladen (aws s3 / rclone), ohne Beschreibung:", upload: "+ Hochladen", up_title: "Neue Datei", f_title: "Titel", drop: "Datei auswählen oder hierher ziehen", f_desc: "Beschreibung",
           note: "Die Datei geht direkt in Cloudflare R2 (privater Bucket). Große Dateien werden in Teilen hochgeladen – Tab bis zum Ende offen lassen.",
           save: "Hochladen", cancel: "Abbrechen", files: "Dateien", loading: "Lädt…", empty: "Noch keine Dateien.", download: "Herunterladen",
           delete: "Löschen", confirm: "Diese Datei endgültig löschen?", nofile: "Bitte eine Datei auswählen.", done: "Fertig", err: "Fehler",
           prep: "Vorbereitung…", finishing: "Abschließen…", unfinished: "unvollständig", total: "Dateien", nodesc: "Keine Beschreibung.", leave: "Upload läuft – wirklich verlassen?" },
-    en: { s3: "Uploaded with an S3 tool (aws s3 / rclone), no description:", upload: "+ Upload", up_title: "New file", f_title: "Title", drop: "Choose a file or drop it here", f_desc: "Description",
+    en: { m_file: "File", m_url: "By URL", f_url: "Link (http/https)", url_note: "The server downloads the file from the URL straight into R2 – this may take a while.", nourl: "Please enter a URL.", fetching: "Server is downloading…", src: "Source", s3: "Uploaded with an S3 tool (aws s3 / rclone), no description:", upload: "+ Upload", up_title: "New file", f_title: "Title", drop: "Choose a file or drop it here", f_desc: "Description",
           note: "The file goes directly to Cloudflare R2 (private bucket). Large files are uploaded in parts – keep this tab open until it finishes.",
           save: "Upload", cancel: "Cancel", files: "Files", loading: "Loading…", empty: "No files yet.", download: "Download",
           delete: "Delete", confirm: "Delete this file permanently?", nofile: "Please choose a file.", done: "Done", err: "Error",
           prep: "Preparing…", finishing: "Finishing…", unfinished: "incomplete", total: "files", nodesc: "No description.", leave: "Upload in progress – leave anyway?" },
-    ru: { s3: "Загружено S3-инструментом (aws s3 / rclone), без описания:", upload: "+ Загрузить", up_title: "Новый файл", f_title: "Заголовок", drop: "Выберите файл или перетащите сюда", f_desc: "Описание",
+    ru: { m_file: "Файл", m_url: "По ссылке", f_url: "Ссылка (http/https)", url_note: "Сервер сам скачает файл по ссылке прямо в R2 – это может занять время.", nourl: "Укажите ссылку.", fetching: "Сервер скачивает…", src: "Источник", s3: "Загружено S3-инструментом (aws s3 / rclone), без описания:", upload: "+ Загрузить", up_title: "Новый файл", f_title: "Заголовок", drop: "Выберите файл или перетащите сюда", f_desc: "Описание",
           note: "Файл идёт напрямую в Cloudflare R2 (приватный bucket). Большие файлы грузятся частями – не закрывайте вкладку до конца.",
           save: "Загрузить", cancel: "Отмена", files: "Файлы", loading: "Загрузка…", empty: "Файлов пока нет.", download: "Скачать",
           delete: "Удалить", confirm: "Удалить этот файл навсегда?", nofile: "Выберите файл.", done: "Готово", err: "Ошибка",
           prep: "Подготовка…", finishing: "Завершение…", unfinished: "не догружен", total: "файлов", nodesc: "Без описания.", leave: "Идёт загрузка – всё равно уйти?" },
-    uk: { s3: "Завантажено S3-інструментом (aws s3 / rclone), без опису:", upload: "+ Завантажити", up_title: "Новий файл", f_title: "Заголовок", drop: "Виберіть файл або перетягніть сюди", f_desc: "Опис",
+    uk: { m_file: "Файл", m_url: "За посиланням", f_url: "Посилання (http/https)", url_note: "Сервер сам завантажить файл за посиланням прямо в R2 – це може зайняти час.", nourl: "Вкажіть посилання.", fetching: "Сервер завантажує…", src: "Джерело", s3: "Завантажено S3-інструментом (aws s3 / rclone), без опису:", upload: "+ Завантажити", up_title: "Новий файл", f_title: "Заголовок", drop: "Виберіть файл або перетягніть сюди", f_desc: "Опис",
           note: "Файл іде напряму в Cloudflare R2 (приватний bucket). Великі файли вантажаться частинами – не закривайте вкладку до кінця.",
           save: "Завантажити", cancel: "Скасувати", files: "Файли", loading: "Завантаження…", empty: "Файлів поки немає.", download: "Завантажити файл",
           delete: "Видалити", confirm: "Видалити цей файл назавжди?", nofile: "Виберіть файл.", done: "Готово", err: "Помилка",
@@ -75,6 +75,7 @@
         head.appendChild(el("small", "", (it.ext ? "S3 · " : "") + it.name + " · " + fmt(it.created) + (it.user ? " · " + it.user : "")));
         var body = el("div", "bk-body"); body.hidden = true;
         body.appendChild(el("pre", "st-log", it.ext ? T.s3 + "\n" + it.key : (it.desc || T.nodesc)));
+        if (it.src) { var sp = el("p", "st-meta bk-src", T.src + ": " + it.src); body.appendChild(sp); }
         var btns = el("div", "bk-btns");
         if (it.state === "ok") {
           var dl = el("a", "btn primary small", "⬇ " + T.download); dl.href = it.ext ? "/backup/api/xdl?key=" + encodeURIComponent(it.key) : "/backup/api/dl/" + it.id; dl.rel = "noreferrer";
@@ -128,9 +129,41 @@
     });
   }
 
+  var mode = "file", noteText = document.querySelector("#bk-form .note").textContent;
+  document.querySelectorAll(".bk-mode button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (busy) return;
+      mode = b.dataset.mode;
+      document.querySelectorAll(".bk-mode button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      $("bk-drop").hidden = mode !== "file"; $("bk-urlbox").hidden = mode !== "url";
+      document.querySelector("#bk-form .note").textContent = mode === "url" ? T.url_note : noteText;
+      $("bk-prog").textContent = "";
+    });
+  });
+
+  function fromUrl() {
+    var u = $("bk-url").value.trim();
+    if (!/^https?:\/\/\S+$/i.test(u)) { $("bk-prog").textContent = T.nourl; return; }
+    busy = true; $("bk-save").disabled = true;
+    var prog = $("bk-prog"), t0 = Date.now(), ctl = new AbortController();
+    aborter = function () { ctl.abort(); };
+    var tick = setInterval(function () { prog.textContent = T.fetching + " " + Math.round((Date.now() - t0) / 1000) + " s"; }, 1000);
+    prog.textContent = T.fetching;
+    fetch("/backup/api/fetch", { method: "POST", headers: { "Content-Type": "application/json" }, signal: ctl.signal,
+      body: JSON.stringify({ url: u, title: $("bk-title").value, desc: $("bk-desc").value }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || ("HTTP " + r.status)); return d; }); })
+      .then(function (d) {
+        prog.textContent = "✓ " + T.done + " · " + d.item.name + " · " + size(d.item.size) + " · " + Math.round((Date.now() - t0) / 1000) + " s";
+        form.reset(); open = d.item.id; load();
+      })
+      .catch(function (e) { prog.textContent = "✗ " + T.err + ": " + e.message; })
+      .then(function () { clearInterval(tick); busy = false; $("bk-save").disabled = false; });
+  }
+
   form.addEventListener("submit", function (ev) {
     ev.preventDefault();
     if (busy) return;
+    if (mode === "url") return fromUrl();
     if (!file) { $("bk-prog").textContent = T.nofile; return; }
     busy = true; $("bk-save").disabled = true;
     var prog = $("bk-prog"), fill = $("bk-fill"); $("bk-bar").hidden = false; fill.style.width = "0";

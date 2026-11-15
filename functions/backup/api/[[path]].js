@@ -4,6 +4,7 @@
 //   POST   parts {id, ns:[1,2]} -> {urls:{n:url}}   pre-signed UploadPart URLs (1 h)
 //   POST   complete {id, parts:[{n,etag}]}
 //   POST   abort {id}
+//   POST   fetch {url,title,desc}  -> server downloads the URL and streams it into R2
 //   GET    dl/<id>              -> 302 to a pre-signed download URL (10 min)
 //   DELETE item/<id>
 import { json, newId } from "../../../lib/status.js";
@@ -28,7 +29,7 @@ function cleanName(s) {
 }
 
 const pub = (m) => ({ id: m.id, title: m.title, desc: m.desc, name: m.name, size: m.size, type: m.type,
-                      user: m.user, created: m.created, state: m.state });
+                      user: m.user, created: m.created, state: m.state, src: m.src });
 
 export async function onRequest({ request, env, params, data }) {
   if (!env.BACKUP_R2) return json({ error: "R2 binding missing" }, 500);
@@ -90,6 +91,58 @@ export async function onRequest({ request, env, params, data }) {
   if (m !== "POST") return json({ error: "not found" }, 404);
   let body;
   try { body = await request.json(); } catch { return json({ error: "bad json" }, 400); }
+
+  if (op === "fetch") {
+    let src;
+    try { src = new URL(String(body.url || "").trim()); } catch { return json({ error: "bad url" }, 400); }
+    if (!/^https?:$/.test(src.protocol)) return json({ error: "only http/https" }, 400);
+    const r = await fetch(src.toString(), { redirect: "follow", headers: { "User-Agent": "goldberg-backup/1.0" } });
+    if (!r.ok || !r.body) return json({ error: `source HTTP ${r.status}` }, 502);
+    const cd = r.headers.get("content-disposition") || "";
+    const fromCd = (cd.match(/filename\*=UTF-8''([^;]+)/i) || [])[1];
+    let name = fromCd ? decodeURIComponent(fromCd) : (cd.match(/filename="?([^";]+)"?/i) || [])[1];
+    if (!name) { try { name = decodeURIComponent(new URL(r.url).pathname.split("/").pop()); } catch { name = ""; } }
+    name = cleanName(body.name || name || src.hostname);
+    const type = (r.headers.get("content-type") || "application/octet-stream").split(";")[0].trim();
+    const id = newId();
+    const key = `files/${id}/${name}`;
+    const len = Number(r.headers.get("content-length"));
+    const enc = r.headers.get("content-encoding");
+    let size;
+    if (Number.isFinite(len) && len > 0 && !enc) {
+      const obj = await env.BACKUP_R2.put(key, r.body, { httpMetadata: { contentType: type } });   // native streaming
+      size = obj.size;
+    } else {                                                     // unknown length: multipart, 16 MB parts
+      const PART = 16 * MB;
+      const up = await env.BACKUP_R2.createMultipartUpload(key, { httpMetadata: { contentType: type } });
+      const done = [];
+      const reader = r.body.getReader();
+      let buf = new Uint8Array(PART), fill = 0, n = 0;
+      size = 0;
+      try {
+        for (;;) {
+          const { value, done: end } = await reader.read();
+          if (value) {
+            let off = 0;
+            while (off < value.length) {
+              const take = Math.min(PART - fill, value.length - off);
+              buf.set(value.subarray(off, off + take), fill); fill += take; off += take;
+              if (fill === PART) { done.push(await up.uploadPart(++n, buf)); size += fill; buf = new Uint8Array(PART); fill = 0; }
+            }
+          }
+          if (end) break;
+        }
+        if (fill || !n) { done.push(await up.uploadPart(++n, buf.subarray(0, fill))); size += fill; }
+        await up.complete(done);
+      } catch (e) { await up.abort().catch(() => {}); return json({ error: "transfer failed: " + e.message }, 502); }
+    }
+    const meta = { id, key, name, type, size, src: src.toString().replace(/\/\/[^/@]*@/, "//"),
+                   title: String(body.title || "").trim().slice(0, 200) || name,
+                   desc: String(body.desc || "").slice(0, MAX_DESC),
+                   user: data.user || "", created: Date.now(), state: "ok" };
+    await putMeta(env, meta);
+    return json({ ok: true, item: pub(meta) });
+  }
 
   if (op === "init") {
     const size = Number(body.size);

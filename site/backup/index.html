@@ -6,9 +6,9 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Backup · Goldberg</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=7d5aff4a">
+<link rel="stylesheet" href="/assets/style.css?v=23fd8f43">
 <script src="/assets/theme.js" defer></script>
-<script src="/assets/backup.js?v=25f53999" defer></script>
+<script src="/assets/backup.js?v=066397b8" defer></script>
 </head>
 <body class="st-body">
 <header class="st-top">
@@ -21,6 +21,11 @@
   <form id="bk-form" class="bk-form" novalidate hidden>
     <h1 data-t="up_title">New file</h1>
     <label class="st-field"><span data-t="f_title">Title</span><input type="text" id="bk-title" maxlength="200"></label>
+    <div class="bk-mode" role="tablist">
+      <button type="button" class="on" data-mode="file" data-t="m_file">File</button>
+      <button type="button" data-mode="url" data-t="m_url">URL</button>
+    </div>
+    <label class="st-field" id="bk-urlbox" hidden><span data-t="f_url">Link (http/https)</span><input type="url" id="bk-url" placeholder="https://…/dump.sql.gz"></label>
     <label class="st-drop" id="bk-drop">
       <input type="file" id="bk-file">
       <span data-t="drop">Choose a file or drop it here</span>

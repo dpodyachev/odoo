@@ -455,3 +455,7 @@ html.lb-open { overflow: hidden; }
 .bk-head[aria-expanded="true"] { border-bottom: 1px solid var(--line); }
 .bk-body { padding: 12px 14px 14px; }
 .bk-body .bk-btns { margin-top: 10px; }
+.bk-mode { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 4px 0 14px; }
+.bk-mode button { font: inherit; font-weight: 600; padding: 7px 16px; border: 0; background: var(--card); color: var(--muted); cursor: pointer; }
+.bk-mode button.on { background: var(--brand-soft); color: var(--brand); }
+.bk-src { margin: 8px 0 0; overflow-wrap: anywhere; }
