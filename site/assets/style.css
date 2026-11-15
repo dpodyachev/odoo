@@ -459,3 +459,4 @@ html.lb-open { overflow: hidden; }
 .bk-mode button { font: inherit; font-weight: 600; padding: 7px 16px; border: 0; background: var(--card); color: var(--muted); cursor: pointer; }
 .bk-mode button.on { background: var(--brand-soft); color: var(--brand); }
 .bk-src { margin: 8px 0 0; overflow-wrap: anywhere; }
+.bk-form [hidden] { display: none !important; }
