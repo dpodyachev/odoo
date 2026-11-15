@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=c067a683">
+<link rel="stylesheet" href="/assets/style.css?v=d94f713d">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -168,6 +168,36 @@
 <p class="note">Λειτουργεί μαζί με το bot παρακολούθησης ή αυτόνομα. Ρύθμιση σε σταθερή τιμή, λειτουργία μέσα σε πακέτο υποστήριξης.</p>
 </div>
 </section>
+<section id="loadtest" class="sec extra lt-sec">
+<div class="wrap">
+<h2>Δοκιμές φόρτου με Locust</h2>
+<p class="intro">Αντέχει το Odoo σας 50, 100 ή 300 ταυτόχρονους χρήστες – και τι γίνεται στο κλείσιμο του μήνα; Προσομοιώνω πραγματικές ροές εργασίας με Locust, μετρώ τα όρια και δείχνω πού κολλάει. Πάντα σε αντίγραφο δοκιμών, ποτέ στο ζωντανό σύστημα.</p>
+<div class="grid3"><article class="card"><p class="tag mono">locust</p><h3>Σενάρια με βάση τις ροές σας</h3><p>Οι πωλήσεις δημιουργούν προσφορές, η αποθήκη επικυρώνει παραδόσεις, το λογιστήριο εκδίδει τιμολόγια, οι πελάτες παραγγέλνουν στο e-shop – με βάρη και ρεαλιστικές παύσεις.</p></article><article class="card"><p class="tag mono">JSON-RPC · HTTP</p><h3>Πραγματικές κλήσεις Odoo</h3><p>Σύνδεση, αναζήτηση, λίστες και φόρμες, δημιουργία, επιβεβαίωση, αναφορές PDF – μέσω της ίδιας διεπαφής με τον browser. Τα δεδομένα δοκιμών δημιουργούνται αυτόματα.</p></article><article class="card"><p class="tag mono">ramp-up</p><h3>Βαθμίδες φόρτου &amp; αιχμές</h3><p>Σταδιακά από 10 σε 50, 100, 300 χρήστες· συνεχής φόρτος για ώρες (διαρροές μνήμης) και αιχμές όπως κλείσιμο μήνα ή ημέρες προσφορών.</p></article><article class="card"><p class="tag mono">p95 · p99</p><h3>Μετρήσιμοι δείκτες</h3><p>Χρόνοι απόκρισης (διάμεσος, p95, p99), ποσοστό σφαλμάτων και αιτήματα ανά δευτερόλεπτο – ζωντανά στο Locust και στο Grafana δίπλα σε CPU, RAM και PostgreSQL.</p></article><article class="card"><p class="tag mono">workers · pg</p><h3>Εντοπισμός σημείων συμφόρησης</h3><p>Αριθμός workers και όρια μνήμης, αργά ερωτήματα SQL και ελλείποντα ευρετήρια, κλειδώματα, συνδέσεις (pgbouncer), nginx, αργά modules και υπολογιζόμενα πεδία.</p></article><article class="card"><p class="tag mono">report</p><h3>Αναφορά πριν/μετά</h3><p>Πόσους χρήστες αντέχει σήμερα το σύστημα, πού είναι το όριο, τι κερδίζει κάθε μέτρο – με νέα μέτρηση κάθε φορά. Τα σενάρια μένουν σε εσάς για μελλοντικές αναβαθμίσεις.</p></article></div>
+<figure class="code"><figcaption>Παράδειγμα σεναρίου (locustfile.py)</figcaption><pre><code>from locust import HttpUser, task, between
+
+class SalesUser(HttpUser):
+    wait_time = between(2, 8)            # think time like a real user
+
+    def on_start(self):
+        self.login()                     # /web/session/authenticate
+
+    @task(5)
+    def search_quotations(self):
+        self.call(&quot;sale.order&quot;, &quot;web_search_read&quot;,
+                  [(&quot;state&quot;, &quot;=&quot;, &quot;draft&quot;)], limit=80,
+                  specification={&quot;name&quot;: {}, &quot;amount_total&quot;: {}})
+
+    @task(1)
+    def create_and_confirm(self):
+        so = self.call(&quot;sale.order&quot;, &quot;create&quot;,
+                       {&quot;partner_id&quot;: self.random_customer(),
+                        &quot;order_line&quot;: self.random_lines(3)})
+        self.call(&quot;sale.order&quot;, &quot;action_confirm&quot;, [so])
+        self.client.get(f&quot;/report/pdf/sale.report_saleorder/{so}&quot;,
+                        name=&quot;PDF quotation&quot;)</code></pre></figure>
+<p class="note">Ιδανικό πριν από την έναρξη λειτουργίας, πριν από αλλαγή έκδοσης ή όταν το Odoo είναι «μερικές φορές αργό». Σταθερή τιμή μετά από σύντομη συζήτηση των σεναρίων.</p>
+</div>
+</section>
 <section class="sec alt extra">
 <div class="wrap">
 <h2>Πώς συνεργαζόμαστε</h2>
@@ -217,7 +247,7 @@
 <h3 class="sub">Μεμονωμένες υπηρεσίες</h3>
 <div class="tablewrap"><table class="prices">
 <thead><tr><th>Υπηρεσία</th><th>Τιμή</th></tr></thead>
-<tbody><tr><td>Υποστήριξη &amp; συντήρηση<br><small>αλλαγές, ερωτήσεις χρηστών, προγραμματισμένες εργασίες – χρέωση ανά 15 λεπτά</small></td><td class="pr"><b>65 €</b> <span>/ ώρα</span></td></tr><tr><td>Επείγον, Σαββατοκύριακο, αντιμετώπιση βλαβών<br><small>βλάβες, διακοπές λειτουργίας, διάγνωση υπό πίεση χρόνου</small></td><td class="pr"><b>95 €</b> <span>/ ώρα</span></td></tr><tr><td>Health check Odoo<br><small>server, backups, modules, απόδοση, ασφάλεια – γραπτή αναφορά με σχέδιο δράσης</small></td><td class="pr"><b>490 €</b> <span>σταθερή τιμή</span></td></tr><tr><td>Αρχική διάγνωση βλάβης<br><small>έως 2 ώρες διάγνωσης, μετά με χρέωση χρόνου (95 € / ώρα)</small></td><td class="pr"><b>190 €</b> <span>σταθερή τιμή</span></td></tr><tr><td>Εγκατάσταση &amp; ρύθμιση<br><small>Odoo + PostgreSQL σε Docker, SSL, backups, e-mail, παρακολούθηση</small></td><td class="pr"><span>από</span> <b>990 €</b> <span>σταθερή τιμή</span></td></tr><tr><td>Ενημέρωση modules με επιστροφή<br><small>git pull, ενημέρωση σε δοκιμαστικό αντίγραφο, ενημέρωση στην παραγωγή</small></td><td class="pr"><span>από</span> <b>190 €</b> <span>σταθερή τιμή</span></td></tr><tr><td>Μετάβαση έκδοσης<br><small>π.χ. Odoo 14 → 17, μαζί με δοκιμή σε αντίγραφο</small></td><td class="pr"><span>από</span> <b>1 500 €</b></td></tr><tr><td>Εξαγωγή DATEV<br><small>ρύθμιση, αντιστοίχιση λογαριασμών, δοκιμαστική εξαγωγή με τον λογιστή σας</small></td><td class="pr"><span>από</span> <b>1 200 €</b></td></tr><tr><td>Ηλεκτρονική τιμολόγηση (XRechnung / ZUGFeRD)<br><small>αποστολή και λήψη, επικύρωση, Leitweg-ID</small></td><td class="pr"><span>από</span> <b>900 €</b></td></tr><tr><td>Σύνδεση e-shop<br><small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>από</span> <b>1 500 €</b></td></tr><tr><td>Σύνδεση μεταφορικής<br><small>DHL, DPD, GLS – ετικέτες, tracking</small></td><td class="pr"><span>από</span> <b>900 €</b></td></tr><tr><td>Ελβετικό QR-τιμολόγιο<br><small>QR-IBAN, αναφορές, ΦΠΑ</small></td><td class="pr"><span>από</span> <b>600 €</b></td></tr><tr><td>Ρύθμιση Grafana &amp; Prometheus<br><small>Exporters για server, PostgreSQL, Docker, nginx· dashboards και ειδοποιήσεις</small></td><td class="pr"><span>από</span> <b>590 €</b> <span>σταθερή τιμή</span></td></tr><tr><td>Bot παρακολούθησης για την ομάδα σας<br><small>δικό σας αντίγραφο, ρυθμισμένο για τον server σας</small></td><td class="pr"><span>από</span> <b>390 €</b> <span>σταθερή τιμή</span></td></tr></tbody>
+<tbody><tr><td>Υποστήριξη &amp; συντήρηση<br><small>αλλαγές, ερωτήσεις χρηστών, προγραμματισμένες εργασίες – χρέωση ανά 15 λεπτά</small></td><td class="pr"><b>65 €</b> <span>/ ώρα</span></td></tr><tr><td>Επείγον, Σαββατοκύριακο, αντιμετώπιση βλαβών<br><small>βλάβες, διακοπές λειτουργίας, διάγνωση υπό πίεση χρόνου</small></td><td class="pr"><b>95 €</b> <span>/ ώρα</span></td></tr><tr><td>Health check Odoo<br><small>server, backups, modules, απόδοση, ασφάλεια – γραπτή αναφορά με σχέδιο δράσης</small></td><td class="pr"><b>490 €</b> <span>σταθερή τιμή</span></td></tr><tr><td>Αρχική διάγνωση βλάβης<br><small>έως 2 ώρες διάγνωσης, μετά με χρέωση χρόνου (95 € / ώρα)</small></td><td class="pr"><b>190 €</b> <span>σταθερή τιμή</span></td></tr><tr><td>Εγκατάσταση &amp; ρύθμιση<br><small>Odoo + PostgreSQL σε Docker, SSL, backups, e-mail, παρακολούθηση</small></td><td class="pr"><span>από</span> <b>990 €</b> <span>σταθερή τιμή</span></td></tr><tr><td>Ενημέρωση modules με επιστροφή<br><small>git pull, ενημέρωση σε δοκιμαστικό αντίγραφο, ενημέρωση στην παραγωγή</small></td><td class="pr"><span>από</span> <b>190 €</b> <span>σταθερή τιμή</span></td></tr><tr><td>Μετάβαση έκδοσης<br><small>π.χ. Odoo 14 → 17, μαζί με δοκιμή σε αντίγραφο</small></td><td class="pr"><span>από</span> <b>1 500 €</b></td></tr><tr><td>Εξαγωγή DATEV<br><small>ρύθμιση, αντιστοίχιση λογαριασμών, δοκιμαστική εξαγωγή με τον λογιστή σας</small></td><td class="pr"><span>από</span> <b>1 200 €</b></td></tr><tr><td>Ηλεκτρονική τιμολόγηση (XRechnung / ZUGFeRD)<br><small>αποστολή και λήψη, επικύρωση, Leitweg-ID</small></td><td class="pr"><span>από</span> <b>900 €</b></td></tr><tr><td>Σύνδεση e-shop<br><small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>από</span> <b>1 500 €</b></td></tr><tr><td>Σύνδεση μεταφορικής<br><small>DHL, DPD, GLS – ετικέτες, tracking</small></td><td class="pr"><span>από</span> <b>900 €</b></td></tr><tr><td>Ελβετικό QR-τιμολόγιο<br><small>QR-IBAN, αναφορές, ΦΠΑ</small></td><td class="pr"><span>από</span> <b>600 €</b></td></tr><tr><td>Ρύθμιση Grafana &amp; Prometheus<br><small>Exporters για server, PostgreSQL, Docker, nginx· dashboards και ειδοποιήσεις</small></td><td class="pr"><span>από</span> <b>590 €</b> <span>σταθερή τιμή</span></td></tr><tr><td>Δοκιμή φόρτου με Locust<br><small>σενάρια, αντίγραφο δοκιμών, μετρήσεις, αναφορά με προτάσεις</small></td><td class="pr"><span>από</span> <b>890 €</b></td></tr><tr><td>Bot παρακολούθησης για την ομάδα σας<br><small>δικό σας αντίγραφο, ρυθμισμένο για τον server σας</small></td><td class="pr"><span>από</span> <b>390 €</b> <span>σταθερή τιμή</span></td></tr></tbody>
 </table></div>
 <p class="note">Όλες οι τιμές σε EUR. Σύμφωνα με την § 19 UStG (καθεστώς μικρών επιχειρήσεων) δεν χρεώνεται ΦΠΑ. Τιμολόγηση μηνιαία με χρέωση χρόνου ανά 15 λεπτά ή στη συμφωνημένη σταθερή τιμή.</p>
 <h3 class="sub">Τυπικές περιπτώσεις σε σταθερή τιμή</h3>

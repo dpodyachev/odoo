@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=c067a683">
+<link rel="stylesheet" href="/assets/style.css?v=d94f713d">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -168,6 +168,36 @@
 <p class="note">Fonctionne avec le bot de supervision ou seul. Mise en place à prix fixe, suivi inclus dans un forfait de support.</p>
 </div>
 </section>
+<section id="loadtest" class="sec extra lt-sec">
+<div class="wrap">
+<h2>Tests de charge avec Locust</h2>
+<p class="intro">Votre Odoo tient-il 50, 100 ou 300 utilisateurs simultanés – et que se passe-t-il à la clôture du mois ? Je simule des processus réels avec Locust, je mesure les limites et je montre où ça bloque. Toujours sur une copie de test, jamais en production.</p>
+<div class="grid3"><article class="card"><p class="tag mono">locust</p><h3>Scénarios selon vos processus</h3><p>Les commerciaux créent des devis, l’entrepôt valide des livraisons, la comptabilité émet des factures, les clients commandent en ligne – pondérés, avec des pauses réalistes.</p></article><article class="card"><p class="tag mono">JSON-RPC · HTTP</p><h3>De vrais appels Odoo</h3><p>Connexion, recherche, listes et formulaires, création, confirmation, rapports PDF – via la même interface que le navigateur. Données de test générées automatiquement.</p></article><article class="card"><p class="tag mono">ramp-up</p><h3>Paliers &amp; pics de charge</h3><p>Progressivement de 10 à 50, 100, 300 utilisateurs ; charge continue sur des heures (fuites mémoire) et pics comme la clôture ou les jours de promotion.</p></article><article class="card"><p class="tag mono">p95 · p99</p><h3>Indicateurs mesurables</h3><p>Temps de réponse (médiane, p95, p99), taux d’erreurs et requêtes par seconde – en direct dans Locust et dans Grafana, à côté du CPU, de la RAM et de PostgreSQL.</p></article><article class="card"><p class="tag mono">workers · pg</p><h3>Trouver les goulots</h3><p>Nombre de workers et limites mémoire, requêtes SQL lentes et index manquants, verrous, connexions (pgbouncer), nginx, modules et champs calculés lents.</p></article><article class="card"><p class="tag mono">report</p><h3>Rapport avant/après</h3><p>Combien d’utilisateurs le système supporte aujourd’hui, où est la limite, ce que chaque mesure apporte – à chaque fois remesuré. Vous gardez les scénarios pour les futures mises à jour.</p></article></div>
+<figure class="code"><figcaption>Exemple de scénario (locustfile.py)</figcaption><pre><code>from locust import HttpUser, task, between
+
+class SalesUser(HttpUser):
+    wait_time = between(2, 8)            # think time like a real user
+
+    def on_start(self):
+        self.login()                     # /web/session/authenticate
+
+    @task(5)
+    def search_quotations(self):
+        self.call(&quot;sale.order&quot;, &quot;web_search_read&quot;,
+                  [(&quot;state&quot;, &quot;=&quot;, &quot;draft&quot;)], limit=80,
+                  specification={&quot;name&quot;: {}, &quot;amount_total&quot;: {}})
+
+    @task(1)
+    def create_and_confirm(self):
+        so = self.call(&quot;sale.order&quot;, &quot;create&quot;,
+                       {&quot;partner_id&quot;: self.random_customer(),
+                        &quot;order_line&quot;: self.random_lines(3)})
+        self.call(&quot;sale.order&quot;, &quot;action_confirm&quot;, [so])
+        self.client.get(f&quot;/report/pdf/sale.report_saleorder/{so}&quot;,
+                        name=&quot;PDF quotation&quot;)</code></pre></figure>
+<p class="note">Idéal avant la mise en production, avant une migration de version ou quand Odoo est « parfois lent ». Prix fixe après un court échange sur les scénarios.</p>
+</div>
+</section>
 <section class="sec alt extra">
 <div class="wrap">
 <h2>Comment nous travaillons ensemble</h2>
@@ -217,7 +247,7 @@
 <h3 class="sub">Prestations à l&#x27;unité</h3>
 <div class="tablewrap"><table class="prices">
 <thead><tr><th>Prestation</th><th>Prix</th></tr></thead>
-<tbody><tr><td>Support et maintenance<br><small>adaptations, questions des utilisateurs, travaux planifiés – facturé par tranche de 15 min</small></td><td class="pr"><b>65 €</b> <span>/ h</span></td></tr><tr><td>Urgence, week-end, dépannage<br><small>incident, panne, recherche d&#x27;erreur sous pression</small></td><td class="pr"><b>95 €</b> <span>/ h</span></td></tr><tr><td>Bilan de santé Odoo<br><small>serveur, sauvegardes, modules, performances, sécurité – rapport écrit et plan d&#x27;action</small></td><td class="pr"><b>490 €</b> <span>prix fixe</span></td></tr><tr><td>Premier diagnostic d&#x27;incident<br><small>jusqu&#x27;à 2 h de recherche, ensuite au temps passé (95 € / h)</small></td><td class="pr"><b>190 €</b> <span>prix fixe</span></td></tr><tr><td>Installation et configuration<br><small>Odoo + PostgreSQL sous Docker, SSL, sauvegardes, e-mail, supervision</small></td><td class="pr"><span>à partir de</span> <b>990 €</b> <span>prix fixe</span></td></tr><tr><td>Mise à jour de modules avec retour arrière<br><small>git pull, mise à jour sur copie de test, puis en production</small></td><td class="pr"><span>à partir de</span> <b>190 €</b> <span>prix fixe</span></td></tr><tr><td>Migration de version<br><small>p. ex. Odoo 14 → 17, avec essai sur une copie</small></td><td class="pr"><span>à partir de</span> <b>1 500 €</b></td></tr><tr><td>Export DATEV<br><small>configuration, correspondance des comptes, export de test avec votre cabinet</small></td><td class="pr"><span>à partir de</span> <b>1 200 €</b></td></tr><tr><td>Facture électronique (XRechnung / ZUGFeRD)<br><small>émission et réception, validation, Leitweg-ID</small></td><td class="pr"><span>à partir de</span> <b>900 €</b></td></tr><tr><td>Connexion boutique<br><small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>à partir de</span> <b>1 500 €</b></td></tr><tr><td>Connexion transporteur<br><small>DHL, DPD, GLS – étiquettes, suivi</small></td><td class="pr"><span>à partir de</span> <b>900 €</b></td></tr><tr><td>QR-facture suisse<br><small>QR-IBAN, références, TVA</small></td><td class="pr"><span>à partir de</span> <b>600 €</b></td></tr><tr><td>Mise en place Grafana &amp; Prometheus<br><small>Exporters serveur, PostgreSQL, Docker, nginx ; tableaux de bord et alertes</small></td><td class="pr"><span>à partir de</span> <b>590 €</b> <span>prix fixe</span></td></tr><tr><td>Bot de supervision pour votre équipe<br><small>votre propre instance, configurée pour votre serveur</small></td><td class="pr"><span>à partir de</span> <b>390 €</b> <span>prix fixe</span></td></tr></tbody>
+<tbody><tr><td>Support et maintenance<br><small>adaptations, questions des utilisateurs, travaux planifiés – facturé par tranche de 15 min</small></td><td class="pr"><b>65 €</b> <span>/ h</span></td></tr><tr><td>Urgence, week-end, dépannage<br><small>incident, panne, recherche d&#x27;erreur sous pression</small></td><td class="pr"><b>95 €</b> <span>/ h</span></td></tr><tr><td>Bilan de santé Odoo<br><small>serveur, sauvegardes, modules, performances, sécurité – rapport écrit et plan d&#x27;action</small></td><td class="pr"><b>490 €</b> <span>prix fixe</span></td></tr><tr><td>Premier diagnostic d&#x27;incident<br><small>jusqu&#x27;à 2 h de recherche, ensuite au temps passé (95 € / h)</small></td><td class="pr"><b>190 €</b> <span>prix fixe</span></td></tr><tr><td>Installation et configuration<br><small>Odoo + PostgreSQL sous Docker, SSL, sauvegardes, e-mail, supervision</small></td><td class="pr"><span>à partir de</span> <b>990 €</b> <span>prix fixe</span></td></tr><tr><td>Mise à jour de modules avec retour arrière<br><small>git pull, mise à jour sur copie de test, puis en production</small></td><td class="pr"><span>à partir de</span> <b>190 €</b> <span>prix fixe</span></td></tr><tr><td>Migration de version<br><small>p. ex. Odoo 14 → 17, avec essai sur une copie</small></td><td class="pr"><span>à partir de</span> <b>1 500 €</b></td></tr><tr><td>Export DATEV<br><small>configuration, correspondance des comptes, export de test avec votre cabinet</small></td><td class="pr"><span>à partir de</span> <b>1 200 €</b></td></tr><tr><td>Facture électronique (XRechnung / ZUGFeRD)<br><small>émission et réception, validation, Leitweg-ID</small></td><td class="pr"><span>à partir de</span> <b>900 €</b></td></tr><tr><td>Connexion boutique<br><small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>à partir de</span> <b>1 500 €</b></td></tr><tr><td>Connexion transporteur<br><small>DHL, DPD, GLS – étiquettes, suivi</small></td><td class="pr"><span>à partir de</span> <b>900 €</b></td></tr><tr><td>QR-facture suisse<br><small>QR-IBAN, références, TVA</small></td><td class="pr"><span>à partir de</span> <b>600 €</b></td></tr><tr><td>Mise en place Grafana &amp; Prometheus<br><small>Exporters serveur, PostgreSQL, Docker, nginx ; tableaux de bord et alertes</small></td><td class="pr"><span>à partir de</span> <b>590 €</b> <span>prix fixe</span></td></tr><tr><td>Test de charge avec Locust<br><small>scénarios, copie de test, mesures, rapport avec recommandations</small></td><td class="pr"><span>à partir de</span> <b>890 €</b></td></tr><tr><td>Bot de supervision pour votre équipe<br><small>votre propre instance, configurée pour votre serveur</small></td><td class="pr"><span>à partir de</span> <b>390 €</b> <span>prix fixe</span></td></tr></tbody>
 </table></div>
 <p class="note">Tous les prix en EUR. Selon le § 19 UStG (régime des petites entreprises), aucune TVA n&#x27;est facturée. Facturation mensuelle au temps passé par tranche de 15 min ou au prix fixe convenu.</p>
 <h3 class="sub">Cas typiques à prix fixe</h3>

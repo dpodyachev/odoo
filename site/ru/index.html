@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#3b2a4a">
 <meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css?v=c067a683">
+<link rel="stylesheet" href="/assets/style.css?v=d94f713d">
 <script src="/assets/theme.js?v=e228da20" defer></script>
 </head>
 <body>
@@ -168,6 +168,36 @@
 <p class="note">Работает вместе с ботом мониторинга или отдельно. Настройка по фиксированной цене, сопровождение – в пакете поддержки.</p>
 </div>
 </section>
+<section id="loadtest" class="sec extra lt-sec">
+<div class="wrap">
+<h2>Нагрузочное тестирование с Locust</h2>
+<p class="intro">Выдержит ли ваш Odoo 50, 100 или 300 одновременных пользователей – и что будет в закрытие месяца? Я моделирую реальные рабочие процессы в Locust, измеряю пределы и показываю, где узкое место. Всегда на тестовой копии, никогда на живой системе.</p>
+<div class="grid3"><article class="card"><p class="tag mono">locust</p><h3>Сценарии по вашим процессам</h3><p>Продажи создают предложения, склад проводит отгрузки, бухгалтерия выставляет счета, клиенты заказывают в интернет-магазине – с весами и реалистичными паузами.</p></article><article class="card"><p class="tag mono">JSON-RPC · HTTP</p><h3>Настоящие вызовы Odoo</h3><p>Вход, поиск, списки и формы, создание, подтверждение, PDF-отчёты – через тот же интерфейс, что и браузер. Тестовые данные генерируются автоматически.</p></article><article class="card"><p class="tag mono">ramp-up</p><h3>Ступени нагрузки и пики</h3><p>Постепенно с 10 до 50, 100, 300 пользователей; длительная нагрузка часами (утечки памяти) и пики вроде закрытия месяца или дней акций.</p></article><article class="card"><p class="tag mono">p95 · p99</p><h3>Измеримые показатели</h3><p>Время ответа (медиана, p95, p99), доля ошибок и запросы в секунду – вживую в Locust и в Grafana рядом с CPU, RAM и PostgreSQL.</p></article><article class="card"><p class="tag mono">workers · pg</p><h3>Поиск узких мест</h3><p>Количество воркеров и лимиты памяти, медленные SQL-запросы и недостающие индексы, блокировки, соединения (pgbouncer), nginx, медленные модули и вычисляемые поля.</p></article><article class="card"><p class="tag mono">report</p><h3>Отчёт «до/после»</h3><p>Сколько пользователей система держит сейчас, где предел, что даёт каждая мера – каждый раз с повторным замером. Сценарии остаются у вас для будущих обновлений.</p></article></div>
+<figure class="code"><figcaption>Пример сценария (locustfile.py)</figcaption><pre><code>from locust import HttpUser, task, between
+
+class SalesUser(HttpUser):
+    wait_time = between(2, 8)            # think time like a real user
+
+    def on_start(self):
+        self.login()                     # /web/session/authenticate
+
+    @task(5)
+    def search_quotations(self):
+        self.call(&quot;sale.order&quot;, &quot;web_search_read&quot;,
+                  [(&quot;state&quot;, &quot;=&quot;, &quot;draft&quot;)], limit=80,
+                  specification={&quot;name&quot;: {}, &quot;amount_total&quot;: {}})
+
+    @task(1)
+    def create_and_confirm(self):
+        so = self.call(&quot;sale.order&quot;, &quot;create&quot;,
+                       {&quot;partner_id&quot;: self.random_customer(),
+                        &quot;order_line&quot;: self.random_lines(3)})
+        self.call(&quot;sale.order&quot;, &quot;action_confirm&quot;, [so])
+        self.client.get(f&quot;/report/pdf/sale.report_saleorder/{so}&quot;,
+                        name=&quot;PDF quotation&quot;)</code></pre></figure>
+<p class="note">Идеально перед запуском, перед сменой версии или когда Odoo «иногда тормозит». Фиксированная цена после короткого согласования сценариев.</p>
+</div>
+</section>
 <section class="sec alt extra">
 <div class="wrap">
 <h2>Как мы работаем</h2>
@@ -217,7 +247,7 @@
 <h3 class="sub">Отдельные услуги</h3>
 <div class="tablewrap"><table class="prices">
 <thead><tr><th>Услуга</th><th>Цена</th></tr></thead>
-<tbody><tr><td>Поддержка и обслуживание<br><small>доработки, вопросы пользователей, плановые работы – учёт по 15 минут</small></td><td class="pr"><b>65 €</b> <span>/ ч</span></td></tr><tr><td>Срочно, выходные, troubleshooting<br><small>сбой, простой, поиск ошибки в сжатые сроки</small></td><td class="pr"><b>95 €</b> <span>/ ч</span></td></tr><tr><td>Odoo Health-Check<br><small>сервер, бэкапы, модули, производительность, безопасность – письменный отчёт и план</small></td><td class="pr"><b>490 €</b> <span>фикс</span></td></tr><tr><td>Первичная диагностика сбоя<br><small>до 2 ч поиска, дальше по факту (95 € / ч)</small></td><td class="pr"><b>190 €</b> <span>фикс</span></td></tr><tr><td>Установка и настройка<br><small>Odoo + PostgreSQL в Docker, SSL, бэкапы, почта, мониторинг</small></td><td class="pr"><span>от</span> <b>990 €</b> <span>фикс</span></td></tr><tr><td>Обновление модулей с откатом<br><small>git pull, обновление на тестовой копии, затем в продакшене</small></td><td class="pr"><span>от</span> <b>190 €</b> <span>фикс</span></td></tr><tr><td>Миграция версии<br><small>например, Odoo 14 → 17, с тестовым прогоном на копии</small></td><td class="pr"><span>от</span> <b>1 500 €</b></td></tr><tr><td>Экспорт в DATEV<br><small>настройка, сопоставление счетов, тестовый экспорт с вашей бухгалтерией</small></td><td class="pr"><span>от</span> <b>1 200 €</b></td></tr><tr><td>Электронные счета (XRechnung / ZUGFeRD)<br><small>отправка и приём, валидация, Leitweg-ID</small></td><td class="pr"><span>от</span> <b>900 €</b></td></tr><tr><td>Подключение магазина<br><small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>от</span> <b>1 500 €</b></td></tr><tr><td>Подключение доставки<br><small>DHL, DPD, GLS – этикетки, трекинг</small></td><td class="pr"><span>от</span> <b>900 €</b></td></tr><tr><td>Швейцарский QR-счёт<br><small>QR-IBAN, референсы, MWST</small></td><td class="pr"><span>от</span> <b>600 €</b></td></tr><tr><td>Настройка Grafana &amp; Prometheus<br><small>Exporter-ы для сервера, PostgreSQL, Docker, nginx; дашборды и алерты</small></td><td class="pr"><span>от</span> <b>590 €</b> <span>фикс</span></td></tr><tr><td>Бот мониторинга для вашей команды<br><small>своя копия бота, настройка под ваш сервер</small></td><td class="pr"><span>от</span> <b>390 €</b> <span>фикс</span></td></tr></tbody>
+<tbody><tr><td>Поддержка и обслуживание<br><small>доработки, вопросы пользователей, плановые работы – учёт по 15 минут</small></td><td class="pr"><b>65 €</b> <span>/ ч</span></td></tr><tr><td>Срочно, выходные, troubleshooting<br><small>сбой, простой, поиск ошибки в сжатые сроки</small></td><td class="pr"><b>95 €</b> <span>/ ч</span></td></tr><tr><td>Odoo Health-Check<br><small>сервер, бэкапы, модули, производительность, безопасность – письменный отчёт и план</small></td><td class="pr"><b>490 €</b> <span>фикс</span></td></tr><tr><td>Первичная диагностика сбоя<br><small>до 2 ч поиска, дальше по факту (95 € / ч)</small></td><td class="pr"><b>190 €</b> <span>фикс</span></td></tr><tr><td>Установка и настройка<br><small>Odoo + PostgreSQL в Docker, SSL, бэкапы, почта, мониторинг</small></td><td class="pr"><span>от</span> <b>990 €</b> <span>фикс</span></td></tr><tr><td>Обновление модулей с откатом<br><small>git pull, обновление на тестовой копии, затем в продакшене</small></td><td class="pr"><span>от</span> <b>190 €</b> <span>фикс</span></td></tr><tr><td>Миграция версии<br><small>например, Odoo 14 → 17, с тестовым прогоном на копии</small></td><td class="pr"><span>от</span> <b>1 500 €</b></td></tr><tr><td>Экспорт в DATEV<br><small>настройка, сопоставление счетов, тестовый экспорт с вашей бухгалтерией</small></td><td class="pr"><span>от</span> <b>1 200 €</b></td></tr><tr><td>Электронные счета (XRechnung / ZUGFeRD)<br><small>отправка и приём, валидация, Leitweg-ID</small></td><td class="pr"><span>от</span> <b>900 €</b></td></tr><tr><td>Подключение магазина<br><small>Shopware, JTL-Wawi, WooCommerce</small></td><td class="pr"><span>от</span> <b>1 500 €</b></td></tr><tr><td>Подключение доставки<br><small>DHL, DPD, GLS – этикетки, трекинг</small></td><td class="pr"><span>от</span> <b>900 €</b></td></tr><tr><td>Швейцарский QR-счёт<br><small>QR-IBAN, референсы, MWST</small></td><td class="pr"><span>от</span> <b>600 €</b></td></tr><tr><td>Настройка Grafana &amp; Prometheus<br><small>Exporter-ы для сервера, PostgreSQL, Docker, nginx; дашборды и алерты</small></td><td class="pr"><span>от</span> <b>590 €</b> <span>фикс</span></td></tr><tr><td>Нагрузочное тестирование (Locust)<br><small>сценарии, тестовая копия, замеры, отчёт с рекомендациями</small></td><td class="pr"><span>от</span> <b>890 €</b></td></tr><tr><td>Бот мониторинга для вашей команды<br><small>своя копия бота, настройка под ваш сервер</small></td><td class="pr"><span>от</span> <b>390 €</b> <span>фикс</span></td></tr></tbody>
 </table></div>
 <p class="note">Все цены в EUR. Согласно § 19 UStG (режим малого предпринимателя) НДС не начисляется. Оплата ежемесячно по факту с шагом 15 минут или по согласованной фиксированной цене.</p>
 <h3 class="sub">Типичные задачи по фиксированной цене</h3>

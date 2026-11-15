@@ -310,3 +310,11 @@ html.lb-open { overflow: hidden; }
 .offer .btn.small { min-height: 38px; padding: 0 14px; font-size: .92rem; margin-left: auto; }
 :root[data-theme="dark"] .offer-t { color: var(--accent); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .offer-t { color: var(--accent); } }
+
+/* Lasttests: код-пример Locust; секция идёт сразу после #monitoring (оба .sec) — разделитель */
+.lt-sec { border-top: 1px solid var(--line); }
+.code { margin: 26px 0 14px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.code figcaption { padding: 8px 14px; font-size: .82rem; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--line);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.code pre { margin: 0; padding: 14px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .82rem; line-height: 1.5; color: var(--ink); }

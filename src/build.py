@@ -293,6 +293,30 @@ def europe_map(T):
 </figure>"""
 
 
+LOCUST_SAMPLE = """from locust import HttpUser, task, between
+
+class SalesUser(HttpUser):
+    wait_time = between(2, 8)            # think time like a real user
+
+    def on_start(self):
+        self.login()                     # /web/session/authenticate
+
+    @task(5)
+    def search_quotations(self):
+        self.call("sale.order", "web_search_read",
+                  [("state", "=", "draft")], limit=80,
+                  specification={"name": {}, "amount_total": {}})
+
+    @task(1)
+    def create_and_confirm(self):
+        so = self.call("sale.order", "create",
+                       {"partner_id": self.random_customer(),
+                        "order_line": self.random_lines(3)})
+        self.call("sale.order", "action_confirm", [so])
+        self.client.get(f"/report/pdf/sale.report_saleorder/{so}",
+                        name="PDF quotation")"""
+
+
 def offer(T):
     """Плашка Einstiegsangebot; пусто, если OFFER=None или срок прошёл."""
     o = getattr(C, "OFFER", None)
@@ -417,6 +441,18 @@ def index(T, lang):
 <p class="intro">{E(T["mon_intro"])}</p>
 <div class="grid3">{mon}</div>
 <p class="note">{E(T["mon_note"])}</p>
+</div>
+</section>
+""")
+    lt = "".join(f'<article class="card"><p class="tag mono">{E(tag)}</p><h3>{E(t)}</h3><p>{E(x)}</p></article>'
+                 for tag, t, x in T["lt"])
+    s.append(f"""<section id="loadtest" class="sec extra lt-sec">
+<div class="wrap">
+<h2>{E(T["lt_title"])}</h2>
+<p class="intro">{E(T["lt_intro"])}</p>
+<div class="grid3">{lt}</div>
+<figure class="code"><figcaption>{E(T["lt_code"])}</figcaption><pre><code>{E(LOCUST_SAMPLE)}</code></pre></figure>
+<p class="note">{E(T["lt_note"])}</p>
 </div>
 </section>
 """)
