@@ -28,7 +28,11 @@
   if (bar) {
     var sw = document.createElement("nav"); sw.className = "langs st-langs"; sw.setAttribute("aria-label", "Language");
     Object.keys(L).forEach(function (k) {
-      var a = document.createElement("a"); a.href = "#"; a.textContent = k.toUpperCase(); a.lang = k;
+      var a = document.createElement("a"); a.href = "#"; a.lang = k; a.title = k.toUpperCase();
+      var fl = document.createElement("img"); fl.className = "flag"; fl.alt = ""; fl.width = 20; fl.height = 14;
+      fl.src = "/assets/flags/" + ({ de: "de", en: "gb", ru: "ru", uk: "ua" })[k] + ".svg";
+      var lc = document.createElement("span"); lc.className = "lc"; lc.textContent = k.toUpperCase();
+      a.appendChild(fl); a.appendChild(lc);
       if (k === lang) a.setAttribute("aria-current", "true");
       a.addEventListener("click", function (ev) { ev.preventDefault(); try { localStorage.setItem("st-lang", k); } catch (e) {} location.reload(); });
       sw.appendChild(a);

@@ -432,3 +432,4 @@ html.lb-open { overflow: hidden; }
 @media (max-width: 860px) { .st-view { grid-template-columns: 1fr; } .st-text { border-left: 0; border-top: 1px solid var(--line); max-height: none; }
   .st-img img { max-height: 60vh; } }
 .st-langs { margin-right: 4px; }
+@media (max-width: 560px) { .st-langs a .lc { display: none; } .st-langs a { padding: 4px; } }
