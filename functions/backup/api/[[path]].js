@@ -39,18 +39,24 @@ export async function onRequest({ request, env, params, data }) {
   try { c = r2conf(env); } catch (e) { return json({ error: e.message }, 500); }
 
   if (m === "GET" && op === "list") {
-    const keys = [];
+    const keys = [], other = [];
     let cursor;
     do {
-      const r = await env.BACKUP_R2.list({ prefix: "meta/", cursor, limit: 1000 });
-      keys.push(...r.objects.map((o) => o.key));
+      const r = await env.BACKUP_R2.list({ cursor, limit: 1000 });
+      for (const o of r.objects) {
+        if (o.key.startsWith("meta/")) keys.push(o.key);
+        else if (!o.key.startsWith("files/")) other.push(o);          // uploaded with aws s3 / rclone / wrangler
+      }
       cursor = r.truncated ? r.cursor : undefined;
     } while (cursor);
     const items = (await Promise.all(keys.sort().map(async (k) => {
       const o = await env.BACKUP_R2.get(k);
       return o ? o.json().catch(() => null) : null;
     }))).filter(Boolean).map(pub);
-    return json({ items });
+    other.sort((a, b) => b.uploaded - a.uploaded);
+    const ext = other.map((o) => ({ key: o.key, title: o.key, name: o.key.split("/").pop(), size: o.size,
+                                    created: o.uploaded.getTime(), state: "ok", ext: true }));
+    return json({ items, ext });
   }
 
   if (m === "GET" && op === "dl") {
@@ -59,6 +65,18 @@ export async function onRequest({ request, env, params, data }) {
     const disp = `attachment; filename="${meta.name.replace(/[^\x20-\x7e]|"/g, "_")}"; filename*=UTF-8''${encodeURIComponent(meta.name)}`;
     const url = await presign(c, "GET", meta.key, { "response-content-disposition": disp }, 600);
     return new Response(null, { status: 302, headers: { Location: url } });
+  }
+
+  // objects outside files/ (uploaded with S3 tools): addressed by key
+  if (op === "xdl" || op === "xitem") {
+    const key = new URL(request.url).searchParams.get("key") || "";
+    if (!key || key.startsWith("meta/") || key.startsWith("files/")) return json({ error: "bad key" }, 400);
+    if (m === "GET" && op === "xdl") {
+      const name = key.split("/").pop() || "file";
+      const disp = `attachment; filename="${name.replace(/[^\x20-\x7e]|"/g, "_")}"; filename*=UTF-8''${encodeURIComponent(name)}`;
+      return new Response(null, { status: 302, headers: { Location: await presign(c, "GET", key, { "response-content-disposition": disp }, 600) } });
+    }
+    if (m === "DELETE" && op === "xitem") { await env.BACKUP_R2.delete(key); return json({ ok: true }); }
   }
 
   if (m === "DELETE" && op === "item") {

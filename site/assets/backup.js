@@ -1,22 +1,22 @@
 // /backup/ – list + direct multipart upload to R2 via pre-signed URLs (API: /backup/api/*, Basic Auth).
 (function () {
   var L = {
-    de: { upload: "+ Hochladen", up_title: "Neue Datei", f_title: "Titel", drop: "Datei auswählen oder hierher ziehen", f_desc: "Beschreibung",
+    de: { s3: "Per S3-Tool hochgeladen (aws s3 / rclone), ohne Beschreibung:", upload: "+ Hochladen", up_title: "Neue Datei", f_title: "Titel", drop: "Datei auswählen oder hierher ziehen", f_desc: "Beschreibung",
           note: "Die Datei geht direkt in Cloudflare R2 (privater Bucket). Große Dateien werden in Teilen hochgeladen – Tab bis zum Ende offen lassen.",
           save: "Hochladen", cancel: "Abbrechen", files: "Dateien", loading: "Lädt…", empty: "Noch keine Dateien.", download: "Herunterladen",
           delete: "Löschen", confirm: "Diese Datei endgültig löschen?", nofile: "Bitte eine Datei auswählen.", done: "Fertig", err: "Fehler",
           prep: "Vorbereitung…", finishing: "Abschließen…", unfinished: "unvollständig", total: "Dateien", nodesc: "Keine Beschreibung.", leave: "Upload läuft – wirklich verlassen?" },
-    en: { upload: "+ Upload", up_title: "New file", f_title: "Title", drop: "Choose a file or drop it here", f_desc: "Description",
+    en: { s3: "Uploaded with an S3 tool (aws s3 / rclone), no description:", upload: "+ Upload", up_title: "New file", f_title: "Title", drop: "Choose a file or drop it here", f_desc: "Description",
           note: "The file goes directly to Cloudflare R2 (private bucket). Large files are uploaded in parts – keep this tab open until it finishes.",
           save: "Upload", cancel: "Cancel", files: "Files", loading: "Loading…", empty: "No files yet.", download: "Download",
           delete: "Delete", confirm: "Delete this file permanently?", nofile: "Please choose a file.", done: "Done", err: "Error",
           prep: "Preparing…", finishing: "Finishing…", unfinished: "incomplete", total: "files", nodesc: "No description.", leave: "Upload in progress – leave anyway?" },
-    ru: { upload: "+ Загрузить", up_title: "Новый файл", f_title: "Заголовок", drop: "Выберите файл или перетащите сюда", f_desc: "Описание",
+    ru: { s3: "Загружено S3-инструментом (aws s3 / rclone), без описания:", upload: "+ Загрузить", up_title: "Новый файл", f_title: "Заголовок", drop: "Выберите файл или перетащите сюда", f_desc: "Описание",
           note: "Файл идёт напрямую в Cloudflare R2 (приватный bucket). Большие файлы грузятся частями – не закрывайте вкладку до конца.",
           save: "Загрузить", cancel: "Отмена", files: "Файлы", loading: "Загрузка…", empty: "Файлов пока нет.", download: "Скачать",
           delete: "Удалить", confirm: "Удалить этот файл навсегда?", nofile: "Выберите файл.", done: "Готово", err: "Ошибка",
           prep: "Подготовка…", finishing: "Завершение…", unfinished: "не догружен", total: "файлов", nodesc: "Без описания.", leave: "Идёт загрузка – всё равно уйти?" },
-    uk: { upload: "+ Завантажити", up_title: "Новий файл", f_title: "Заголовок", drop: "Виберіть файл або перетягніть сюди", f_desc: "Опис",
+    uk: { s3: "Завантажено S3-інструментом (aws s3 / rclone), без опису:", upload: "+ Завантажити", up_title: "Новий файл", f_title: "Заголовок", drop: "Виберіть файл або перетягніть сюди", f_desc: "Опис",
           note: "Файл іде напряму в Cloudflare R2 (приватний bucket). Великі файли вантажаться частинами – не закривайте вкладку до кінця.",
           save: "Завантажити", cancel: "Скасувати", files: "Файли", loading: "Завантаження…", empty: "Файлів поки немає.", download: "Завантажити файл",
           delete: "Видалити", confirm: "Видалити цей файл назавжди?", nofile: "Виберіть файл.", done: "Готово", err: "Помилка",
@@ -63,34 +63,35 @@
     api("list").then(function (d) {
       var ul = $("bk-list"); ul.textContent = "";
       var total = 0;
+      d.items = d.items.concat(d.ext || []);
       d.items.forEach(function (it) { if (it.state === "ok") total += it.size || 0; });
       $("bk-sum").textContent = d.items.length ? d.items.length + " " + T.total + " · " + size(total) : "";
       if (!d.items.length) { ul.appendChild(el("li", "st-empty", T.empty)); return; }
       d.items.forEach(function (it) {
-        var li = el("li", "bk-item" + (it.state !== "ok" ? " bk-bad" : "")); li.id = it.id;
+        var li = el("li", "bk-item" + (it.state !== "ok" ? " bk-bad" : "")); li.id = it.id || "";
         var head = el("button", "bk-head"); head.type = "button"; head.setAttribute("aria-expanded", "false");
         head.appendChild(el("b", "", it.title || it.name));
         head.appendChild(el("span", "bk-sz", it.state === "ok" ? size(it.size) : "⚠ " + T.unfinished));
-        head.appendChild(el("small", "", it.name + " · " + fmt(it.created) + (it.user ? " · " + it.user : "")));
+        head.appendChild(el("small", "", (it.ext ? "S3 · " : "") + it.name + " · " + fmt(it.created) + (it.user ? " · " + it.user : "")));
         var body = el("div", "bk-body"); body.hidden = true;
-        body.appendChild(el("pre", "st-log", it.desc || T.nodesc));
+        body.appendChild(el("pre", "st-log", it.ext ? T.s3 + "\n" + it.key : (it.desc || T.nodesc)));
         var btns = el("div", "bk-btns");
         if (it.state === "ok") {
-          var dl = el("a", "btn primary small", "⬇ " + T.download); dl.href = "/backup/api/dl/" + it.id; dl.rel = "noreferrer";
+          var dl = el("a", "btn primary small", "⬇ " + T.download); dl.href = it.ext ? "/backup/api/xdl?key=" + encodeURIComponent(it.key) : "/backup/api/dl/" + it.id; dl.rel = "noreferrer";
           btns.appendChild(dl);
         }
         var del = el("button", "st-btn danger", T.delete); del.type = "button";
         del.addEventListener("click", function () {
           if (!confirm(T.confirm + "\n\n" + (it.title || it.name))) return;
-          api("item/" + it.id, { method: "DELETE" }).then(load).catch(function (e) { alert(T.err + ": " + e.message); });
+          api(it.ext ? "xitem?key=" + encodeURIComponent(it.key) : "item/" + it.id, { method: "DELETE" }).then(load).catch(function (e) { alert(T.err + ": " + e.message); });
         });
         btns.appendChild(del);
         body.appendChild(btns);
         head.addEventListener("click", function () {
           body.hidden = !body.hidden; head.setAttribute("aria-expanded", String(!body.hidden));
-          if (!body.hidden) history.replaceState(null, "", "#" + it.id);
+          if (!body.hidden && it.id) history.replaceState(null, "", "#" + it.id);
         });
-        if (open === it.id) { body.hidden = false; head.setAttribute("aria-expanded", "true"); }
+        if (it.id && open === it.id) { body.hidden = false; head.setAttribute("aria-expanded", "true"); }
         li.appendChild(head); li.appendChild(body); ul.appendChild(li);
       });
     }).catch(function (e) { $("bk-list").textContent = T.err + ": " + e.message; });
