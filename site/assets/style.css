@@ -467,3 +467,26 @@ html.lb-open { overflow: hidden; }
 .foot-soc { display: inline-flex; gap: 14px; align-items: center; }
 .nojs-ci { margin: 0 0 24px; }
 .nojs-ci img { display: block; max-width: 100%; height: auto; margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; }
+/* PostgreSQL/Odoo calculator */
+.pc-grid { display: grid; grid-template-columns: minmax(240px, 320px) 1fr; gap: 28px; align-items: start; margin-top: 18px; }
+.pc-form { display: grid; gap: 12px; }
+.pc-f { display: grid; gap: 4px; font-size: .95rem; }
+.pc-f > span { color: var(--muted, var(--ink)); }
+.pc-f input, .pc-f select { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg, #fff); color: var(--ink); }
+.pc-range { display: flex; align-items: center; gap: 10px; }
+.pc-range input { flex: 1; padding: 0; accent-color: var(--brand); }
+.pc-range output { min-width: 3.2em; text-align: right; font-weight: 600; }
+.pc-check { display: flex; gap: 8px; align-items: center; }
+.pc-dbhost { display: grid; gap: 12px; }
+.pc-dbhost[hidden], .pc-replica[hidden], .pc-notes[hidden] { display: none !important; }
+.pc-bar { display: flex; height: 30px; border-radius: 8px; overflow: hidden; font-size: .78rem; border: 1px solid var(--line); }
+.pc-bar span { display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; color: #fff; padding: 0 4px; }
+.pcb-os { background: #8a8494; } .pcb-odoo { background: #714b67; } .pcb-pg { background: #336791; }
+.pc-sum { margin: 8px 0 12px; font-size: .95rem; }
+.pc-notes { padding-left: 1.4em; }
+.pc-out figure.code figcaption { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.pc-copy { font: inherit; font-size: .85rem; padding: 3px 10px; border-radius: 6px; border: 1px solid var(--line); background: transparent; color: inherit; cursor: pointer; }
+.pc-chg { background: rgba(255, 196, 0, .35); border-radius: 3px; transition: background 1.2s; }
+.pc-switch { margin: 0; }
+@media (max-width: 760px) { .pc-grid { grid-template-columns: 1fr; } }
+.pc-grid > div { min-width: 0; }

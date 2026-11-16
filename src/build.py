@@ -16,6 +16,8 @@ import config as C  # noqa: E402
 import europe_map as M  # noqa: E402
 import blog_posts as BP  # noqa: E402
 import test_pages as TP  # noqa: E402
+import calc_page as CP  # noqa: E402
+import pubs_page as PP  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(HERE), "site")
 E = html.escape
@@ -157,12 +159,22 @@ def header(T, lang, page):
         "contact": svg('<rect x="3" y="5" width="18" height="14" rx="2"/>', '<path d="m3.5 6.5 8.5 6.5 8.5-6.5"/>'),
         "blog": svg('<circle cx="12" cy="12" r="9.2"/>', '<path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/>',
                     '<circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/>'),
+        "calc": svg(CP.CALC_ICON),
+        "pubs": svg(PP.ICON),
     }
+    items = []
+    for k, v in T["nav"].items():   # калькулятор PostgreSQL/Odoo – сразу после блога
+        items.append((k, v))
+        if k == "blog":
+            items.append(("pubs", PP.TX[lang]["nav"]))
+            items.append(("calc", CP.TX[lang]["nav"]))
+    hrefs = {"blog": url(lang, "blog/"), "calc": url(lang, CP.SLUG), "pubs": url(lang, PP.SLUG)}
+    current = {"blog": page.startswith("blog/"), "calc": page in (CP.SLUG, CP.SLUG_S), "pubs": page == PP.SLUG}
     cls = {"services": "nav-icon multi", "prices": "nav-icon cur", "bot": "nav-icon radar"}
     nav = "".join(
-        f'<a class="{cls.get(k, "nav-icon")}" href="{url(lang, "blog/") if k == "blog" else url(lang) + "#" + k}" '
-        f'title="{E(v)}" aria-label="{E(v)}"{" aria-current=page" if k == "blog" and page.startswith("blog/") else ""}>{icons[k]}</a>' if k in icons
-        else f'<a href="{url(lang)}#{k}">{E(v)}</a>' for k, v in T["nav"].items())
+        f'<a class="{cls.get(k, "nav-icon")}" href="{hrefs.get(k, url(lang) + "#" + k)}" '
+        f'title="{E(v)}" aria-label="{E(v)}"{" aria-current=page" if current.get(k) else ""}>{icons[k]}</a>' if k in icons
+        else f'<a href="{url(lang)}#{k}">{E(v)}</a>' for k, v in items)
     return f"""<header class="top">
 <div class="wrap top-in">
 <a class="brand" href="{url(lang)}"><span class="logo">G</span><span>{E(C.BRAND)}<small>{E(C.BRAND_SUB)}</small></span></a>
@@ -222,6 +234,8 @@ def footer(T, lang, page):
 <div><strong>{E(C.BRAND)} · {E(C.BRAND_SUB)}</strong><br>{E(T["footer_tag"])}</div>
 <div class="foot-links">
 <a href="{url(lang, 'blog/')}">{E(T["nav"]["blog"])}</a>
+<a href="{url(lang, PP.SLUG)}">{E(PP.TX[lang]["nav"])}</a>
+<a href="{url(lang, CP.SLUG)}">{E(CP.TX[lang]["nav"])}</a>
 <a href="{url(lang, 'impressum.html')}">{E(T["impressum"])}</a>
 <a href="{url(lang, 'datenschutz.html')}">{E(T["privacy"])}</a>
 <span class="foot-soc">{social("mail")}{social("tg")}{social("wa")}{social("tel")}{social("li")}</span>
@@ -1002,6 +1016,16 @@ def main():
         write(f"{lang}/index.html", index(T, lang))
         write(f"{lang}/impressum.html", legal_page(T, lang, "impressum.html", "impressum_page"))
         write(f"{lang}/datenschutz.html", legal_page(T, lang, "datenschutz.html", "privacy_page"))
+        for slug, sl in ((CP.SLUG, False), (CP.SLUG_S, True)):
+            X = CP.TX[lang]
+            write(f"{lang}/{slug}", head(T, lang, slug, f'{X["title_s"] if sl else X["title"]} · {C.BRAND}', X["desc"])
+                  + header(T, lang, slug) + CP.page_html(lang, E, url, sl)
+                  + f'<script src="{asset("/assets/pgcalc.js")}" defer></script>' + footer(T, lang, slug))
+            pages.append(url(lang, slug))
+        X = PP.TX[lang]
+        write(f"{lang}/{PP.SLUG}", head(T, lang, PP.SLUG, f'{X["title"]} · {C.BRAND}', X["intro"]) + header(T, lang, PP.SLUG)
+              + PP.page_html(lang, E, url, fmt_date) + footer(T, lang, PP.SLUG))
+        pages.append(url(lang, PP.SLUG))
         pages += [url(lang), url(lang, "impressum.html"), url(lang, "datenschutz.html")]
         write(f"{lang}/blog/index.html", blog_index(T, lang))
         pages.append(url(lang, "blog/"))

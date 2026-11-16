@@ -53,6 +53,7 @@ hot_standby_feedback = on          # fewer "conflict with recovery" cancellation
 max_standby_streaming_delay = 30s"""),
     },
     "links": [
+        ("This article on Medium (English)", "https://medium.com/@dpodiatschev/replicas-in-odoo-19-it-can-slow-system-dfb20db4b959"),
         ("Odoo 19 source: odoo/http.py (_serve_db)", "https://github.com/odoo/odoo/blob/19.0/odoo/http.py"),
         ("Odoo 19 source: odoo/tools/config.py (db_replica_*)", "https://github.com/odoo/odoo/blob/19.0/odoo/tools/config.py"),
         ("PostgreSQL: Hot Standby", "https://www.postgresql.org/docs/current/hot-standby.html"),
