@@ -36,6 +36,15 @@ SELECT count(*) FROM res_users WHERE active AND share = false;
 -- how busy are the workers right now (requests in PostgreSQL at this moment)
 SELECT count(*) FILTER (WHERE state = 'active') AS active, count(*) AS connections
   FROM pg_stat_activity WHERE datname = current_database();"""),
+        "case": ("bash · who uses the RAM: HTTP workers or cron workers?", """# RSS, age (seconds since start) and CPU of all Odoo processes, biggest first
+ps -eo rss,etimes,pcpu,args --sort=-rss | grep '[o]doo' | awk '{printf "%6d MB  %8ds  %s%%\\n", $1/1024, $2, $3}' | head -40
+
+# a real production server (32 cores, 62 GB, workers = 25, max_cron_threads = 8):
+#   3841 MB  246872s  1.0%     <- 8 processes ~3.5–3.8 GB each, alive since the Odoo restart (2.9 days):
+#   ...                            the CRON workers – together ~29 GB
+#    358 MB   12687s  1.9%     <- 25 HTTP workers ~260 MB each (recycled every few hours) – together ~6.5 GB
+#   ...
+# odoo.conf there: limit_memory_soft = 8000000000, limit_memory_hard = 16000000000"""),
         "log": ("bash · request times from the Odoo log", """# werkzeug log line ends with: <query count> <SQL time> <other time>
 #   ... "POST /web/dataset/call_kw/sale.order/web_search_read HTTP/1.1" 200 - 42 0.031 0.118
 # slowest requests of the day
@@ -96,6 +105,10 @@ SCALING["t"]["en"] = {
         ("table", _TBL["en"]),
         ("p", "If PostgreSQL runs on the same machine, take about a quarter of the cores and up to half of the RAM away from Odoo. Our calculator does that automatically."),
         ("code", "conf"),
+        ('h', 'Real case: the memory is eaten by crons, not by users'),
+        ('p', 'On a production server with 32 cores and 62 GB, Odoo used 33 GB of RAM – it looked like “too many users”. The process list showed the opposite: 25 HTTP workers needed only ~260 MB each, but 8 cron workers had grown to 3.5–3.8 GB each and had been alive since the last restart – about 29 GB together.'),
+        ('code', 'case'),
+        ('ul', ['**Cause:** `limit_memory_soft = 8 GB`. A worker is only recycled after exceeding the soft limit; HTTP workers are also recycled by `limit_request`, cron workers practically never – they keep the memory of the largest job they ever ran.', '**Effect:** RAM that could carry 40–60 more HTTP workers is blocked; under memory pressure the OS starts swapping or the OOM killer hits.', '**Fix:** `limit_memory_soft` ~2–3 GB and `limit_memory_hard` ~3–4 GB (big imports/reports into queue_job with their own limits), `max_cron_threads` 2–4 instead of 8. Freed RAM → more HTTP workers.', '**Lesson:** before buying hardware or counting users, look at which processes actually hold the RAM.']),
         ("h", "What breaks first"),
         ("ul", [
             "**Long requests** – reports, exports, imports block a worker for minutes. Move them into queue_job or crons; otherwise 33 workers are effectively 20.",
@@ -159,6 +172,10 @@ SCALING["t"]["de"] = {
         ("table", _TBL["de"]),
         ("p", "Läuft PostgreSQL auf derselben Maschine, gehen etwa ein Viertel der Kerne und bis zur Hälfte des RAM für Odoo ab. Unser Rechner berücksichtigt das automatisch."),
         ("code", "conf"),
+        ('h', 'Praxisfall: Den Speicher fressen die Cron-Jobs, nicht die Anwender'),
+        ('p', 'Auf einem Produktivserver mit 32 Kernen und 62 GB belegte Odoo 33 GB RAM – es sah nach „zu vielen Anwendern“ aus. Die Prozessliste zeigte das Gegenteil: 25 HTTP-Worker brauchten nur ~260 MB je, aber 8 Cron-Worker waren auf 3,5–3,8 GB je gewachsen und liefen seit dem letzten Neustart – zusammen etwa 29 GB.'),
+        ('code', 'case'),
+        ('ul', ['**Ursache:** `limit_memory_soft = 8 GB`. Ein Worker wird erst nach Überschreiten des Soft-Limits recycelt; HTTP-Worker zusätzlich über `limit_request`, Cron-Worker praktisch nie – sie behalten den Speicher des größten Jobs, den sie je ausgeführt haben.', '**Folge:** RAM, der 40–60 weitere HTTP-Worker tragen könnte, ist blockiert; bei Speicherdruck swappt das System oder der OOM-Killer schlägt zu.', '**Lösung:** `limit_memory_soft` ~2–3 GB und `limit_memory_hard` ~3–4 GB (große Importe/Berichte in queue_job mit eigenen Grenzen), `max_cron_threads` 2–4 statt 8. Freier RAM → mehr HTTP-Worker.', '**Lehre:** Bevor man Hardware kauft oder Anwender zählt, nachsehen, welche Prozesse den RAM wirklich belegen.']),
         ("h", "Was zuerst bricht"),
         ("ul", [
             "**Lange Anfragen** – Berichte, Exporte, Importe blockieren einen Worker minutenlang. In queue_job oder Cron-Jobs verlagern; sonst sind 33 Worker effektiv 20.",
@@ -222,6 +239,10 @@ SCALING["t"]["fr"] = {
         ("table", _TBL["fr"]),
         ("p", "Si PostgreSQL tourne sur la même machine, retirer à Odoo environ un quart des cœurs et jusqu'à la moitié de la RAM. Notre calculateur le fait automatiquement."),
         ("code", "conf"),
+        ('h', 'Cas réel : la mémoire est mangée par les crons, pas par les utilisateurs'),
+        ('p', "Sur un serveur de production à 32 cœurs et 62 Go, Odoo occupait 33 Go de RAM – cela ressemblait à « trop d'utilisateurs ». La liste des processus montrait l'inverse : 25 workers HTTP n'utilisaient que ~260 Mo chacun, mais 8 workers cron avaient grossi jusqu'à 3,5–3,8 Go chacun et tournaient depuis le dernier redémarrage – environ 29 Go au total."),
+        ('code', 'case'),
+        ('ul', ["**Cause :** `limit_memory_soft = 8 Go`. Un worker n'est recyclé qu'après avoir dépassé la limite souple ; les workers HTTP le sont aussi via `limit_request`, les workers cron pratiquement jamais – ils gardent la mémoire du plus gros job qu'ils aient exécuté.", "**Effet :** une RAM qui pourrait porter 40–60 workers HTTP de plus est bloquée ; sous pression mémoire, le système swappe ou l'OOM killer frappe.", '**Correction :** `limit_memory_soft` ~2–3 Go et `limit_memory_hard` ~3–4 Go (gros imports/rapports dans queue_job avec leurs propres limites), `max_cron_threads` 2–4 au lieu de 8. RAM libérée → plus de workers HTTP.', "**Leçon :** avant d'acheter du matériel ou de compter les utilisateurs, regarder quels processus occupent vraiment la RAM."]),
         ("h", "Ce qui casse en premier"),
         ("ul", [
             "**Les requêtes longues** – rapports, exports, imports bloquent un worker pendant des minutes. Les déplacer dans queue_job ou des crons ; sinon 33 workers en valent effectivement 20.",
@@ -285,6 +306,10 @@ SCALING["t"]["el"] = {
         ("table", _TBL["el"]),
         ("p", "Αν η PostgreSQL τρέχει στο ίδιο μηχάνημα, αφαιρέστε από το Odoo περίπου το ένα τέταρτο των πυρήνων και έως τη μισή RAM. Ο υπολογιστής μας το κάνει αυτόματα."),
         ("code", "conf"),
+        ('h', 'Πραγματικό παράδειγμα: τη μνήμη την τρώνε τα cron, όχι οι χρήστες'),
+        ('p', 'Σε server παραγωγής με 32 πυρήνες και 62 GB το Odoo καταλάμβανε 33 GB RAM – έμοιαζε με «πάρα πολλούς χρήστες». Η λίστα διεργασιών έδειξε το αντίθετο: 25 HTTP workers χρειάζονταν μόνο ~260 MB ο καθένας, ενώ 8 cron workers είχαν φουσκώσει στα 3,5–3,8 GB ο καθένας και έτρεχαν από την τελευταία επανεκκίνηση – περίπου 29 GB συνολικά.'),
+        ('code', 'case'),
+        ('ul', ['**Αιτία:** `limit_memory_soft = 8 GB`. Ένας worker ανακυκλώνεται μόνο αφού ξεπεράσει το soft όριο· οι HTTP workers ανακυκλώνονται και μέσω `limit_request`, οι cron workers πρακτικά ποτέ – κρατούν τη μνήμη της μεγαλύτερης εργασίας που έτρεξαν ποτέ.', '**Συνέπεια:** RAM που θα μπορούσε να σηκώσει 40–60 επιπλέον HTTP workers είναι δεσμευμένη· υπό πίεση μνήμης το σύστημα κάνει swap ή χτυπά ο OOM killer.', '**Λύση:** `limit_memory_soft` ~2–3 GB και `limit_memory_hard` ~3–4 GB (μεγάλες εισαγωγές/αναφορές σε queue_job με δικά τους όρια), `max_cron_threads` 2–4 αντί για 8. Ελεύθερη RAM → περισσότεροι HTTP workers.', '**Δίδαγμα:** πριν αγοράσετε hardware ή μετρήσετε χρήστες, δείτε ποιες διεργασίες πραγματικά κρατούν τη RAM.']),
         ("h", "Τι σπάει πρώτο"),
         ("ul", [
             "**Μακριά αιτήματα** – αναφορές, εξαγωγές, εισαγωγές μπλοκάρουν έναν worker για λεπτά. Μεταφέρετέ τα σε queue_job ή cron· αλλιώς 33 workers είναι στην πράξη 20.",
@@ -348,6 +373,10 @@ SCALING["t"]["uk"] = {
         ("table", _TBL["uk"]),
         ("p", "Якщо PostgreSQL працює на тій самій машині, заберіть в Odoo приблизно чверть ядер і до половини RAM. Наш калькулятор робить це автоматично."),
         ("code", "conf"),
+        ('h', "Реальний випадок: пам'ять з'їдають крони, а не користувачі"),
+        ('p', 'На продуктивному сервері з 32 ядрами й 62 ГБ Odoo займав 33 ГБ RAM, і це скидалося на «забагато користувачів». Список процесів показав протилежне: 25 HTTP-воркерів займали лише по ~260 МБ, а 8 cron-воркерів розрослися до 3,5–3,8 ГБ кожен і працювали з моменту останнього перезапуску. Разом це близько 29 ГБ.'),
+        ('code', 'case'),
+        ('ul', ["**Причина:** `limit_memory_soft = 8 GB`. Воркер перезапускається лише після перевищення м'якого ліміту. HTTP-воркери перезапускаються ще й за `limit_request`, а cron-воркери практично ніколи: вони тримають пам'ять найбільшого завдання, яке колись виконували.", "**Наслідок:** заблоковано RAM, якої вистачило б ще на 40–60 HTTP-воркерів. Коли пам'яті бракує, система йде у своп або спрацьовує OOM killer.", '**Що зробити:** `limit_memory_soft` ~2–3 ГБ і `limit_memory_hard` ~3–4 ГБ (великі імпорти й звіти — у queue_job із власними лімітами), `max_cron_threads` 2–4 замість 8. Звільнена RAM піде на додаткових HTTP-воркерів.', '**Висновок:** перш ніж купувати залізо чи рахувати користувачів, подивіться, які процеси насправді тримають RAM.']),
         ("h", "Що ламається першим"),
         ("ul", [
             "**Довгі запити:** звіти, експорти, імпорти займають воркер на хвилини. Винесіть їх у queue_job або крони, інакше 33 воркери фактично працюють як 20.",
@@ -411,6 +440,10 @@ SCALING["t"]["ru"] = {
         ("table", _TBL["ru"]),
         ("p", "Если PostgreSQL работает на той же машине, заберите у Odoo примерно четверть ядер и до половины RAM. Наш калькулятор делает это автоматически."),
         ("code", "conf"),
+        ('h', 'Реальный случай: память съедают кроны, а не пользователи'),
+        ('p', 'На продакшен-сервере с 32 ядрами и 62 ГБ Odoo занимал 33 ГБ RAM, и это было похоже на «слишком много пользователей». Список процессов показал обратное: 25 HTTP-воркеров занимали всего по ~260 МБ, а 8 cron-воркеров разрослись до 3,5–3,8 ГБ каждый и работали с момента последнего перезапуска. Вместе это около 29 ГБ.'),
+        ('code', 'case'),
+        ('ul', ['**Причина:** `limit_memory_soft = 8 GB`. Воркер перезапускается только после превышения мягкого лимита. HTTP-воркеры перезапускаются ещё и по `limit_request`, а cron-воркеры практически никогда: они держат память самого большого задания, которое когда-либо выполняли.', '**Последствие:** заблокирована RAM, которой хватило бы ещё на 40–60 HTTP-воркеров. Когда памяти не хватает, система уходит в своп или срабатывает OOM killer.', '**Что сделать:** `limit_memory_soft` ~2–3 ГБ и `limit_memory_hard` ~3–4 ГБ (большие импорты и отчёты — в queue_job со своими лимитами), `max_cron_threads` 2–4 вместо 8. Освободившаяся RAM пойдёт на дополнительных HTTP-воркеров.', '**Вывод:** прежде чем покупать железо или считать пользователей, посмотрите, какие процессы на самом деле держат RAM.']),
         ("h", "Что ломается первым"),
         ("ul", [
             "**Долгие запросы:** отчёты, экспорты, импорты занимают воркер на минуты. Вынесите их в queue_job или кроны, иначе 33 воркера фактически работают как 20.",

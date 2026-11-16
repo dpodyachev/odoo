@@ -798,3 +798,5 @@ from blog_post_pgbouncer import PGBOUNCER as _C13  # noqa: E402
 POSTS.append(_C13)
 from blog_post_scaling import SCALING as _C14  # noqa: E402
 POSTS.append(_C14)
+from blog_post_security import SECURITY as _C15  # noqa: E402
+POSTS.append(_C15)

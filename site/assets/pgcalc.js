@@ -105,6 +105,16 @@
     if (replica) oc.push("db_replica_host = " + ipR + "  ; " + T.c_replica, "db_replica_port = 5432");
     oc.push("proxy_mode = True", "gevent_port = 8072", "list_db = False", "; admin_passwd = <" + T.c_secret + ">",
             "; db_user / db_password = <" + T.c_secret + ">");
+    // logging (Odoo: log_level = Odoo words, lowercase; log_handler = Python levels, UPPERCASE)
+    var olog = f.elements.olog ? val("olog") : "warn";
+    oc.push("", "; --- logging", "logfile = /var/log/odoo/odoo.log");
+    if (olog === "sql") {
+      oc.push("log_level = info", "log_handler = :INFO,odoo.sql_db:DEBUG   ; EVERY SQL query – only for a short debugging session, huge log");
+    } else {
+      oc.push("log_level = " + olog + ({ error: "        ; errors only", warn: "         ; warnings + errors (production)",
+              info: "         ; + every HTTP request with query count and time" })[olog]);
+    }
+    oc.push("; log_db = %d                ; also into the database (Settings > Technical > Logging)", "; log_db_level = warning");
 
     // ---- PostgreSQL ----
     var sb = round64(pgRam / 4);
@@ -135,18 +145,38 @@
            ["jit", "off", T.c_jit],
            ["shared_preload_libraries", "'pg_stat_statements'", T.c_restart],
            ["track_io_timing", "on", ""],
-           ["log_min_duration_statement", "2000", T.c_slow],
            ["autovacuum_vacuum_scale_factor", "0.05", T.c_av],
            ["autovacuum_analyze_scale_factor", "0.02", ""],
            ["listen_addresses", same ? "'localhost'" : "'*'", same ? "" : T.c_hba]);
-    var common = p.slice();                                   // memory/planner/Odoo part – same on the replica
-    if (replica) p.push(["", "", T.c_repl_h], ["wal_level", "replica", ""], ["max_wal_senders", "10", ""]);
+    // logging
+    var plog = f.elements.plog ? val("plog") : "slow";
+    p.push(["", "", "logging"],
+           ["log_min_duration_statement", plog === "all" ? "0" : plog === "slow" ? "2000" : "-1",
+            plog === "all" ? "EVERY statement with its duration – big log and extra I/O, only for a few hours" :
+            plog === "slow" ? "ms – statements slower than 2 s with duration" : "no statement logging"],
+           ["log_line_prefix", "'%m [%p] %q%u@%d %a '", "time, pid, user@db, application (odoo-<pid>)"],
+           ["log_lock_waits", "on", "waits longer than deadlock_timeout (1 s)"],
+           ["log_temp_files", "0", "sorts/hashes spilling to disk -> work_mem too small"],
+           ["log_autovacuum_min_duration", "'10s'", ""],
+           ["log_checkpoints", "on", ""]);
+    var common = p.slice();                                   // memory/planner/Odoo/logging part – same on the replica
+    if (replica) p.push(["", "", T.c_repl_h],
+      ["wal_level", "replica", "enough WAL detail for a physical replica"],
+      ["max_wal_senders", "10", "parallel WAL streams (replicas, pg_basebackup)"],
+      ["max_replication_slots", "10", ""],
+      ["wal_keep_size", "'2GB'", "WAL kept for a replica that briefly falls behind"],
+      ["max_slot_wal_keep_size", "'50GB'", "cap: a dead replica with a slot must not fill the disk"],
+      ["wal_compression", "on", "less WAL volume over the network"],
+      ["wal_log_hints", "on", "allows pg_rewind after a failover (restart)"],
+      ["#synchronous_standby_names = '*'", "", "only if a commit must wait for the replica: no data loss, but every write waits for the network"],
+      ["#synchronous_commit = remote_apply", "", "read-your-writes on the replica – slowest option"]);
     if (replica && !repPage) p.push(["hot_standby_feedback", "on", T.c_repl_only]);
     var fmt = val("fmt");
     function render(list, head) {
       var out = [head];
       list.forEach(function (r) {
         if (!r[0]) { out.push("", "# --- " + r[2]); return; }
+        if (r[0].charAt(0) === "#") { out.push((fmt === "alter" ? "-- optional: " + r[0].slice(1) + "  -- " : r[0] + "    # ") + r[2]); return; }
         var v = String(r[1]);
         if (fmt === "alter") {
           var q = /^'.*'$/.test(v) ? v : "'" + v + "'";
@@ -162,7 +192,9 @@
                        + " · RAM " + mem(pgRam) + ", CPU " + dcpu);
     if (repPage) {
       var rl = common.concat([["", "", "hot standby"], ["hot_standby", "on", ""], ["hot_standby_feedback", "on", "fewer 'conflict with recovery' cancellations"],
-                              ["max_standby_streaming_delay", "30s", ""], ["wal_level", "replica", "same as primary"]]);
+                              ["max_standby_streaming_delay", "30s", "how long WAL replay may wait for a running query"],
+                              ["wal_level", "replica", "same as primary"],
+                              ["#primary_slot_name = 'replica1'", "", "written automatically by pg_basebackup -R -C -S replica1"]]);
       show($(".pc-rep"), render(rl, "# PostgreSQL " + pgv + " · replica " + ipR + " · RAM " + mem(pgRam) + ", CPU " + dcpu));
       show($(".pc-setup"), [
         "# pg_hba.conf on the PRIMARY " + ipP,
@@ -179,7 +211,8 @@
         "# 2) replica: empty data directory, copy from the primary, -R writes primary_conninfo + standby.signal",
         "sudo systemctl stop postgresql",
         "sudo -u postgres bash -c 'rm -rf /var/lib/postgresql/" + pgv + "/main/*'",
-        "sudo -u postgres pg_basebackup -h " + ipP + " -U replicator -D /var/lib/postgresql/" + pgv + "/main -R -X stream -P",
+        "sudo -u postgres pg_basebackup -h " + ipP + " -U replicator -D /var/lib/postgresql/" + pgv + "/main -R -X stream -C -S replica1 -P",
+        "#    -C -S replica1: creates a replication slot – the primary keeps WAL until the replica has it (capped by max_slot_wal_keep_size)",
         "sudo systemctl start postgresql",
         "",
         "# 3) check",

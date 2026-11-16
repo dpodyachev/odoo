@@ -490,3 +490,4 @@ html.lb-open { overflow: hidden; }
 .pc-switch { margin: 0; }
 @media (max-width: 760px) { .pc-grid { grid-template-columns: 1fr; } }
 .pc-grid > div { min-width: 0; }
+.pc-form, .pc-f { min-width: 0; } .pc-f select, .pc-f input { max-width: 100%; min-width: 0; width: 100%; box-sizing: border-box; } .pc-range input { width: auto; }

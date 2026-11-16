@@ -156,3 +156,5 @@ Suspected compromise:
 3. Check: admin users and groups, `res_users_apikeys`, server actions / automated actions / crons with Python code, recently modified views (`ir_ui_view` write_date), custom modules on disk (`git status`).
 4. Reset: all admin passwords, all API keys, `admin_passwd`, DB password, SMTP/bank/shop credentials; ask users to change passwords (changing a password invalidates that user's other sessions).
 5. Fix the entry point (patch, close port/route, remove module), then restore normal access; document what happened.
+
+More (article with commands): secrets and phone numbers in URL query strings end up in access logs – log `$uri` only, tokens in headers; secret inventory and rotation; Docker ports bypass ufw (DOCKER-USER); PostgreSQL TLS (`ssl=on`, `hostssl`, `db_sslmode=verify-full`) or WireGuard between servers; auditd against insiders: https://2027.pp.ua/en/blog/odoo-server-security-logs-secrets-ports-encryption

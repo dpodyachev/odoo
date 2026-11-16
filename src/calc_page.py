@@ -49,6 +49,10 @@ TX = {
         "n_dbcpu": '{w} Worker auf {c} DB-Kerne: PostgreSQL wird wahrscheinlich zum Engpass – CPU-Last der DB messen, mehr Kerne oder Read-Replica (Odoo 18+) einplanen.',
         "n_pool": 'max_connections {m}: so viele direkte Verbindungen kosten PostgreSQL viel RAM und CPU – einen Pooler wie PgBouncer davorsetzen (Transaktionsmodus gründlich testen; die Gevent-/Websocket-Verbindung von Odoo nutzt LISTEN/NOTIFY).',
         "more_scale": 'Wie viele Anwender schafft ein Server?',
+        "l_olog": 'Odoo-Log (log_level)',
+        "o_olog": ['error – nur Fehler', 'warn – Produktion', 'info – jede Anfrage mit Zeit', 'Debug: alle SQL-Abfragen'],
+        "l_plog": 'PostgreSQL-Log',
+        "o_plog": ['keine Abfragen', 'langsame Abfragen (> 2 s) mit Dauer', 'alle Abfragen mit Dauer'],
         "nav": "PostgreSQL/Odoo-Rechner",
         "title": "PostgreSQL- und Odoo-Konfigurationsrechner",
         "desc": "odoo.conf und postgresql.conf aus CPU, RAM und Anwenderzahl berechnen – Worker, Speicherlimits, max_connections, shared_buffers, work_mem. Nach dem Vorbild von pgtune, aber mit Odoo.",
@@ -94,6 +98,10 @@ TX = {
         "n_dbcpu": '{w} workers on {c} DB cores: PostgreSQL will probably become the bottleneck – measure DB CPU, plan more cores or a read replica (Odoo 18+).',
         "n_pool": "max_connections {m}: that many direct connections cost PostgreSQL a lot of RAM and CPU – put a pooler such as PgBouncer in front (test transaction mode carefully; Odoo's gevent/websocket connection uses LISTEN/NOTIFY).",
         "more_scale": 'How many users can one server handle?',
+        "l_olog": 'Odoo log (log_level)',
+        "o_olog": ['error – errors only', 'warn – production', 'info – every request with time', 'debug: every SQL query'],
+        "l_plog": 'PostgreSQL log',
+        "o_plog": ['no queries', 'slow queries (> 2 s) with duration', 'all queries with duration'],
         "nav": "PostgreSQL/Odoo calculator",
         "title": "PostgreSQL and Odoo configuration calculator",
         "desc": "Calculate odoo.conf and postgresql.conf from CPU, RAM and number of users – workers, memory limits, max_connections, shared_buffers, work_mem. Like pgtune, but Odoo-aware.",
@@ -139,6 +147,10 @@ TX = {
         "n_dbcpu": '{w} workers pour {c} cœurs BD : PostgreSQL deviendra probablement le goulot – mesurer le CPU de la BD, prévoir plus de cœurs ou une réplique (Odoo 18+).',
         "n_pool": "max_connections {m} : autant de connexions directes coûtent beaucoup de RAM et de CPU à PostgreSQL – placer un pooler comme PgBouncer devant (tester soigneusement le mode transaction ; la connexion gevent/websocket d'Odoo utilise LISTEN/NOTIFY).",
         "more_scale": "Combien d'utilisateurs par serveur ?",
+        "l_olog": 'Journal Odoo (log_level)',
+        "o_olog": ['error – erreurs seulement', 'warn – production', 'info – chaque requête avec durée', 'débogage : toutes les requêtes SQL'],
+        "l_plog": 'Journal PostgreSQL',
+        "o_plog": ['aucune requête', 'requêtes lentes (> 2 s) avec durée', 'toutes les requêtes avec durée'],
         "nav": "Calculateur PostgreSQL/Odoo",
         "title": "Calculateur de configuration PostgreSQL et Odoo",
         "desc": "Calculer odoo.conf et postgresql.conf à partir du CPU, de la RAM et du nombre d'utilisateurs – workers, limites mémoire, max_connections, shared_buffers, work_mem. Comme pgtune, mais en tenant compte d'Odoo.",
@@ -184,6 +196,10 @@ TX = {
         "n_dbcpu": '{w} workers σε {c} πυρήνες βάσης: η PostgreSQL πιθανότατα θα γίνει η στενωπός – μετρήστε τη CPU της βάσης, προβλέψτε περισσότερους πυρήνες ή read replica (Odoo 18+).',
         "n_pool": 'max_connections {m}: τόσες άμεσες συνδέσεις κοστίζουν στην PostgreSQL πολλή RAM και CPU – βάλτε μπροστά έναν pooler όπως το PgBouncer (δοκιμάστε προσεκτικά το transaction mode· η σύνδεση gevent/websocket του Odoo χρησιμοποιεί LISTEN/NOTIFY).',
         "more_scale": 'Πόσους χρήστες αντέχει ένας server;',
+        "l_olog": 'Log του Odoo (log_level)',
+        "o_olog": ['error – μόνο σφάλματα', 'warn – παραγωγή', 'info – κάθε αίτημα με χρόνο', 'debug: κάθε ερώτημα SQL'],
+        "l_plog": 'Log της PostgreSQL',
+        "o_plog": ['κανένα ερώτημα', 'αργά ερωτήματα (> 2 s) με διάρκεια', 'όλα τα ερωτήματα με διάρκεια'],
         "nav": "Υπολογιστής PostgreSQL/Odoo",
         "title": "Υπολογιστής ρυθμίσεων PostgreSQL και Odoo",
         "desc": "Υπολογισμός odoo.conf και postgresql.conf από CPU, RAM και αριθμό χρηστών – workers, όρια μνήμης, max_connections, shared_buffers, work_mem. Όπως το pgtune, αλλά με γνώση του Odoo.",
@@ -229,6 +245,10 @@ TX = {
         "n_dbcpu": '{w} воркерів на {c} ядер БД: PostgreSQL, імовірно, стане вузьким місцем. Виміряйте навантаження на CPU бази й плануйте більше ядер або read-репліку (Odoo 18+).',
         "n_pool": "max_connections {m}: стільки прямих з'єднань коштує PostgreSQL багато RAM і CPU. Поставте перед ним пулер, наприклад PgBouncer (режим transaction ретельно тестуйте, бо з'єднання gevent/websocket в Odoo використовує LISTEN/NOTIFY).",
         "more_scale": 'Скільки користувачів витримає один сервер?',
+        "l_olog": 'Лог Odoo (log_level)',
+        "o_olog": ['error — лише помилки', 'warn — продуктив', 'info — кожен запит із часом', 'налагодження: усі SQL-запити'],
+        "l_plog": 'Лог PostgreSQL',
+        "o_plog": ['без запитів', 'повільні запити (> 2 с) з тривалістю', 'усі запити з тривалістю'],
         "nav": "Калькулятор PostgreSQL/Odoo",
         "title": "Калькулятор конфігурації PostgreSQL і Odoo",
         "desc": "Розрахунок odoo.conf і postgresql.conf за CPU, RAM і кількістю користувачів: воркери, ліміти пам'яті, max_connections, shared_buffers, work_mem. Як pgtune, але з урахуванням Odoo.",
@@ -274,6 +294,10 @@ TX = {
         "n_dbcpu": '{w} воркеров на {c} ядер БД: PostgreSQL, скорее всего, станет узким местом. Измерьте нагрузку на CPU базы и планируйте больше ядер или read-реплику (Odoo 18+).',
         "n_pool": 'max_connections {m}: столько прямых соединений стоит PostgreSQL много RAM и CPU. Поставьте перед ним пулер, например PgBouncer (режим transaction тщательно тестируйте, потому что соединение gevent/websocket в Odoo использует LISTEN/NOTIFY).',
         "more_scale": 'Сколько пользователей выдержит один сервер?',
+        "l_olog": 'Лог Odoo (log_level)',
+        "o_olog": ['error — только ошибки', 'warn — продакшен', 'info — каждый запрос со временем', 'отладка: все SQL-запросы'],
+        "l_plog": 'Лог PostgreSQL',
+        "o_plog": ['без запросов', 'медленные запросы (> 2 с) с длительностью', 'все запросы с длительностью'],
         "nav": "Калькулятор PostgreSQL/Odoo",
         "title": "Калькулятор конфигурации PostgreSQL и Odoo",
         "desc": "Расчёт odoo.conf и postgresql.conf по CPU, RAM и числу пользователей: воркеры, лимиты памяти, max_connections, shared_buffers, work_mem. Как pgtune, но с учётом Odoo.",
@@ -350,6 +374,8 @@ def page_html(lang, E, url, mode="fields"):
            + field("ip_replica", X["l_ip_replica"], ip("ip_replica", "10.0.0.11")) if rep else "")
         + field("disk", X["l_disk"], '<select name="disk">' + opt("ssd", "SSD / NVMe", True) + opt("hdd", "HDD") + "</select>")
         + field("pgv", X["l_pgv"], '<select name="pgv">' + "".join(opt(v, v, v == "16") for v in ("13", "14", "15", "16", "17")) + "</select>")
+        + field("olog", X["l_olog"], '<select name="olog">' + "".join(opt(v, l, v == "warn") for v, l in zip(("error", "warn", "info", "sql"), X["o_olog"])) + "</select>")
+        + field("plog", X["l_plog"], '<select name="plog">' + "".join(opt(v, l, v == "slow") for v, l in zip(("off", "slow", "all"), X["o_plog"])) + "</select>")
         + field("fmt", X["l_fmt"], '<select name="fmt">' + opt("conf", X["o_conf"], True) + opt("alter", X["o_alter"]) + "</select>")
         + (f'<input type="checkbox" name="replica" checked hidden>' if rep else
            f'<label class="pc-check pc-replica" hidden><input type="checkbox" name="replica"> <span>{E(X["l_replica"])}</span></label>')
