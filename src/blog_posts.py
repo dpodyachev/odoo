@@ -792,3 +792,5 @@ from blog_post_restore import RESTORE as _C10  # noqa: E402
 POSTS.append(_C10)
 from blog_post_pgload import PGLOAD as _C11  # noqa: E402
 POSTS.append(_C11)
+from blog_post_pgcheat import PGCHEAT as _C12  # noqa: E402
+POSTS.append(_C12)

@@ -251,6 +251,9 @@ The Odoo Community Association (github.com/OCA) maintains hundreds of modules in
 
 ## More
 
+- PostgreSQL cheat sheet for Odoo admins (backup/restore incl. curl, users/rights, passwords, long queries, vacuum, EXPLAIN, indexes, settings vs. workers): https://2027.pp.ua/en/blog/postgresql-odoo-admin-cheat-sheet
+- odoo.conf + postgresql.conf calculator: https://2027.pp.ua/en/pg-odoo-calculator
+
 - Free hosting options, database and filestore (R2) for Odoo 17: https://2027.pp.ua/en/blog/odoo-17-free-hosting-database-filestore
 - Odoo 17 on Python 3.14 with Docker: https://2027.pp.ua/en/blog/odoo-17-python-3-14-docker
 - All articles: https://2027.pp.ua/en/blog/ · site overview for AI agents: https://2027.pp.ua/llms.txt

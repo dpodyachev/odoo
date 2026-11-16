@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PostgreSQL для администратора Odoo: шпаргалка — бэкап, восстановление, пользователи, запросы, vacuum, индексы, настройки · Goldberg</title>
+<meta name="description" content="Всё нужное каждый день: pg_dump/pg_restore/pg_basebackup и бэкап через Odoo с помощью curl, размеры баз и топ-10 таблиц, пользователи и права, сброс паролей, поиск и остановка долгих запросов, vacuum, EXPLAIN ANALYZE, индексы и то, как настройки PostgreSQL зависят от воркеров Odoo. А также pgtune, pgconfig.org и наш калькулятор.">
+<link rel="canonical" href="https://2027.pp.ua/ru/blog/postgresql-odoo-admin-cheat-sheet">
+<link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/postgresql-odoo-admin-cheat-sheet">
+<link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/postgresql-odoo-admin-cheat-sheet">
+<link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/blog/postgresql-odoo-admin-cheat-sheet">
+<link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/blog/postgresql-odoo-admin-cheat-sheet">
+<link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/postgresql-odoo-admin-cheat-sheet">
+<link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/postgresql-odoo-admin-cheat-sheet">
+<link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/postgresql-odoo-admin-cheat-sheet">
+<meta property="og:title" content="PostgreSQL для администратора Odoo: шпаргалка — бэкап, восстановление, пользователи, запросы, vacuum, индексы, настройки · Goldberg">
+<meta property="og:description" content="Всё нужное каждый день: pg_dump/pg_restore/pg_basebackup и бэкап через Odoo с помощью curl, размеры баз и топ-10 таблиц, пользователи и права, сброс паролей, поиск и остановка долгих запросов, vacuum, EXPLAIN ANALYZE, индексы и то, как настройки PostgreSQL зависят от воркеров Odoo. А также pgtune, pgconfig.org и наш калькулятор.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2027.pp.ua/ru/blog/postgresql-odoo-admin-cheat-sheet">
+<meta name="theme-color" content="#3b2a4a">
+<meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="Site overview for AI assistants (llms.txt)">
+<link rel="alternate" type="text/markdown" href="/skill_odoo.md" title="Odoo operations skill for AI agents (Markdown)">
+<link rel="alternate" type="text/markdown" href="/skill_odoo_security.md" title="Odoo security skill for AI agents (Markdown)">
+<link rel="stylesheet" href="/assets/style.css?v=fc013769">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+<script src="/assets/contacts.js?v=b8439ff0" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "PostgreSQL для администратора Odoo: шпаргалка — бэкап, восстановление, пользователи, запросы, vacuum, индексы, настройки", "description": "Всё нужное каждый день: pg_dump/pg_restore/pg_basebackup и бэкап через Odoo с помощью curl, размеры баз и топ-10 таблиц, пользователи и права, сброс паролей, поиск и остановка долгих запросов, vacuum, EXPLAIN ANALYZE, индексы и то, как настройки PostgreSQL зависят от воркеров Odoo. А также pgtune, pgconfig.org и наш калькулятор.", "datePublished": "2026-11-16", "inLanguage": "ru", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua", "sameAs": ["https://www.linkedin.com/in/dpodyachev"]}, "mainEntityOfPage": "https://2027.pp.ua/ru/blog/postgresql-odoo-admin-cheat-sheet"}</script>
+</head>
+<body>
+<header class="top">
+<div class="wrap top-in">
+<a class="brand" href="/ru/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="menu"><a class="nav-icon multi" href="/ru/#services" title="Услуги" aria-label="Услуги"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7.8" stroke-width="3" stroke-dasharray="3 3.125" stroke-linecap="butt"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7z"/></svg></a><a class="nav-icon" href="/ru/#dach" title="DATEV и E-Rechnung" aria-label="DATEV и E-Rechnung"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5M14 3l5 5v4M14 3v5h5"/><path d="M8.5 11h5M8.5 14.5h3"/><path d="m14.5 18.5 2 2 4-4.5"/></svg></a><a class="nav-icon radar" href="/ru/#bot" title="Мониторинг" aria-label="Мониторинг"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.2" opacity=".55"/><g class="sweep"><path d="M12 12 18.5 5.5A9.2 9.2 0 0 1 21.2 12z" fill="currentColor" stroke="none" opacity=".28"/><path d="M12 12l6.5-6.5"/></g><circle cx="15.6" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon cur" href="/ru/#prices" title="Цены" aria-label="Цены"><span aria-hidden="true">₴</span></a><a class="nav-icon" href="/ru/#about" title="Обо мне" aria-label="Обо мне"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/></svg></a><a class="nav-icon" href="/ru/blog/" title="Блог и how-to" aria-label="Блог и how-to" aria-current=page><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon" href="/ru/publications" title="Публикации" aria-label="Публикации"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v9.5a2 2 0 0 1-4 0"/><path d="M7 9h7M7 12.5h7M7 16h4"/></svg></a><a class="nav-icon" href="/ru/pg-odoo-calculator" title="Калькулятор PostgreSQL/Odoo" aria-label="Калькулятор PostgreSQL/Odoo"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2"/><rect x="8" y="5.5" width="8" height="4" rx=".6"/><path d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 16.3h.01M12 16.3h.01M15.5 16.3v2.2M8.5 19h3.5"/></svg></a><a class="nav-icon" href="/ru/#contact" title="Контакт" aria-label="Контакт"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a></nav>
+<nav class="langs" aria-label="Language"><a href="/de/blog/postgresql-odoo-admin-cheat-sheet" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/postgresql-odoo-admin-cheat-sheet" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/postgresql-odoo-admin-cheat-sheet" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/postgresql-odoo-admin-cheat-sheet" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/postgresql-odoo-admin-cheat-sheet" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/postgresql-odoo-admin-cheat-sheet" hreflang="ru" lang="ru" title="Русский" aria-label="Русский" aria-current="true"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<button type="button" class="theme" hidden aria-label="Светлая / тёмная тема" title="Светлая / тёмная тема">🌙</button>
+</div>
+</header>
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/ru/blog/">← Все статьи</a></p><p class="post-meta">16.11.2026 · 7 мин чтения · <span class="post-tag">PostgreSQL</span><span class="post-tag">Odoo</span><span class="post-tag">psql</span><span class="post-tag">Backup</span><span class="post-tag">Performance</span><span class="post-tag">Cheat sheet</span></p><h1>PostgreSQL для администратора Odoo: шпаргалка — бэкап, восстановление, пользователи, запросы, vacuum, индексы, настройки</h1><p class="intro">Всё нужное каждый день: pg_dump/pg_restore/pg_basebackup и бэкап через Odoo с помощью curl, размеры баз и топ-10 таблиц, пользователи и права, сброс паролей, поиск и остановка долгих запросов, vacuum, EXPLAIN ANALYZE, индексы и то, как настройки PostgreSQL зависят от воркеров Odoo. А также pgtune, pgconfig.org и наш калькулятор.</p><p>Страница для закладок: команды PostgreSQL, которыми я пользуюсь для Odoo, сгруппированные по задачам. Odoo 16–19, PostgreSQL 13–17; замените <code>mydb</code>, <code>odoo</code> и хосты на свои.</p><p class="post-note">Перед любым действием, которое меняет данные (восстановление, DROP, VACUUM FULL, завершение сессий), сделайте свежий бэкап и сначала попробуйте на stage.</p><h2>1. Подключение и обзор в psql</h2><figure class="code"><figcaption>psql · connect and look around</figcaption><pre><code>sudo -u postgres psql                          # as superuser on the DB server (peer auth)
+psql -h 10.0.0.10 -U odoo -d mydb             # over the network (password from ~/.pgpass)
+docker compose exec db psql -U odoo -d mydb   # PostgreSQL in docker compose
+
+\l+            -- databases with size, owner, encoding
+\c mydb        -- switch database
+\dt+           -- tables with size        \dt+ res_*   -- with a pattern
+\d+ res_partner -- columns, indexes, constraints, triggers of one table
+\di+ res_partner* -- indexes with size
+\du            -- roles (users) and their rights
+\x auto        -- wide rows vertically     \timing on  -- show query duration
+\q             -- quit</code></pre></figure><h2>2. Какого размера базы и таблицы?</h2><figure class="code"><figcaption>sql · database and table sizes</figcaption><pre><code>-- databases, biggest first
+SELECT datname, pg_size_pretty(pg_database_size(datname)) AS size
+  FROM pg_database ORDER BY pg_database_size(datname) DESC;
+
+-- top 10 tables (data + indexes + TOAST)
+SELECT relname AS table,
+       pg_size_pretty(pg_total_relation_size(relid)) AS total,
+       pg_size_pretty(pg_relation_size(relid))       AS data,
+       pg_size_pretty(pg_indexes_size(relid))        AS indexes,
+       n_live_tup AS rows
+  FROM pg_stat_user_tables
+ ORDER BY pg_total_relation_size(relid) DESC
+ LIMIT 10;</code></pre></figure><p>В Odoo в топ-10 почти всегда входят <code>mail_message</code>, <code>mail_tracking_value</code>, <code>ir_attachment</code> (только метаданные, сами файлы лежат в filestore), <code>account_move_line</code>, <code>stock_move</code> и таблицы <code>bus_bus</code>/<code>queue_job</code>.</p><h2>3. Бэкап: pg_dump, pg_dumpall, pg_basebackup</h2><figure class="code"><figcaption>bash · backup: pg_dump, pg_dumpall, pg_basebackup</figcaption><pre><code># one database, custom format (compressed, selective restore, parallel restore)
+pg_dump -U odoo -Fc -f mydb_$(date +%F).dump mydb
+
+# very large database: directory format, 4 parallel jobs
+pg_dump -U odoo -Fd -j 4 -f mydb_$(date +%F).dir mydb
+
+# without owner and grants (restore under any role)
+pg_dump -U odoo -Fc --no-owner --no-acl -f mydb.dump mydb
+
+# roles and their passwords – NOT included in pg_dump
+sudo -u postgres pg_dumpall --globals-only &gt; globals.sql
+
+# physical copy of the whole cluster (all databases, for a replica or PITR)
+sudo -u postgres pg_basebackup -D /backup/base_$(date +%F) -Ft -z -X stream -P
+
+# Odoo also needs the filestore (attachments) – same moment as the dump
+tar -C /var/lib/odoo/filestore -czf filestore_mydb_$(date +%F).tgz mydb</code></pre></figure><ul><li><code>pg_dump</code> — одна база, логический дамп, переносится между версиями. Стандарт для Odoo.</li><li><code>pg_dumpall --globals-only</code> — роли и их пароли, которых нет в pg_dump.</li><li><code>pg_basebackup</code> — весь сервер, физическая копия: основа для реплик и восстановления на момент времени, только для той же мажорной версии.</li><li><code>--no-owner --no-acl</code> (<code>-O -x</code>): в дампе нет <code>ALTER OWNER</code> и <code>GRANT</code>, поэтому его можно восстановить под любой ролью. Работает и для pg_dump, и для pg_restore.</li><li>Инструмента <code>pg_backup</code> не существует, обычно имеют в виду один из этих трёх.</li></ul><h2>4. Восстановление</h2><figure class="code"><figcaption>bash · restore: pg_restore and psql</figcaption><pre><code>createdb -U odoo -O odoo mydb_restored
+pg_restore -U odoo -d mydb_restored --no-owner --no-acl -j 4 mydb.dump 2&gt; restore.log
+grep -c ERROR restore.log                       # must be 0 – pg_restore continues after errors!
+
+# plain SQL dump (e.g. dump.sql from an Odoo zip backup)
+psql -U odoo -d mydb_restored -v ON_ERROR_STOP=1 -f dump.sql
+
+# statistics are not in the dump – collect them right away
+vacuumdb -U odoo -d mydb_restored --analyze-in-stages
+
+# filestore folder must be named like the database
+tar -C /var/lib/odoo/filestore -xzf filestore_mydb.tgz &amp;&amp; mv /var/lib/odoo/filestore/mydb /var/lib/odoo/filestore/mydb_restored</code></pre></figure><h2>5. Через Odoo: веб и curl</h2><figure class="code"><figcaption>bash · backup and restore through Odoo (web / curl)</figcaption><pre><code># browser: https://erp.example.com/web/database/manager  (needs list_db = True and the master password)
+
+# backup as zip (dump.sql + filestore + manifest.json) or as dump (database only)
+curl -sS -X POST https://erp.example.com/web/database/backup \
+     -F &quot;master_pwd=$ODOO_MASTER&quot; -F &quot;name=mydb&quot; -F &quot;backup_format=zip&quot; \
+     -o mydb_$(date +%F).zip
+
+# restore under a new name; copy=true = new database UUID (for a copy next to the original)
+curl -sS -X POST https://erp.example.com/web/database/restore \
+     -F &quot;master_pwd=$ODOO_MASTER&quot; -F &quot;name=mydb_copy&quot; -F &quot;copy=true&quot; \
+     -F &quot;backup_file=@mydb_2026-11-16.zip&quot;
+
+# list databases (JSON-RPC)
+curl -sS -H &#x27;Content-Type: application/json&#x27; \
+     -d &#x27;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;call&quot;,&quot;params&quot;:{}}&#x27; https://erp.example.com/web/database/list
+
+# ODOO_MASTER from a file, not typed into the shell history:  ODOO_MASTER=$(cat ~/.odoo_master)</code></pre></figure><p>Удобно для небольших баз и для людей без доступа к серверу. Для больших баз (десятки ГБ) zip-экспорт идёт долго и может упереться в <code>limit_time_real</code>, тогда лучше pg_dump. Никогда не оставляйте менеджер баз открытым: <code>list_db = False</code> на продакшене, включайте только временно или защитите <code>/web/database/*</code> в nginx.</p><h2>6. Пользователи, базы и права</h2><figure class="code"><figcaption>sql / bash · users, databases, rights</figcaption><pre><code>-- a role for Odoo: may create databases, is NOT a superuser
+CREATE ROLE odoo LOGIN CREATEDB PASSWORD &#x27;change-me&#x27;;      -- or: sudo -u postgres createuser -P --createdb odoo
+
+-- database owned by Odoo&#x27;s role
+CREATE DATABASE mydb OWNER odoo ENCODING &#x27;UTF8&#x27; TEMPLATE template0;   -- or: createdb -O odoo mydb
+DROP DATABASE mydb_old WITH (FORCE);                       -- PostgreSQL 13+, or: dropdb --force mydb_old
+
+-- after a restore under another role: hand everything over to odoo (run inside the database)
+ALTER DATABASE mydb OWNER TO odoo;
+REASSIGN OWNED BY old_owner TO odoo;
+
+-- read-only user for reports / BI
+CREATE ROLE report LOGIN PASSWORD &#x27;change-me&#x27;;
+GRANT CONNECT ON DATABASE mydb TO report;
+GRANT USAGE ON SCHEMA public TO report;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO report;
+ALTER DEFAULT PRIVILEGES FOR ROLE odoo IN SCHEMA public GRANT SELECT ON TABLES TO report;
+
+DROP ROLE report;                                          -- before: REASSIGN/DROP OWNED BY report;</code></pre></figure><p>Роль Odoo должна быть владельцем своих баз и иметь <code>CREATEDB</code> только тогда, когда используется менеджер баз. Суперпользователем она не должна быть никогда.</p><h2>7. Сброс паролей</h2><figure class="code"><figcaption>passwords: PostgreSQL role and Odoo user</figcaption><pre><code>-- PostgreSQL role (interactive, password not in the history)
+sudo -u postgres psql -c &#x27;\password odoo&#x27;
+-- or in SQL (lands in the log/history – avoid on shared servers)
+ALTER ROLE odoo PASSWORD &#x27;new-long-password&#x27;;
+-- then the same value in odoo.conf: db_password = ...
+
+# Odoo user (e.g. admin with id 2) – through Odoo, so the hash is correct
+docker compose run --rm odoo odoo shell -c /etc/odoo/odoo.conf -d mydb --no-http &lt;&lt;&#x27;EOF&#x27;
+user = env[&#x27;res.users&#x27;].browse(2)
+user.password = &#x27;new-long-password&#x27;
+env.cr.commit()
+EOF
+# master password (database manager): admin_passwd in odoo.conf, restart Odoo</code></pre></figure><p>Не записывайте пароль Odoo напрямую в <code>res_users.password</code> через SQL: Odoo хранит хеш и не примет открытое значение. Через <code>odoo shell</code> Odoo сам его захеширует.</p><h2>8. Что выполняется сейчас и как остановить долгие запросы</h2><figure class="code"><figcaption>sql · what is running – and stopping long queries</figcaption><pre><code>-- running queries, longest first
+SELECT pid, usename, application_name, client_addr, state,
+       now() - xact_start  AS tx_age,
+       now() - query_start AS query_age,
+       wait_event_type, wait_event, left(query, 120) AS query
+  FROM pg_stat_activity
+ WHERE datname = current_database() AND state &lt;&gt; &#x27;idle&#x27;
+ ORDER BY query_start;
+
+-- cancel one query (gentle) / end the session (hard)
+SELECT pg_cancel_backend(12345);
+SELECT pg_terminate_backend(12345);
+
+-- end everything running longer than 20 minutes (look at the list first!)
+SELECT pid, now() - query_start AS age, pg_terminate_backend(pid)
+  FROM pg_stat_activity
+ WHERE datname = current_database()
+   AND state IN (&#x27;active&#x27;, &#x27;idle in transaction&#x27;)
+   AND now() - query_start &gt; interval &#x27;20 minutes&#x27;
+   AND pid &lt;&gt; pg_backend_pid();
+
+-- safety net in postgresql.conf instead of manual killing
+-- idle_in_transaction_session_timeout = &#x27;30min&#x27;</code></pre></figure><ul><li>Сначала <code>pg_cancel_backend</code> (отменяет запрос, сессия остаётся), и только потом <code>pg_terminate_backend</code>.</li><li><code>idle in transaction</code> в течение минут — это ошибка в скрипте или открытый shell: такое состояние держит блокировки и мешает vacuum.</li><li>Если остановить запрос воркера Odoo, его транзакция откатится: пользователь увидит ошибку, но данные останутся согласованными.</li></ul><h2>9. Мониторинг и vacuum</h2><figure class="code"><figcaption>sql · vacuum and health</figcaption><pre><code>-- tables with many dead rows and when autovacuum last ran
+SELECT relname, n_live_tup, n_dead_tup,
+       round(100.0 * n_dead_tup / greatest(n_live_tup, 1), 1) AS dead_pct,
+       last_autovacuum, last_autoanalyze
+  FROM pg_stat_user_tables ORDER BY n_dead_tup DESC LIMIT 15;
+
+VACUUM (VERBOSE, ANALYZE) mail_message;   -- online, no lock for readers/writers
+ANALYZE;                                  -- fresh statistics (after restore, big imports)
+VACUUM FULL mail_message;                 -- rewrites the table: EXCLUSIVE LOCK – only in a maintenance window
+-- online alternative to VACUUM FULL: the pg_repack extension
+
+-- big Odoo tables: vacuum earlier than the default 20 %
+ALTER TABLE mail_message SET (autovacuum_vacuum_scale_factor = 0.02, autovacuum_analyze_scale_factor = 0.01);
+
+-- transaction ID wraparound: watch the age (alarm above ~1.5 billion)
+SELECT datname, age(datfrozenxid) FROM pg_database ORDER BY 2 DESC;</code></pre></figure><ul><li><b>Autovacuum</b> выполняет ежедневную работу: не выключайте его, а для больших таблиц Odoo настройте отдельно.</li><li><b>VACUUM (ANALYZE)</b> работает онлайн: освобождает место для повторного использования и обновляет статистику. После восстановления или крупного импорта запустите <code>ANALYZE</code>.</li><li><b>VACUUM FULL</b> возвращает место на диске операционной системе, но полностью блокирует таблицу. Нужно окно обслуживания или <code>pg_repack</code>.</li><li>Что отслеживать: мёртвые строки, <code>last_autovacuum</code>, возраст идентификаторов транзакций, место на диске, долгие транзакции.</li></ul><h2>10. Медленные запросы: EXPLAIN ANALYZE</h2><figure class="code"><figcaption>sql · slow queries: pg_stat_statements and EXPLAIN ANALYZE</figcaption><pre><code>-- top queries by total time (shared_preload_libraries = &#x27;pg_stat_statements&#x27;, then CREATE EXTENSION)
+SELECT round(total_exec_time) AS total_ms, calls, round(mean_exec_time, 1) AS avg_ms, left(query, 150)
+  FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT 10;
+
+-- execute and measure one query (ANALYZE really runs it – wrap writes in BEGIN … ROLLBACK)
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT id FROM sale_order WHERE partner_id = 4711 AND state = &#x27;sale&#x27; ORDER BY date_order DESC LIMIT 80;
+
+-- what to look for in the plan:
+--   Seq Scan on a big table + &quot;Rows Removed by Filter: 1000000&quot;  -&gt; index candidate
+--   estimated rows=1 vs actual rows=50000                        -&gt; stale statistics: ANALYZE
+--   Sort Method: external merge  Disk: …                         -&gt; work_mem too small for this query
+--   Buffers: shared read=… (high)                                -&gt; data not in cache (RAM / shared_buffers)
+-- readable visualisation: explain.dalibo.com</code></pre></figure><p>Откуда берутся медленные запросы? <code>log_min_duration_statement = 2000</code> пишет в лог PostgreSQL каждый запрос дольше 2 с вместе с текстом, а <code>pg_stat_statements</code> суммирует их. Скопируйте запрос, выполните <code>EXPLAIN (ANALYZE, BUFFERS)</code> на копии stage и читайте план от самого дорогого узла.</p><h2>11. Индексы: какая колонка имеет какой индекс</h2><figure class="code"><figcaption>sql · which columns have which indexes</figcaption><pre><code>\d+ sale_order          -- in psql: everything incl. indexes
+\di+ sale_order*        -- indexes with size
+
+-- indexes of a table with their columns
+SELECT indexname, indexdef FROM pg_indexes WHERE tablename = &#x27;sale_order&#x27; ORDER BY 1;
+
+-- is a given column indexed?
+SELECT i.relname AS index, a.attname AS column
+  FROM pg_index x
+  JOIN pg_class i ON i.oid = x.indexrelid
+  JOIN pg_class t ON t.oid = x.indrelid
+  JOIN pg_attribute a ON a.attrelid = t.oid AND a.attnum = ANY (x.indkey)
+ WHERE t.relname = &#x27;sale_order&#x27; AND a.attname = &#x27;partner_id&#x27;;
+
+-- unused indexes (since the last statistics reset) – cost on every write
+SELECT relname, indexrelname, idx_scan, pg_size_pretty(pg_relation_size(indexrelid)) AS size
+  FROM pg_stat_user_indexes WHERE idx_scan = 0 ORDER BY pg_relation_size(indexrelid) DESC LIMIT 15;
+
+-- create without blocking writes
+CREATE INDEX CONCURRENTLY sale_order_partner_state_idx ON sale_order (partner_id, state);</code></pre></figure><p>В Odoo индексы лучше создавать в модуле (<code>index=True</code> на поле): индекс, созданный вручную через SQL, Odoo не знает. Прежде чем создавать индекс, проверьте через <code>EXPLAIN</code>, что он действительно используется, и удаляйте индексы, которые не используются никогда.</p><h2>12. Настройки PostgreSQL и воркеры Odoo</h2><p>PostgreSQL и Odoo делят один бюджет: соединения, а на одном сервере ещё и ту же RAM. Поэтому настройки Odoo определяют настройки PostgreSQL:</p><div class="tablewrap"><table class="post-table"><thead><tr><th>Настройка</th><th>Эмпирическое правило</th><th>От чего зависит в Odoo</th></tr></thead><tbody><tr><td><code>max_connections</code></td><td>процессы Odoo × ~3 + запас, часто 100–200</td><td><code>workers</code> + <code>max_cron_threads</code> + gevent; <code>db_maxconn</code> — потолок на процесс, а не реальное потребление; ×2 с read-репликой (Odoo 18+)</td></tr><tr><td><code>shared_buffers</code></td><td>25 % RAM, которую получает PostgreSQL</td><td>на общем сервере только от доли PostgreSQL, ведь воркерам Odoo тоже нужна RAM</td></tr><tr><td><code>effective_cache_size</code></td><td>~75 % этой RAM</td><td>только подсказка для планировщика, ничего не выделяет</td></tr><tr><td><code>work_mem</code></td><td>(RAM − shared_buffers) / (соединения × 3)</td><td>на каждую сортировку или hash и на соединение; большие отчёты Odoo используют несколько сразу, а слишком большое значение плюс много воркеров дают OOM</td></tr><tr><td><code>maintenance_work_mem</code></td><td>RAM/16, до 2 ГБ</td><td>быстрее VACUUM, CREATE INDEX и обновление модулей</td></tr><tr><td><code>max_wal_size</code></td><td>4 ГБ+ (больше для крупных импортов)</td><td>массовые импорты, <code>-u all</code> и миграции пишут много WAL</td></tr><tr><td><code>random_page_cost</code></td><td>1,1 на SSD/NVMe</td><td>чтобы планировщик использовал индексы Odoo</td></tr><tr><td><code>jit</code></td><td>off</td><td>Odoo выполняет много коротких запросов</td></tr><tr><td><code>idle_in_transaction_session_timeout</code></td><td>напр. 30 мин</td><td>завершает забытые транзакции (сессии shell, сломанные скрипты)</td></tr></tbody></table></div><p>Со стороны Odoo: примерно 6 одновременных пользователей на воркер, не больше чем 2 × ядра CPU + 1 воркеров; в среднем ~150 МБ на воркер для лёгких запросов и ~1 ГБ для тяжёлых (документация Odoo). <code>limit_memory_soft/hard</code> — это потолок для пиковых нагрузок, а не среднее.</p><h2>13. pgtune и pgconfig.org</h2><ul><li><b>PGTune</b> (pgtune.leopard.in.ua): указываете версию PostgreSQL, ОС, тип базы, RAM, CPU, число соединений и тип диска и получаете блок для postgresql.conf. Для Odoo выбирайте «Web application» или «OLTP».</li><li><b>PGConfig</b> (pgconfig.org): похожий инструмент с профилями (web, OLTP, data warehouse, mixed, desktop). Он также выдаёт команды <code>ALTER SYSTEM</code> и объясняет каждый параметр.</li><li>Ни один из них ничего не знает об Odoo: «соединения» они берут как заданное и считают, что вся RAM принадлежит PostgreSQL. Если Odoo на том же сервере, вводите только долю PostgreSQL, а число соединений выводите из воркеров.</li></ul><p>Два примера в стиле этих инструментов, подогнанные под Odoo:</p><figure class="code"><figcaption>postgresql.conf · example A: 8 GB / 4 CPU, Odoo and PostgreSQL on one server, ~25 users</figcaption><pre><code># odoo.conf: workers = 6, max_cron_threads = 2, limit_memory_soft = 2 GB, limit_memory_hard = 2.5 GB
+# RAM: ~1.4 GB system, ~2.3 GB Odoo workers (average), 4 GB for PostgreSQL
+max_connections = 100
+shared_buffers = 1GB
+effective_cache_size = 3GB
+maintenance_work_mem = 256MB
+work_mem = 4MB
+checkpoint_completion_target = 0.9
+wal_buffers = 16MB
+min_wal_size = 1GB
+max_wal_size = 4GB
+random_page_cost = 1.1
+effective_io_concurrency = 200
+max_worker_processes = 4
+max_parallel_workers_per_gather = 2
+max_parallel_workers = 4
+jit = off</code></pre></figure><figure class="code"><figcaption>postgresql.conf · example B: dedicated DB server 32 GB / 8 CPU, ~100 users</figcaption><pre><code># odoo.conf on the Odoo server (8 CPU, 16 GB): workers = 17, max_cron_threads = 2, db_host = 10.0.0.10
+max_connections = 100
+shared_buffers = 8GB
+effective_cache_size = 24GB
+maintenance_work_mem = 2GB
+work_mem = 18MB
+checkpoint_completion_target = 0.9
+wal_buffers = 16MB
+min_wal_size = 1GB
+max_wal_size = 4GB
+random_page_cost = 1.1
+effective_io_concurrency = 200
+huge_pages = try
+max_worker_processes = 8
+max_parallel_workers_per_gather = 4
+max_parallel_workers = 8
+max_parallel_maintenance_workers = 4
+jit = off
+shared_preload_libraries = &#x27;pg_stat_statements&#x27;
+log_min_duration_statement = 2000</code></pre></figure><p class="post-note">Именно это делает наш калькулятор: вводите CPU, RAM, число пользователей и работает ли PostgreSQL на том же сервере, а он выдаёт odoo.conf и postgresql.conf вместе, в том числе в виде ALTER SYSTEM. С ползунками видно, какие строки меняются.</p><h2>Ссылки</h2><ul class="post-links"><li><a href="/ru/pg-odoo-calculator">PostgreSQL/Odoo config calculator (this site)</a></li><li><a href="https://pgtune.leopard.in.ua/" target="_blank" rel="noopener">PGTune</a></li><li><a href="https://www.pgconfig.org/" target="_blank" rel="noopener">PGConfig</a></li><li><a href="https://www.postgresql.org/docs/current/app-pgdump.html" target="_blank" rel="noopener">PostgreSQL: pg_dump / pg_restore</a></li><li><a href="https://www.postgresql.org/docs/current/monitoring-stats.html" target="_blank" rel="noopener">PostgreSQL: monitoring statistics (pg_stat_*)</a></li><li><a href="https://www.postgresql.org/docs/current/routine-vacuuming.html" target="_blank" rel="noopener">PostgreSQL: routine vacuuming</a></li><li><a href="https://www.odoo.com/documentation/17.0/administration/on_premise/deploy.html" target="_blank" rel="noopener">Odoo 17: deploying, worker and memory sizing</a></li><li><a href="https://explain.dalibo.com/" target="_blank" rel="noopener">explain.dalibo.com – EXPLAIN visualiser</a></li><li><a href="/ru/blog/postgresql-restore-fails-foreign-key-duplicate-index-odoo">Blog: the backup will not restore</a></li><li><a href="/ru/blog/odoo-stage-restore-stop-cron-jobs">Blog: restoring on stage without cron jobs</a></li><li><a href="/ru/blog/odoo-could-not-serialize-access-concurrent-update">Blog: could not serialize access</a></li><li><a href="/ru/blog/postgresql-load-test-pgload-replica">Blog: pgload – load test for PostgreSQL</a></li></ul><aside class="post-cta"><h2>Сделать это для вас?</h2><p>Я внедрю это в вашей системе – сначала на тестовой копии, с возможностью отката и протоколом.</p><div class="cta ">
+<a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Записаться – 30 мин бесплатно</a>
+<a class="soc-ico btn" data-ch="{telegram}" data-ct="Telegram: {telegram_handle}" title="Telegram" aria-label="Telegram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.5 2.8 10.7c-.9.4-.9 1.6.1 1.9l4.6 1.5 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.8 3.5c.7.5 1.7.1 1.9-.7L22.9 4.9c.2-1-.6-1.8-1.4-1.4z"/><path d="m7.5 14.1 10-6.6-7.6 8.1"/></svg></a>
+<a class="soc-ico btn ghost" data-ch="{whatsapp}" data-ct="WhatsApp" title="WhatsApp" aria-label="WhatsApp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.2A8.6 8.6 0 1 1 8 19.4z"/><path d="M9 8.6c.1 2.9 3.4 6.2 6.3 6.4l1.2-1.4-1.9-1-.9.8c-1-.5-2.3-1.8-2.8-2.8l.8-.9-1-1.9z"/></svg></a>
+<a class="soc-ico btn ghost" data-ch="tel:{phone}" data-ct="Tel.: {phone_display}" title="Tel." aria-label="Tel."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></a>
+<a class="soc-ico btn ghost" data-ch="mailto:{email}" data-ct="E-Mail: {email}" title="E-Mail" aria-label="E-Mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a>
+<a class="soc-ico btn ghost" href="https://www.linkedin.com/in/dpodyachev" title="LinkedIn" aria-label="LinkedIn" target="_blank" rel="noopener me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V17M8 7.3v.1M12 17v-6.5M12 13.3c0-1.6 1.1-2.8 2.5-2.8S17 11.5 17 13v4"/></svg></a>
+</div></aside><nav class="post-nav" aria-label="Блог и how-to"><a class="prev" href="/ru/blog/odoo-17-python-3-14-docker" rel="prev"><small>← Предыдущая статья</small><span>Перевод Odoo 17 на Python 3.14 в docker-compose</span></a><a class="all" href="/ru/blog/"><small>← Все статьи</small></a><a class="next" href="/ru/blog/postgresql-load-test-pgload-replica" rel="next"><small>Следующая статья →</small><span>pgload: небольшой генератор нагрузки для PostgreSQL – локальная база против удалённой с репликой</span></a></nav></article></main><footer class="foot">
+<div class="wrap foot-in">
+<div><strong>Goldberg · Odoo Services</strong><br>Поддержка, установка и интеграция Odoo для Германии, Австрии и Швейцарии.</div>
+<div class="foot-links">
+<a href="/ru/blog/">Блог и how-to</a>
+<a href="/ru/publications">Публикации</a>
+<a href="/ru/pg-odoo-calculator">Калькулятор PostgreSQL/Odoo</a>
+<a href="/ru/impressum">Impressum</a>
+<a href="/ru/datenschutz">Конфиденциальность</a>
+<span class="foot-soc"><a class="soc-ico" data-ch="mailto:{email}" data-ct="E-Mail: {email}" title="E-Mail" aria-label="E-Mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a><a class="soc-ico" data-ch="{telegram}" data-ct="Telegram: {telegram_handle}" title="Telegram" aria-label="Telegram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.5 2.8 10.7c-.9.4-.9 1.6.1 1.9l4.6 1.5 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.8 3.5c.7.5 1.7.1 1.9-.7L22.9 4.9c.2-1-.6-1.8-1.4-1.4z"/><path d="m7.5 14.1 10-6.6-7.6 8.1"/></svg></a><a class="soc-ico" data-ch="{whatsapp}" data-ct="WhatsApp" title="WhatsApp" aria-label="WhatsApp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.2A8.6 8.6 0 1 1 8 19.4z"/><path d="M9 8.6c.1 2.9 3.4 6.2 6.3 6.4l1.2-1.4-1.9-1-.9.8c-1-.5-2.3-1.8-2.8-2.8l.8-.9-1-1.9z"/></svg></a><a class="soc-ico" data-ch="tel:{phone}" data-ct="Tel.: {phone_display}" title="Tel." aria-label="Tel."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></a><a class="soc-ico" href="https://www.linkedin.com/in/dpodyachev" title="LinkedIn" aria-label="LinkedIn" target="_blank" rel="noopener me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V17M8 7.3v.1M12 17v-6.5M12 13.3c0-1.6 1.1-2.8 2.5-2.8S17 11.5 17 13v4"/></svg></a></span>
+</div>
+<nav class="langs" aria-label="Language"><a href="/de/blog/postgresql-odoo-admin-cheat-sheet" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/postgresql-odoo-admin-cheat-sheet" hreflang="en" lang="en" title="English" aria-label="English"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/postgresql-odoo-admin-cheat-sheet" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/postgresql-odoo-admin-cheat-sheet" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/postgresql-odoo-admin-cheat-sheet" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/postgresql-odoo-admin-cheat-sheet" hreflang="ru" lang="ru" title="Русский" aria-label="Русский" aria-current="true"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<div class="small">© 2026 Goldberg. Сайт не использует cookies и трекинг.</div>
+</div>
+</footer>
+</body>
+</html>

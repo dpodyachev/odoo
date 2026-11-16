@@ -22,6 +22,7 @@
 <url><loc>https://2027.pp.ua/de/blog/odoo-could-not-serialize-access-concurrent-update</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/de/blog/postgresql-restore-fails-foreign-key-duplicate-index-odoo</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/de/blog/postgresql-load-test-pgload-replica</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/de/blog/postgresql-odoo-admin-cheat-sheet</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/en/pg-odoo-calculator</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/en/pg-odoo-calculator-sliders</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/en/publications</loc><lastmod>2026-11-16</lastmod></url>
@@ -44,6 +45,7 @@
 <url><loc>https://2027.pp.ua/en/blog/odoo-could-not-serialize-access-concurrent-update</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/en/blog/postgresql-restore-fails-foreign-key-duplicate-index-odoo</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/en/blog/postgresql-load-test-pgload-replica</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/en/blog/postgresql-odoo-admin-cheat-sheet</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/pg-odoo-calculator</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/pg-odoo-calculator-sliders</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/publications</loc><lastmod>2026-11-16</lastmod></url>
@@ -66,6 +68,7 @@
 <url><loc>https://2027.pp.ua/fr/blog/odoo-could-not-serialize-access-concurrent-update</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/blog/postgresql-restore-fails-foreign-key-duplicate-index-odoo</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/blog/postgresql-load-test-pgload-replica</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/fr/blog/postgresql-odoo-admin-cheat-sheet</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/el/pg-odoo-calculator</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/el/pg-odoo-calculator-sliders</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/el/publications</loc><lastmod>2026-11-16</lastmod></url>
@@ -88,6 +91,7 @@
 <url><loc>https://2027.pp.ua/el/blog/odoo-could-not-serialize-access-concurrent-update</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/el/blog/postgresql-restore-fails-foreign-key-duplicate-index-odoo</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/el/blog/postgresql-load-test-pgload-replica</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/el/blog/postgresql-odoo-admin-cheat-sheet</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/pg-odoo-calculator</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/pg-odoo-calculator-sliders</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/publications</loc><lastmod>2026-11-16</lastmod></url>
@@ -110,6 +114,7 @@
 <url><loc>https://2027.pp.ua/uk/blog/odoo-could-not-serialize-access-concurrent-update</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/blog/postgresql-restore-fails-foreign-key-duplicate-index-odoo</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/blog/postgresql-load-test-pgload-replica</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/uk/blog/postgresql-odoo-admin-cheat-sheet</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/pg-odoo-calculator</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/pg-odoo-calculator-sliders</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/publications</loc><lastmod>2026-11-16</lastmod></url>
@@ -132,4 +137,5 @@
 <url><loc>https://2027.pp.ua/ru/blog/odoo-could-not-serialize-access-concurrent-update</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/blog/postgresql-restore-fails-foreign-key-duplicate-index-odoo</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/blog/postgresql-load-test-pgload-replica</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/ru/blog/postgresql-odoo-admin-cheat-sheet</loc><lastmod>2026-11-16</lastmod></url>
 </urlset>

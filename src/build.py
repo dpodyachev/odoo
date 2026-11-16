@@ -814,6 +814,7 @@ def blog_post(T, lang, post):
         elif kind == "links":
             out.append(f"<h2>{inline(b[1])}</h2><ul class=\"post-links\">" + "".join(
                 (f'<li><a href="{url(lang, "blog/" + u[6:] + ".html")}">{E(t)}</a></li>' if u.startswith("@blog:")
+                 else f'<li><a href="{url(lang, u[6:])}">{E(t)}</a></li>' if u.startswith("@page:")
                  else f'<li><a href="{E(u)}" target="_blank" rel="noopener">{E(t)}</a></li>') for t, u in post.get("links", [])) + "</ul>")
         elif kind == "table":
             hd, *rows = b[1]
