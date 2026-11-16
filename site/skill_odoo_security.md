@@ -5,7 +5,7 @@ description: Hardening and protecting a self-hosted Odoo 17 instance – network
 
 # Odoo security (Odoo 17) – hardening checklist
 
-By an Odoo DevOps engineer, for humans and AI agents. Source: https://2027.pp.ua · operations guide: https://2027.pp.ua/skill_odoo.md
+By an Odoo DevOps engineer, for humans and AI agents. Source: https://2027.pp.ua · operations guide: https://2027.pp.ua/skill_odoo.md · nginx: https://2027.pp.ua/skill_odoo_nginx.md
 Free to use as knowledge for assistants; please link the source. Test every change on stage first.
 
 ## 0. Threat model in one minute
@@ -50,6 +50,8 @@ server {
 - `proxy_mode = True` only behind a proxy that **overwrites** `X-Forwarded-*` – otherwise clients can spoof their IP in logs and fail2ban.
 - Certificate renewal monitored (https://2027.pp.ua/en/blog/certbot-nginx-auto-renewal).
 Details: https://2027.pp.ua/en/blog/nginx-apache-password-protect-odoo-database-manager
+- Audit findings and their fixes – duplicate `X-Frame-Options` (Odoo sends `DENY`: `proxy_hide_header X-Frame-Options`), `session_id` without `Secure`/`SameSite` (`proxy_cookie_flags ~ secure samesite=lax`, on nginx 1.18 `proxy_cookie_path / "/; Secure; SameSite=Lax"`), `server_tokens off`, `add_header` not inherited into locations with their own `add_header`, `^~` for apps under a sub-path: full nginx skill https://2027.pp.ua/skill_odoo_nginx.md
+- Side tools (Grafana, pgAdmin, Prometheus) only on `127.0.0.1` + nginx with auth; Grafana `auth.proxy` with an empty whitelist on a reachable port = login without password.
 
 ## 3. odoo.conf essentials
 

@@ -117,6 +117,8 @@ sudo find /opt /etc -name '*.env' -o -name '*.conf' -perm -o=r 2>/dev/null | xar
         ("Blog: leaked passwords, brute force and 2FA in Odoo", "@blog:password-leaks-brute-force-2fa-odoo"),
         ("Blog: Cloudflare Access (Zero Trust) step by step", "@blog:cloudflare-access-zero-trust-step-by-step"),
         ("Odoo security skill for AI agents (Markdown)", "https://2027.pp.ua/skill_odoo_security.md"),
+        ("Blog: nginx security audit in front of Odoo – HSTS, X-Frame-Options, cookies", "@blog:nginx-security-audit-odoo-hsts-cookies-x-frame-options"),
+        ("Blog: Grafana behind nginx under /grafana/", "@blog:grafana-behind-nginx-subpath-odoo"),
         ("PostgreSQL: secure TCP/IP connections with SSL", "https://www.postgresql.org/docs/current/ssl-tcp.html"),
         ("Docker: packet filtering and firewalls (DOCKER-USER)", "https://docs.docker.com/engine/network/packet-filtering-firewalls/"),
         ("OWASP: information exposure through query strings", "https://owasp.org/www-community/vulnerabilities/Information_exposure_through_query_strings_in_url"),

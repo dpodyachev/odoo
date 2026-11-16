@@ -119,6 +119,7 @@ def head(T, lang, page, title, desc):
 <link rel="alternate" type="text/plain" href="/llms.txt" title="Site overview for AI assistants (llms.txt)">
 <link rel="alternate" type="text/markdown" href="/skill_odoo.md" title="Odoo operations skill for AI agents (Markdown)">
 <link rel="alternate" type="text/markdown" href="/skill_odoo_security.md" title="Odoo security skill for AI agents (Markdown)">
+<link rel="alternate" type="text/markdown" href="/skill_odoo_nginx.md" title="nginx for Odoo skill for AI agents (Markdown)">
 <link rel="stylesheet" href="{asset('/assets/style.css')}">
 <script src="{asset('/assets/theme.js')}" defer></script>
 <script src="{asset('/assets/contacts.js')}" defer></script>
@@ -961,7 +962,7 @@ def write(path, text):
 
 SKILLS_DIR = os.path.join(os.path.dirname(HERE), "skills")
 SKILL_ALIAS = {"odoo-ops": "skill_odoo.md", "odoo-security": "skill_odoo_security.md",
-              "odoo-replica": "skill_odoo_replica.md"}   # короткие адреса на сайте
+              "odoo-replica": "skill_odoo_replica.md", "odoo-nginx": "skill_odoo_nginx.md"}   # короткие адреса на сайте
 
 
 def write_ai_files():
@@ -991,7 +992,10 @@ def write_ai_files():
              "nginx/TLS, database manager, odoo.conf, users/2FA, login cooldown and fail2ban, API keys, access rights and record rules, "
              "secure custom code (SQL injection, XSS, sudo, CSRF), secrets and backups, updates, monitoring and incident response.",
              f"- [Odoo 18/19 read replica skill (Markdown, SKILL.md format)]({C.BASE_URL}/skill_odoo_replica.md): db_replica_host, how Odoo routes "
-             "requests between primary and replica (readonly routes, @api.readonly), why it can be slower, measuring, streaming replication, when it pays off.", "",
+             "requests between primary and replica (readonly routes, @api.readonly), why it can be slower, measuring, streaming replication, when it pays off.",
+             f"- [nginx for Odoo skill (Markdown, SKILL.md format)]({C.BASE_URL}/skill_odoo_nginx.md): reference HTTPS server block, security headers "
+             "(HSTS, single X-Frame-Options, nosniff), session cookie Secure/SameSite, location priority traps, apps like Grafana under a sub-path, "
+             "Docker ports bypassing ufw, curl audit checks, old nginx/Ubuntu.", "",
              "## Odoo and operations articles (English)", ""]
     for p in posts:
         t = p["t"].get("en") or next(iter(p["t"].values()))

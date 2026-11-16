@@ -27,6 +27,8 @@
 <url><loc>https://2027.pp.ua/de/blog/pgbouncer-odoo-connection-pooling</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/de/blog/odoo-how-many-users-one-server-workers</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/de/blog/odoo-server-security-logs-secrets-ports-encryption</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/de/blog/grafana-behind-nginx-subpath-odoo</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/de/blog/nginx-security-audit-odoo-hsts-cookies-x-frame-options</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/en/pg-odoo-calculator</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/en/pg-odoo-calculator-sliders</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/en/pg-odoo-calculator-replica</loc><lastmod>2026-11-16</lastmod></url>
@@ -54,6 +56,8 @@
 <url><loc>https://2027.pp.ua/en/blog/pgbouncer-odoo-connection-pooling</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/en/blog/odoo-how-many-users-one-server-workers</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/en/blog/odoo-server-security-logs-secrets-ports-encryption</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/en/blog/grafana-behind-nginx-subpath-odoo</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/en/blog/nginx-security-audit-odoo-hsts-cookies-x-frame-options</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/pg-odoo-calculator</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/pg-odoo-calculator-sliders</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/pg-odoo-calculator-replica</loc><lastmod>2026-11-16</lastmod></url>
@@ -81,6 +85,8 @@
 <url><loc>https://2027.pp.ua/fr/blog/pgbouncer-odoo-connection-pooling</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/blog/odoo-how-many-users-one-server-workers</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/blog/odoo-server-security-logs-secrets-ports-encryption</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/fr/blog/grafana-behind-nginx-subpath-odoo</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/fr/blog/nginx-security-audit-odoo-hsts-cookies-x-frame-options</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/el/pg-odoo-calculator</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/el/pg-odoo-calculator-sliders</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/el/pg-odoo-calculator-replica</loc><lastmod>2026-11-16</lastmod></url>
@@ -108,6 +114,8 @@
 <url><loc>https://2027.pp.ua/el/blog/pgbouncer-odoo-connection-pooling</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/el/blog/odoo-how-many-users-one-server-workers</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/el/blog/odoo-server-security-logs-secrets-ports-encryption</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/el/blog/grafana-behind-nginx-subpath-odoo</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/el/blog/nginx-security-audit-odoo-hsts-cookies-x-frame-options</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/pg-odoo-calculator</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/pg-odoo-calculator-sliders</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/pg-odoo-calculator-replica</loc><lastmod>2026-11-16</lastmod></url>
@@ -135,6 +143,8 @@
 <url><loc>https://2027.pp.ua/uk/blog/pgbouncer-odoo-connection-pooling</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/blog/odoo-how-many-users-one-server-workers</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/blog/odoo-server-security-logs-secrets-ports-encryption</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/uk/blog/grafana-behind-nginx-subpath-odoo</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/uk/blog/nginx-security-audit-odoo-hsts-cookies-x-frame-options</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/pg-odoo-calculator</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/pg-odoo-calculator-sliders</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/pg-odoo-calculator-replica</loc><lastmod>2026-11-16</lastmod></url>
@@ -162,4 +172,6 @@
 <url><loc>https://2027.pp.ua/ru/blog/pgbouncer-odoo-connection-pooling</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/blog/odoo-how-many-users-one-server-workers</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/blog/odoo-server-security-logs-secrets-ports-encryption</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/ru/blog/grafana-behind-nginx-subpath-odoo</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://2027.pp.ua/ru/blog/nginx-security-audit-odoo-hsts-cookies-x-frame-options</loc><lastmod>2026-11-16</lastmod></url>
 </urlset>

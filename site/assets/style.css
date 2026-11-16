@@ -377,6 +377,7 @@ html.lb-open { overflow: hidden; }
 @media (max-width: 640px) { .post-nav { gap: 8px; } .post-nav a { padding: 10px; } .post-nav span { display: none; }
   .post-nav small { margin: 0; } .post-nav .all { white-space: normal; } }
 .post-table code { overflow-wrap: anywhere; }
+.post p code, .post li code, .post-note code { overflow-wrap: anywhere; }
 .post-table { table-layout: auto; }
 
 /* 404: все языки, без меню */
