@@ -804,3 +804,5 @@ from blog_post_grafana import GRAFANA as _C16, AUDIT as _C17  # noqa: E402  (в�
 POSTS += [_C16, _C17]
 from blog_post_powa import POWA as _C18  # noqa: E402  (все 6 языков внутри)
 POSTS.append(_C18)
+from blog_post_problems import PROBLEMS as _C19  # noqa: E402  (все 6 языков внутри)
+POSTS.append(_C19)
