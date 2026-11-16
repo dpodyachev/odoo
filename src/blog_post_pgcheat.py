@@ -233,6 +233,7 @@ log_min_duration_statement = 2000"""),
         ("Blog: restoring on stage without cron jobs", "@blog:odoo-stage-restore-stop-cron-jobs"),
         ("Blog: could not serialize access", "@blog:odoo-could-not-serialize-access-concurrent-update"),
         ("Blog: pgload – load test for PostgreSQL", "@blog:postgresql-load-test-pgload-replica"),
+        ("Blog: PgBouncer for Odoo", "@blog:pgbouncer-odoo-connection-pooling"),
     ],
     "t": {},
 }
