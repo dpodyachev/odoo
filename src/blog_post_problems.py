@@ -370,3 +370,69 @@ PROBLEMS["t"]["ru"] = _b("ru",
       "после обновления CDN или прокси отдаёт старый бандл из кэша."]],
     "Большинство проблем Odoo предсказуемы, а значит, их можно предотвратить. Нужны минимум чистого своего кода, спланированные обновления, проверенные сторонние модули, измеренная база, фоновые задачи отдельно от пользователей и бэкапы, которые действительно восстанавливают на stage. Мы настраиваем и сопровождаем это для компаний в Германии, Австрии и Швейцарии.",
     "Ссылки")
+
+# ---------------------------------------------------------------- Europe/Kiev → Europe/Kyiv (добавлено по опыту владельца)
+PROBLEMS["code"]["tz"] = ("bash / SQL · Europe/Kiev vs. Europe/Kyiv: check every layer", """# 1) operating system / container: which names exist?
+ls -l /usr/share/zoneinfo/Europe/Kiev /usr/share/zoneinfo/Europe/Kyiv
+#    Ubuntu 24.04 / Debian 13: old names moved to the package tzdata-legacy
+sudo apt install tzdata-legacy                      # clean fix; or the quick one:
+sudo ln -s Kyiv /usr/share/zoneinfo/Europe/Kiev     # inside the Odoo/PostgreSQL image too (Dockerfile)
+
+# 2) PostgreSQL: does it know the name? (uses system tzdata or its own, depending on the build)
+psql -XAtc "SELECT name FROM pg_timezone_names WHERE name IN ('Europe/Kiev','Europe/Kyiv')"
+psql -XAtc "SHOW timezone"                           # postgresql.conf: timezone = 'Europe/Kyiv'
+
+# 3) Odoo (pytz has its own copy of the tz database – the version pinned in requirements.txt matters)
+python3 -c "import pytz; print(pytz.__version__, 'Europe/Kyiv' in pytz.all_timezones, 'Europe/Kiev' in pytz.all_timezones)"
+
+# 4) data: one spelling for all users (only after 1–3 know Europe/Kyiv)
+UPDATE res_partner SET tz = 'Europe/Kyiv' WHERE tz = 'Europe/Kiev';""")
+
+_TZ = {
+    "en": ("Time zone Europe/Kiev vs. Europe/Kyiv",
+           "The second classic after assets, with Ukrainian users. In 2022 the time zone database (IANA tzdata 2022b) renamed Europe/Kiev to Europe/Kyiv; the old name remained only as an alias. Each layer updated at its own pace – and errors appear wherever the two spellings meet:",
+           ["the browser (new ICU) reports Europe/Kyiv, while Odoo's `pytz` is older and does not know it → “Wrong value for tz” when saving a user or partner, or the time zone mismatch warning;",
+            "PostgreSQL or the system has no Europe/Kiev (Ubuntu 24.04 / Debian 13 moved old names into the package `tzdata-legacy`, minimal Docker images often lack it) → `invalid value for parameter \"TimeZone\": \"Europe/Kiev\"` in SQL, crons or reports;",
+            "different spellings in `res_partner.tz`, in `postgresql.conf` and in the container's `TZ` variable – timestamps in reports shift by an hour around daylight saving changes;",
+            "“Europe/Kyiw” or similar is not a valid name at all – only Europe/Kyiv (new) and Europe/Kiev (old alias) exist.",
+            "Fix: make every layer know both names (`tzdata-legacy` or a symlink Kiev → Kyiv in the OS and inside the images, a current `pytz`), then use one spelling in the data and configs."]),
+    "de": ("Zeitzone Europe/Kiev vs. Europe/Kyiv",
+           "Der zweite Klassiker nach den Assets, bei Benutzern in der Ukraine. 2022 hat die Zeitzonendatenbank (IANA tzdata 2022b) Europe/Kiev in Europe/Kyiv umbenannt; der alte Name blieb nur als Alias. Jede Schicht wurde in ihrem eigenen Tempo aktualisiert – und Fehler entstehen überall, wo sich die beiden Schreibweisen begegnen:",
+           ["der Browser (neues ICU) meldet Europe/Kyiv, das `pytz` von Odoo ist älter und kennt es nicht → „Wrong value for tz“ beim Speichern eines Benutzers oder Partners oder die Warnung wegen abweichender Zeitzone;",
+            "PostgreSQL oder das System kennt Europe/Kiev nicht (Ubuntu 24.04 / Debian 13 haben alte Namen ins Paket `tzdata-legacy` verschoben, schlanke Docker-Images haben es oft nicht) → `invalid value for parameter \"TimeZone\": \"Europe/Kiev\"` in SQL, Crons oder Berichten;",
+            "verschiedene Schreibweisen in `res_partner.tz`, in `postgresql.conf` und in der Variablen `TZ` des Containers – Zeitstempel in Berichten verschieben sich um die Zeitumstellung herum um eine Stunde;",
+            "„Europe/Kyiw“ o. Ä. ist gar kein gültiger Name – es gibt nur Europe/Kyiv (neu) und Europe/Kiev (alter Alias).",
+            "Lösung: jede Schicht beide Namen kennen lassen (`tzdata-legacy` oder ein Symlink Kiev → Kyiv im System und in den Images, aktuelles `pytz`), dann in Daten und Konfigurationen eine Schreibweise verwenden."]),
+    "fr": ("Fuseau horaire Europe/Kiev vs Europe/Kyiv",
+           "Le deuxième classique après les assets, avec des utilisateurs en Ukraine. En 2022, la base des fuseaux horaires (IANA tzdata 2022b) a renommé Europe/Kiev en Europe/Kyiv ; l'ancien nom n'est resté qu'un alias. Chaque couche s'est mise à jour à son rythme – et des erreurs apparaissent partout où les deux écritures se rencontrent :",
+           ["le navigateur (ICU récent) annonce Europe/Kyiv, alors que le `pytz` d'Odoo est plus ancien et ne le connaît pas → « Wrong value for tz » à l'enregistrement d'un utilisateur ou d'un partenaire, ou l'avertissement de fuseau différent ;",
+            "PostgreSQL ou le système ne connaît pas Europe/Kiev (Ubuntu 24.04 / Debian 13 ont déplacé les anciens noms dans le paquet `tzdata-legacy`, les images Docker minimales ne l'ont souvent pas) → `invalid value for parameter \"TimeZone\": \"Europe/Kiev\"` dans le SQL, les crons ou les rapports ;",
+            "des écritures différentes dans `res_partner.tz`, dans `postgresql.conf` et dans la variable `TZ` du conteneur – les horodatages des rapports se décalent d'une heure autour des changements d'heure ;",
+            "« Europe/Kyiw » ou similaire n'est pas un nom valide – seuls Europe/Kyiv (nouveau) et Europe/Kiev (ancien alias) existent.",
+            "Correction : faire connaître les deux noms à chaque couche (`tzdata-legacy` ou un lien symbolique Kiev → Kyiv dans le système et dans les images, un `pytz` à jour), puis utiliser une seule écriture dans les données et les configurations."]),
+    "el": ("Ζώνη ώρας Europe/Kiev vs Europe/Kyiv",
+           "Το δεύτερο κλασικό μετά τα assets, με χρήστες στην Ουκρανία. Το 2022 η βάση ζωνών ώρας (IANA tzdata 2022b) μετονόμασε το Europe/Kiev σε Europe/Kyiv· το παλιό όνομα έμεινε μόνο ως ψευδώνυμο. Κάθε επίπεδο ενημερώθηκε με τον δικό του ρυθμό – και τα σφάλματα εμφανίζονται όπου συναντώνται οι δύο γραφές:",
+           ["ο browser (νέο ICU) αναφέρει Europe/Kyiv, ενώ το `pytz` του Odoo είναι παλαιότερο και δεν το γνωρίζει → «Wrong value for tz» κατά την αποθήκευση χρήστη ή συνεργάτη, ή η προειδοποίηση διαφορετικής ζώνης ώρας·",
+            "το PostgreSQL ή το σύστημα δεν γνωρίζει το Europe/Kiev (τα Ubuntu 24.04 / Debian 13 μετέφεραν τα παλιά ονόματα στο πακέτο `tzdata-legacy`, τα ελαφριά Docker images συχνά δεν το έχουν) → `invalid value for parameter \"TimeZone\": \"Europe/Kiev\"` σε SQL, cron ή αναφορές·",
+            "διαφορετικές γραφές στο `res_partner.tz`, στο `postgresql.conf` και στη μεταβλητή `TZ` του container – οι χρονοσφραγίδες στις αναφορές μετατοπίζονται κατά μία ώρα γύρω από την αλλαγή ώρας·",
+            "το «Europe/Kyiw» ή παρόμοιο δεν είναι καν έγκυρο όνομα – υπάρχουν μόνο το Europe/Kyiv (νέο) και το Europe/Kiev (παλιό ψευδώνυμο).",
+            "Λύση: κάθε επίπεδο να γνωρίζει και τα δύο ονόματα (`tzdata-legacy` ή symlink Kiev → Kyiv στο σύστημα και μέσα στα images, ενημερωμένο `pytz`), και μετά μία γραφή στα δεδομένα και τις ρυθμίσεις."]),
+    "uk": ("Часовий пояс Europe/Kiev чи Europe/Kyiv",
+           "Друга класика після assets, якщо є користувачі в Україні. У 2022 році базу часових поясів (IANA tzdata 2022b) оновили: Europe/Kiev перейменували на Europe/Kyiv, а стара назва лишилася лише як псевдонім. Кожен шар оновлювався у власному темпі, тож помилки виникають скрізь, де стикаються два написання:",
+           ["браузер (новий ICU) повідомляє Europe/Kyiv, а `pytz` в Odoo старіший і такої назви не знає. Звідси «Wrong value for tz» при збереженні користувача чи партнера або попередження про розбіжність часового поясу;",
+            "PostgreSQL або система не знає Europe/Kiev (в Ubuntu 24.04 / Debian 13 старі назви винесли в пакет `tzdata-legacy`, а в мінімальних Docker-образах його часто немає). Звідси `invalid value for parameter \"TimeZone\": \"Europe/Kiev\"` у SQL, кронах чи звітах;",
+            "різні написання в `res_partner.tz`, у `postgresql.conf` і в змінній `TZ` контейнера: час у звітах зсувається на годину біля переходу на літній чи зимовий час;",
+            "«Europe/Kyiw» і подібні варіанти взагалі не є коректними назвами. Існують лише Europe/Kyiv (нова) і Europe/Kiev (старий псевдонім).",
+            "Рішення: зробити так, щоб кожен шар знав обидві назви (`tzdata-legacy` або symlink Kiev → Kyiv у системі й усередині образів, свіжий `pytz`), а потім використовувати одне написання в даних і конфігах."]),
+    "ru": ("Часовой пояс Europe/Kiev или Europe/Kyiv",
+           "Вторая классика после assets, если есть пользователи в Украине. В 2022 году базу часовых поясов (IANA tzdata 2022b) обновили: Europe/Kiev переименовали в Europe/Kyiv, а старое имя осталось только как псевдоним. Каждый слой обновлялся в своём темпе, поэтому ошибки возникают везде, где встречаются два написания:",
+           ["браузер (новый ICU) сообщает Europe/Kyiv, а `pytz` в Odoo старее и такого имени не знает. Отсюда «Wrong value for tz» при сохранении пользователя или партнёра или предупреждение о расхождении часового пояса;",
+            "PostgreSQL или система не знает Europe/Kiev (в Ubuntu 24.04 / Debian 13 старые имена вынесли в пакет `tzdata-legacy`, а в минимальных Docker-образах его часто нет). Отсюда `invalid value for parameter \"TimeZone\": \"Europe/Kiev\"` в SQL, кронах или отчётах;",
+            "разные написания в `res_partner.tz`, в `postgresql.conf` и в переменной `TZ` контейнера: время в отчётах сдвигается на час около перехода на летнее или зимнее время;",
+            "«Europe/Kyiw» и подобные варианты вообще не являются корректными именами. Существуют только Europe/Kyiv (новое) и Europe/Kiev (старый псевдоним).",
+            "Решение: сделать так, чтобы каждый слой знал оба имени (`tzdata-legacy` или symlink Kiev → Kyiv в системе и внутри образов, свежий `pytz`), а потом использовать одно написание в данных и конфигах."]),
+}
+for _lang, (_h, _p, _ul) in _TZ.items():
+    _body = PROBLEMS["t"][_lang]["body"]
+    _i = next(i for i, b in enumerate(_body) if b == ("code", "assets")) + 1
+    _body[_i:_i] = [("h", _h), ("p", _p), ("ul", _ul), ("code", "tz")]
