@@ -806,3 +806,5 @@ from blog_post_powa import POWA as _C18  # noqa: E402  (все 6 языков в
 POSTS.append(_C18)
 from blog_post_problems import PROBLEMS as _C19  # noqa: E402  (все 6 языков внутри)
 POSTS.append(_C19)
+from blog_post_longrun import LONGRUN as _C20  # noqa: E402  (все 6 языков внутри)
+POSTS.append(_C20)
