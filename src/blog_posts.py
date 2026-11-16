@@ -796,3 +796,5 @@ from blog_post_pgcheat import PGCHEAT as _C12  # noqa: E402
 POSTS.append(_C12)
 from blog_post_pgbouncer import PGBOUNCER as _C13  # noqa: E402
 POSTS.append(_C13)
+from blog_post_scaling import SCALING as _C14  # noqa: E402
+POSTS.append(_C14)

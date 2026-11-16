@@ -71,6 +71,7 @@ psql -U postgres -c "SELECT pid, datname, application_name, state, backend_start
         ("Odoo 17 source: bus (LISTEN imbus on db postgres)", "https://github.com/odoo/odoo/blob/17.0/addons/bus/models/bus.py"),
         ("OCA queue_job: jobrunner_db_host / jobrunner_db_port", "https://github.com/OCA/queue/tree/17.0/queue_job"),
         ("PostgreSQL/Odoo config calculator (this site)", "@page:pg-odoo-calculator.html"),
+        ("Blog: how many users can one Odoo server handle?", "@blog:odoo-how-many-users-one-server-workers"),
         ("Blog: PostgreSQL cheat sheet for Odoo admins", "@blog:postgresql-odoo-admin-cheat-sheet"),
         ("Blog: Odoo 19 with a read replica", "@blog:odoo-19-postgresql-read-replica"),
     ],

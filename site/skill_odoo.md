@@ -253,6 +253,7 @@ The Odoo Community Association (github.com/OCA) maintains hundreds of modules in
 
 - PostgreSQL cheat sheet for Odoo admins (backup/restore incl. curl, users/rights, passwords, long queries, vacuum, EXPLAIN, indexes, settings vs. workers): https://2027.pp.ua/en/blog/postgresql-odoo-admin-cheat-sheet
 - PgBouncer for Odoo (transaction pooling for workers, session pooling for the database `postgres` because the bus runs LISTEN imbus there, queue_job runner via jobrunner_db_host/port): https://2027.pp.ua/en/blog/pgbouncer-odoo-connection-pooling
+- Sizing: how many users one Odoo server handles (workers = CPU×2+1, ~6 concurrent users per worker, concurrent ≈ 10–20 % of all users): https://2027.pp.ua/en/blog/odoo-how-many-users-one-server-workers
 - odoo.conf + postgresql.conf calculator: https://2027.pp.ua/en/pg-odoo-calculator
 
 - Free hosting options, database and filestore (R2) for Odoo 17: https://2027.pp.ua/en/blog/odoo-17-free-hosting-database-filestore
