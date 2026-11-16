@@ -38,6 +38,8 @@
   function calc() {
     var ver = parseInt(val("ver"), 10);
     var users = num("users", 20);
+    var servers = f.elements.servers ? Math.max(1, Math.round(num("servers", 1))) : 1;   // Odoo application servers behind a load balancer
+    var usersPer = Math.ceil(users / servers);
     var same = val("layout") === "same";
     var ocpu = Math.round(num("ocpu", 4));
     var oram = num("oram", 8) * GB;
@@ -54,8 +56,11 @@
     // ---- Odoo ----
     var cpuOdoo = same ? Math.max(1, ocpu - Math.ceil(ocpu / 4)) : ocpu;      // shared host: ~25 % CPU for PostgreSQL
     var maxByCpu = cpuOdoo * 2 + 1;
-    var workers = clamp(Math.ceil(users / 6) + 1, 2, maxByCpu);              // ~6 concurrent users per worker
-    if (Math.ceil(users / 6) + 1 > maxByCpu) notes.push(T.n_cpu.replace("{n}", maxByCpu * 6));
+    var workers = clamp(Math.ceil(usersPer / 6) + 1, 2, maxByCpu);           // ~6 concurrent users per worker
+    if (Math.ceil(usersPer / 6) + 1 > maxByCpu) {
+      var need = Math.ceil(users / (maxByCpu * 6));
+      notes.push(T.n_cpu.replace("{n}", maxByCpu * 6 * servers) + " " + T.n_servers.replace("{s}", need));
+    }
     var osRes = Math.round(1024 + 0.05 * oram);
     var pgRam, odooRam;
     function odooNeed(w) { return w * PER_WORKER + 400; }                     // + cron threads, gevent, main process
@@ -77,11 +82,15 @@
     var hard = round64(Math.min(soft * 1.25, 2560));
     var procs = workers + cron + 1;                                          // HTTP workers + cron + gevent
     var dbMaxconn = procs > 9 ? 16 : 32;
-    var maxConn = Math.max(100, Math.ceil((procs * 3 + 20) / 10) * 10);
+    var maxConn = Math.max(100, Math.ceil((procs * servers * 3 + 20) / 10) * 10);
+    if (servers > 1) notes.push(T.n_multi.replace("{s}", servers));
+    if (maxConn > 500) notes.push(T.n_pool.replace("{m}", maxConn));
+    if (workers * servers > dcpu * 6) notes.push(T.n_dbcpu.replace("{w}", workers * servers).replace("{c}", dcpu));
 
     var oc = [
       "[options]",
       "; Odoo " + ver + " · " + T.c_gen,
+      servers > 1 ? "; " + T.c_servers.replace("{s}", servers) : null,
       "workers = " + workers + "                 ; ≈ " + (workers * 6) + " " + T.c_users,
       "max_cron_threads = " + cron,
       "limit_memory_soft = " + (soft * 1024 * 1024) + "   ; " + soft + " MB",
@@ -106,7 +115,7 @@
     var gather = par ? Math.min(4, Math.ceil(dcpu / 2)) : 1;
     var wm = Math.max(4, (pgRam - sb) / ((maxConn + dcpu) * 3) / gather);
     var p = [
-      ["max_connections", maxConn, T.c_conn.replace("{p}", procs)],
+      ["max_connections", maxConn, T.c_conn.replace("{p}", procs * servers)],
       ["shared_buffers", mem(sb), "25 % RAM"],
       ["effective_cache_size", mem(ecs), "75 % RAM"],
       ["maintenance_work_mem", mem(mwm), ""],
@@ -182,7 +191,7 @@
       ]);
     }
 
-    show($(".pc-odoo"), oc);
+    show($(".pc-odoo"), oc.filter(function (l) { return l !== null; }));
     show($(".pc-pg"), pc);
     root.querySelectorAll("output[data-for]").forEach(function (o) {
       o.textContent = f.elements[o.getAttribute("data-for")].value;
@@ -200,8 +209,8 @@
       s.title = s.textContent;
       $(".pc-bar").appendChild(s);
     });
-    $(".pc-sum").textContent = T.s_sum.replace("{w}", workers).replace("{u}", workers * 6)
-      .replace("{c}", procs * 2).replace("{m}", maxConn);
+    $(".pc-sum").textContent = (servers > 1 ? servers + " × " : "") + T.s_sum.replace("{w}", workers).replace("{u}", workers * 6 * servers)
+      .replace("{c}", procs * 2 * servers).replace("{m}", maxConn);
     var nl = $(".pc-notes"); nl.innerHTML = "";
     notes.forEach(function (n) { var li = document.createElement("li"); li.textContent = n; nl.appendChild(li); });
     nl.hidden = !notes.length;
