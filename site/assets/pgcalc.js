@@ -47,6 +47,9 @@
     var pgv = parseInt(val("pgv"), 10);
     var replica = val("replica") && ver >= 18;
     var notes = [];
+    function ipv(n, d) { var e = f.elements[n]; return e && e.value.trim() ? e.value.trim() : d; }
+    var ipO = ipv("ip_odoo", "10.0.0.5"), ipP = ipv("ip_primary", "10.0.0.10"), ipR = ipv("ip_replica", "10.0.0.11");
+    var repPage = !!$(".pc-rep");
 
     // ---- Odoo ----
     var cpuOdoo = same ? Math.max(1, ocpu - Math.ceil(ocpu / 4)) : ocpu;      // shared host: ~25 % CPU for PostgreSQL
@@ -87,10 +90,10 @@
       "limit_time_real = 1200",
       "limit_request = 65536",
       "db_maxconn = " + dbMaxconn + "              ; " + T.c_maxconn,
-      same ? "db_host = False             ; " + T.c_socket : "db_host = 10.0.0.10         ; " + T.c_dbhost,
+      same ? "db_host = False             ; " + T.c_socket : "db_host = " + ipP + "         ; " + T.c_dbhost,
       "db_port = 5432",
     ];
-    if (replica) oc.push("db_replica_host = 10.0.0.11  ; " + T.c_replica, "db_replica_port = 5432");
+    if (replica) oc.push("db_replica_host = " + ipR + "  ; " + T.c_replica, "db_replica_port = 5432");
     oc.push("proxy_mode = True", "gevent_port = 8072", "list_db = False", "; admin_passwd = <" + T.c_secret + ">",
             "; db_user / db_password = <" + T.c_secret + ">");
 
@@ -127,21 +130,57 @@
            ["autovacuum_vacuum_scale_factor", "0.05", T.c_av],
            ["autovacuum_analyze_scale_factor", "0.02", ""],
            ["listen_addresses", same ? "'localhost'" : "'*'", same ? "" : T.c_hba]);
-    if (replica) p.push(["", "", T.c_repl_h], ["wal_level", "replica", ""], ["max_wal_senders", "10", ""],
-                        ["hot_standby_feedback", "on", T.c_repl_only]);
+    var common = p.slice();                                   // memory/planner/Odoo part – same on the replica
+    if (replica) p.push(["", "", T.c_repl_h], ["wal_level", "replica", ""], ["max_wal_senders", "10", ""]);
+    if (replica && !repPage) p.push(["hot_standby_feedback", "on", T.c_repl_only]);
     var fmt = val("fmt");
-    var pc = ["# PostgreSQL " + pgv + " · " + (same ? T.c_same : T.c_dedicated) + " · RAM " + mem(pgRam) + ", CPU " + dcpu];
-    p.forEach(function (r) {
-      if (!r[0]) { pc.push("", "# --- " + r[2]); return; }
-      var v = String(r[1]);
-      if (fmt === "alter") {
-        var q = /^'.*'$/.test(v) ? v : "'" + v + "'";
-        pc.push("ALTER SYSTEM SET " + r[0] + " = " + q + ";" + (r[2] ? "  -- " + r[2] : ""));
-      } else {
-        pc.push(r[0] + " = " + v + (r[2] ? "    # " + r[2] : ""));
-      }
-    });
-    if (fmt === "alter") pc.push("", "SELECT pg_reload_conf();  -- " + T.c_restart2);
+    function render(list, head) {
+      var out = [head];
+      list.forEach(function (r) {
+        if (!r[0]) { out.push("", "# --- " + r[2]); return; }
+        var v = String(r[1]);
+        if (fmt === "alter") {
+          var q = /^'.*'$/.test(v) ? v : "'" + v + "'";
+          out.push("ALTER SYSTEM SET " + r[0] + " = " + q + ";" + (r[2] ? "  -- " + r[2] : ""));
+        } else {
+          out.push(r[0] + " = " + v + (r[2] ? "    # " + r[2] : ""));
+        }
+      });
+      if (fmt === "alter") out.push("", "SELECT pg_reload_conf();  -- " + T.c_restart2);
+      return out;
+    }
+    var pc = render(p, "# PostgreSQL " + pgv + " · " + (same ? T.c_same : T.c_dedicated) + (repPage ? " · primary " + ipP : "")
+                       + " · RAM " + mem(pgRam) + ", CPU " + dcpu);
+    if (repPage) {
+      var rl = common.concat([["", "", "hot standby"], ["hot_standby", "on", ""], ["hot_standby_feedback", "on", "fewer 'conflict with recovery' cancellations"],
+                              ["max_standby_streaming_delay", "30s", ""], ["wal_level", "replica", "same as primary"]]);
+      show($(".pc-rep"), render(rl, "# PostgreSQL " + pgv + " · replica " + ipR + " · RAM " + mem(pgRam) + ", CPU " + dcpu));
+      show($(".pc-setup"), [
+        "# pg_hba.conf on the PRIMARY " + ipP,
+        "host  all          odoo        " + ipO + "/32  scram-sha-256",
+        "host  replication  replicator  " + ipR + "/32  scram-sha-256",
+        "",
+        "# pg_hba.conf on the REPLICA " + ipR + " (read-only connections from Odoo)",
+        "host  all          odoo        " + ipO + "/32  scram-sha-256",
+        "",
+        "# 1) primary: replication role (password into ~/.pgpass on the replica, not into scripts)",
+        "sudo -u postgres psql -c \"CREATE ROLE replicator WITH REPLICATION LOGIN\" -c '\\password replicator'",
+        "sudo systemctl reload postgresql",
+        "",
+        "# 2) replica: empty data directory, copy from the primary, -R writes primary_conninfo + standby.signal",
+        "sudo systemctl stop postgresql",
+        "sudo -u postgres bash -c 'rm -rf /var/lib/postgresql/" + pgv + "/main/*'",
+        "sudo -u postgres pg_basebackup -h " + ipP + " -U replicator -D /var/lib/postgresql/" + pgv + "/main -R -X stream -P",
+        "sudo systemctl start postgresql",
+        "",
+        "# 3) check",
+        "psql -h " + ipP + " -U odoo -d postgres -c \"SELECT client_addr, state, sync_state, replay_lag FROM pg_stat_replication;\"",
+        "psql -h " + ipR + " -U odoo -d postgres -c \"SELECT pg_is_in_recovery(), now() - pg_last_xact_replay_timestamp() AS lag;\"",
+        "",
+        "# 4) odoo.conf: db_replica_host = " + ipR + " (above), restart Odoo, watch the log for",
+        "#    'retrying with a read/write cursor' and 'Failed to open a readonly cursor'",
+      ]);
+    }
 
     show($(".pc-odoo"), oc);
     show($(".pc-pg"), pc);
@@ -167,7 +206,7 @@
     notes.forEach(function (n) { var li = document.createElement("li"); li.textContent = n; nl.appendChild(li); });
     nl.hidden = !notes.length;
     $(".pc-dbhost").hidden = same;
-    $(".pc-replica").hidden = ver < 18;
+    if ($(".pc-replica")) $(".pc-replica").hidden = ver < 18;
   }
 
   f.addEventListener("input", calc);

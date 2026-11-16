@@ -90,3 +90,5 @@ Not worth it / first do something else:
 - Model method callable via RPC that only reads → `@api.readonly`; never on methods that write, send mail, create activities or update "last seen" fields.
 - Watch the log after deployment for `retrying with a read/write cursor` – each one names a route that should not be read-only.
 - Do not rely on reading data you just wrote in a previous request from a read-only route (replication lag).
+
+Config generator (odoo.conf with db_replica_host, postgresql.conf for primary and replica, pg_hba.conf, pg_basebackup commands): https://2027.pp.ua/en/pg-odoo-calculator-replica

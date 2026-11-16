@@ -169,7 +169,7 @@ def header(T, lang, page):
             items.append(("pubs", PP.TX[lang]["nav"]))
             items.append(("calc", CP.TX[lang]["nav"]))
     hrefs = {"blog": url(lang, "blog/"), "calc": url(lang, CP.SLUG), "pubs": url(lang, PP.SLUG)}
-    current = {"blog": page.startswith("blog/"), "calc": page in (CP.SLUG, CP.SLUG_S), "pubs": page == PP.SLUG}
+    current = {"blog": page.startswith("blog/"), "calc": page in (CP.SLUG, CP.SLUG_S, CP.SLUG_R), "pubs": page == PP.SLUG}
     cls = {"services": "nav-icon multi", "prices": "nav-icon cur", "bot": "nav-icon radar"}
     nav = "".join(
         f'<a class="{cls.get(k, "nav-icon")}" href="{hrefs.get(k, url(lang) + "#" + k)}" '
@@ -1017,10 +1017,10 @@ def main():
         write(f"{lang}/index.html", index(T, lang))
         write(f"{lang}/impressum.html", legal_page(T, lang, "impressum.html", "impressum_page"))
         write(f"{lang}/datenschutz.html", legal_page(T, lang, "datenschutz.html", "privacy_page"))
-        for slug, sl in ((CP.SLUG, False), (CP.SLUG_S, True)):
+        for slug, mode, tkey in ((CP.SLUG, "fields", "title"), (CP.SLUG_S, "sliders", "title_s"), (CP.SLUG_R, "replica", "title_r")):
             X = CP.TX[lang]
-            write(f"{lang}/{slug}", head(T, lang, slug, f'{X["title_s"] if sl else X["title"]} · {C.BRAND}', X["desc"])
-                  + header(T, lang, slug) + CP.page_html(lang, E, url, sl)
+            write(f"{lang}/{slug}", head(T, lang, slug, f'{X[tkey]} · {C.BRAND}', X["intro_r"] if mode == "replica" else X["desc"])
+                  + header(T, lang, slug) + CP.page_html(lang, E, url, mode)
                   + f'<script src="{asset("/assets/pgcalc.js")}" defer></script>' + footer(T, lang, slug))
             pages.append(url(lang, slug))
         X = PP.TX[lang]

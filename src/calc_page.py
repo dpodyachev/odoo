@@ -2,6 +2,7 @@
 
 SLUG = "pg-odoo-calculator.html"
 SLUG_S = "pg-odoo-calculator-sliders.html"
+SLUG_R = "pg-odoo-calculator-replica.html"
 ARTICLE = "postgresql-odoo-admin-cheat-sheet"
 
 # комментарии внутри конфигов – на английском для всех языков (конфиги технические)
@@ -30,6 +31,17 @@ CONF = {
 TX = {
     "de": {
         "sw_sl": 'Version mit Schiebereglern', "sw_num": 'Version mit Eingabefeldern', "title_s": 'Rechner mit Schiebereglern',
+        "sw_rep": 'Version mit Read-Replica',
+        "title_r": 'Rechner: Odoo 18/19 mit PostgreSQL-Read-Replica',
+        "intro_r": 'Für Odoo 18/19 mit Primary und Read-Replica: Adressen eintragen – Sie erhalten odoo.conf mit db_replica_host, postgresql.conf für Primary und Replica, pg_hba.conf und die Befehle zum Einrichten der Replikation.',
+        "l_ip_odoo": 'IP des Odoo-Servers',
+        "l_ip_primary": 'IP des Primary (Schreiben)',
+        "l_ip_replica": 'IP der Replica (Lesen)',
+        "h_pg_primary": 'PostgreSQL Primary',
+        "h_pg_rep": 'PostgreSQL Replica',
+        "h_setup": 'pg_hba.conf und Einrichtung',
+        "how_rep": ['Die Replica bekommt dieselben Speicherwerte wie der Primary (gleiche Hardware empfohlen) plus hot_standby und hot_standby_feedback.', 'Odoo öffnet zwei Verbindungspools pro Prozess – Primary und Replica brauchen je eigene max_connections. Replica im selben LAN (< 1 ms), sonst wird Odoo langsamer.'],
+        "more_rep": 'Warum eine Replica Odoo verlangsamen kann',
         "nav": "PostgreSQL/Odoo-Rechner",
         "title": "PostgreSQL- und Odoo-Konfigurationsrechner",
         "desc": "odoo.conf und postgresql.conf aus CPU, RAM und Anwenderzahl berechnen – Worker, Speicherlimits, max_connections, shared_buffers, work_mem. Nach dem Vorbild von pgtune, aber mit Odoo.",
@@ -58,6 +70,17 @@ TX = {
     },
     "en": {
         "sw_sl": 'Version with sliders', "sw_num": 'Version with input fields', "title_s": 'Calculator with sliders',
+        "sw_rep": 'Version with read replica',
+        "title_r": 'Calculator: Odoo 18/19 with a PostgreSQL read replica',
+        "intro_r": 'For Odoo 18/19 with a primary and a read replica: enter the addresses – you get odoo.conf with db_replica_host, postgresql.conf for primary and replica, pg_hba.conf and the commands to set up replication.',
+        "l_ip_odoo": 'IP of the Odoo server',
+        "l_ip_primary": 'IP of the primary (writes)',
+        "l_ip_replica": 'IP of the replica (reads)',
+        "h_pg_primary": 'PostgreSQL primary',
+        "h_pg_rep": 'PostgreSQL replica',
+        "h_setup": 'pg_hba.conf and setup',
+        "how_rep": ['The replica gets the same memory values as the primary (same hardware recommended) plus hot_standby and hot_standby_feedback.', 'Odoo opens two connection pools per process – primary and replica each need their own max_connections. Keep the replica in the same LAN (< 1 ms), otherwise Odoo gets slower.'],
+        "more_rep": 'Why a replica can make Odoo slower',
         "nav": "PostgreSQL/Odoo calculator",
         "title": "PostgreSQL and Odoo configuration calculator",
         "desc": "Calculate odoo.conf and postgresql.conf from CPU, RAM and number of users – workers, memory limits, max_connections, shared_buffers, work_mem. Like pgtune, but Odoo-aware.",
@@ -86,6 +109,17 @@ TX = {
     },
     "fr": {
         "sw_sl": 'Version avec curseurs', "sw_num": 'Version avec champs de saisie', "title_s": 'Calculateur avec curseurs',
+        "sw_rep": 'Version avec réplique',
+        "title_r": 'Calculateur : Odoo 18/19 avec réplique PostgreSQL en lecture',
+        "intro_r": 'Pour Odoo 18/19 avec un primaire et une réplique en lecture : saisir les adresses – vous obtenez odoo.conf avec db_replica_host, postgresql.conf pour primaire et réplique, pg_hba.conf et les commandes de mise en place de la réplication.',
+        "l_ip_odoo": 'IP du serveur Odoo',
+        "l_ip_primary": 'IP du primaire (écritures)',
+        "l_ip_replica": 'IP de la réplique (lectures)',
+        "h_pg_primary": 'PostgreSQL primaire',
+        "h_pg_rep": 'PostgreSQL réplique',
+        "h_setup": 'pg_hba.conf et mise en place',
+        "how_rep": ['La réplique reçoit les mêmes valeurs mémoire que le primaire (même matériel recommandé) plus hot_standby et hot_standby_feedback.', 'Odoo ouvre deux pools de connexions par processus – primaire et réplique ont chacun besoin de leur max_connections. Garder la réplique dans le même LAN (< 1 ms), sinon Odoo ralentit.'],
+        "more_rep": 'Pourquoi une réplique peut ralentir Odoo',
         "nav": "Calculateur PostgreSQL/Odoo",
         "title": "Calculateur de configuration PostgreSQL et Odoo",
         "desc": "Calculer odoo.conf et postgresql.conf à partir du CPU, de la RAM et du nombre d'utilisateurs – workers, limites mémoire, max_connections, shared_buffers, work_mem. Comme pgtune, mais en tenant compte d'Odoo.",
@@ -114,6 +148,17 @@ TX = {
     },
     "el": {
         "sw_sl": 'Έκδοση με ρυθμιστικά', "sw_num": 'Έκδοση με πεδία εισαγωγής', "title_s": 'Υπολογιστής με ρυθμιστικά',
+        "sw_rep": 'Έκδοση με read replica',
+        "title_r": 'Υπολογιστής: Odoo 18/19 με PostgreSQL read replica',
+        "intro_r": 'Για Odoo 18/19 με primary και read replica: δώστε τις διευθύνσεις – παίρνετε odoo.conf με db_replica_host, postgresql.conf για primary και replica, pg_hba.conf και τις εντολές για τη ρύθμιση της αναπαραγωγής.',
+        "l_ip_odoo": 'IP του server Odoo',
+        "l_ip_primary": 'IP του primary (εγγραφές)',
+        "l_ip_replica": 'IP του replica (αναγνώσεις)',
+        "h_pg_primary": 'PostgreSQL primary',
+        "h_pg_rep": 'PostgreSQL replica',
+        "h_setup": 'pg_hba.conf και ρύθμιση',
+        "how_rep": ['Το replica παίρνει τις ίδιες τιμές μνήμης με τον primary (συνιστάται ίδιο hardware) συν hot_standby και hot_standby_feedback.', 'Το Odoo ανοίγει δύο pools συνδέσεων ανά διεργασία – primary και replica χρειάζονται το καθένα δικό του max_connections. Κρατήστε το replica στο ίδιο LAN (< 1 ms), αλλιώς το Odoo γίνεται πιο αργό.'],
+        "more_rep": 'Γιατί ένα replica μπορεί να επιβραδύνει το Odoo',
         "nav": "Υπολογιστής PostgreSQL/Odoo",
         "title": "Υπολογιστής ρυθμίσεων PostgreSQL και Odoo",
         "desc": "Υπολογισμός odoo.conf και postgresql.conf από CPU, RAM και αριθμό χρηστών – workers, όρια μνήμης, max_connections, shared_buffers, work_mem. Όπως το pgtune, αλλά με γνώση του Odoo.",
@@ -142,6 +187,17 @@ TX = {
     },
     "uk": {
         "sw_sl": 'Версія з повзунками', "sw_num": 'Версія з полями введення', "title_s": 'Калькулятор з повзунками',
+        "sw_rep": 'Версія з read-реплікою',
+        "title_r": 'Калькулятор: Odoo 18/19 з read-реплікою PostgreSQL',
+        "intro_r": 'Для Odoo 18/19 з майстром і read-реплікою: введіть адреси й отримаєте odoo.conf з db_replica_host, postgresql.conf для майстра й репліки, pg_hba.conf і команди для налаштування реплікації.',
+        "l_ip_odoo": 'IP сервера Odoo',
+        "l_ip_primary": 'IP майстра (запис)',
+        "l_ip_replica": 'IP репліки (читання)',
+        "h_pg_primary": 'PostgreSQL майстер',
+        "h_pg_rep": 'PostgreSQL репліка',
+        "h_setup": 'pg_hba.conf і налаштування',
+        "how_rep": ["Репліка отримує ті самі значення пам'яті, що й майстер (рекомендовано однакове залізо), плюс hot_standby і hot_standby_feedback.", "Odoo відкриває два пули з'єднань на процес, тож майстру й репліці потрібен власний max_connections. Тримайте репліку в тій самій локальній мережі (< 1 мс), інакше Odoo сповільниться."],
+        "more_rep": 'Чому репліка може сповільнити Odoo',
         "nav": "Калькулятор PostgreSQL/Odoo",
         "title": "Калькулятор конфігурації PostgreSQL і Odoo",
         "desc": "Розрахунок odoo.conf і postgresql.conf за CPU, RAM і кількістю користувачів: воркери, ліміти пам'яті, max_connections, shared_buffers, work_mem. Як pgtune, але з урахуванням Odoo.",
@@ -170,6 +226,17 @@ TX = {
     },
     "ru": {
         "sw_sl": 'Версия с ползунками', "sw_num": 'Версия с полями ввода', "title_s": 'Калькулятор с ползунками',
+        "sw_rep": 'Версия с read-репликой',
+        "title_r": 'Калькулятор: Odoo 18/19 с read-репликой PostgreSQL',
+        "intro_r": 'Для Odoo 18/19 с мастером и read-репликой: введите адреса и получите odoo.conf с db_replica_host, postgresql.conf для мастера и реплики, pg_hba.conf и команды для настройки репликации.',
+        "l_ip_odoo": 'IP сервера Odoo',
+        "l_ip_primary": 'IP мастера (запись)',
+        "l_ip_replica": 'IP реплики (чтение)',
+        "h_pg_primary": 'PostgreSQL мастер',
+        "h_pg_rep": 'PostgreSQL реплика',
+        "h_setup": 'pg_hba.conf и настройка',
+        "how_rep": ['Реплика получает те же значения памяти, что и мастер (рекомендуется одинаковое железо), плюс hot_standby и hot_standby_feedback.', 'Odoo открывает два пула соединений на процесс, поэтому мастеру и реплике нужен свой max_connections. Держите реплику в той же локальной сети (< 1 мс), иначе Odoo замедлится.'],
+        "more_rep": 'Почему реплика может замедлить Odoo',
         "nav": "Калькулятор PostgreSQL/Odoo",
         "title": "Калькулятор конфигурации PostgreSQL и Odoo",
         "desc": "Расчёт odoo.conf и postgresql.conf по CPU, RAM и числу пользователей: воркеры, лимиты памяти, max_connections, shared_buffers, work_mem. Как pgtune, но с учётом Odoo.",
@@ -202,10 +269,11 @@ CALC_ICON = ('<rect x="5" y="2.5" width="14" height="19" rx="2"/><rect x="8" y="
              '<path d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 16.3h.01M12 16.3h.01M15.5 16.3v2.2M8.5 19h3.5"/>')
 
 
-def page_html(lang, E, url, sliders=False):
-    """Тело страницы (без head/header/footer). Данные для JS – в JSON-блоке (CSP: без inline-скриптов)."""
+def page_html(lang, E, url, mode="fields"):
+    """Тело страницы (без head/header/footer). mode: fields | sliders | replica. Данные для JS – в JSON-блоке (CSP)."""
     import json
     X = TX[lang]
+    sliders, rep = mode == "sliders", mode == "replica"
     data = {k: X[k] for k in ("copied", "b_os", "b_odoo", "b_pg", "s_sum", "n_cpu", "n_ram")}
     data.update(CONF)
     js = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
@@ -216,45 +284,61 @@ def page_html(lang, E, url, sliders=False):
     def field(name, label, inner, cls=""):
         return f'<label class="pc-f{(" " + cls) if cls else ""}"><span>{E(label)}</span>{inner}</label>'
 
-    def number(name, v, mn, mx, step=1):
+    def number(name, v, mn, mx, mxs):
         if sliders:
-            return (f'<span class="pc-range"><input type="range" name="{name}" value="{v}" min="{mn}" max="{mx}" step="{step}">'
+            return (f'<span class="pc-range"><input type="range" name="{name}" value="{v}" min="{mn}" max="{mxs}" step="1">'
                     f'<output data-for="{name}">{v}</output></span>')
         return f'<input type="number" name="{name}" value="{v}" min="{mn}" max="{mx}" step="1" inputmode="numeric">'
 
+    def ip(name, v):
+        return f'<input type="text" name="{name}" value="{v}" spellcheck="false" inputmode="decimal" pattern="[0-9a-zA-Z.:-]+">'
+
+    vers = ("18", "19") if rep else ("16", "17", "18", "19")
+    layout = ('<input type="hidden" name="layout" value="sep">' if rep else
+              field("layout", X["l_layout"], '<select name="layout">' + opt("same", X["o_same"], True) + opt("sep", X["o_sep"]) + "</select>"))
     form = (
         '<form class="pc-form" autocomplete="off">'
-        + field("ver", X["l_ver"], '<select name="ver">' + "".join(opt(v, v, v == "17") for v in ("16", "17", "18", "19")) + "</select>")
-        + field("users", X["l_users"], number("users", 25, 1, 5000) if not sliders else number("users", 25, 1, 400))
-        + field("layout", X["l_layout"], '<select name="layout">' + opt("same", X["o_same"], True) + opt("sep", X["o_sep"]) + "</select>")
-        + field("ocpu", X["l_ocpu"], number("ocpu", 4, 1, 256 if not sliders else 64))
-        + field("oram", X["l_oram"], number("oram", 16, 1, 2048 if not sliders else 256))
-        + '<div class="pc-dbhost" hidden>'
-        + field("dcpu", X["l_dcpu"], number("dcpu", 4, 1, 256 if not sliders else 64))
-        + field("dram", X["l_dram"], number("dram", 16, 1, 4096 if not sliders else 512))
+        + field("ver", X["l_ver"], '<select name="ver">' + "".join(opt(v, v, v == ("19" if rep else "17")) for v in vers) + "</select>")
+        + field("users", X["l_users"], number("users", 60 if rep else 25, 1, 5000, 400))
+        + layout
+        + field("ocpu", X["l_ocpu"], number("ocpu", 8 if rep else 4, 1, 256, 64))
+        + field("oram", X["l_oram"], number("oram", 16, 1, 2048, 256))
+        + f'<div class="pc-dbhost"{"" if rep else " hidden"}>'
+        + field("dcpu", X["l_dcpu"], number("dcpu", 8 if rep else 4, 1, 256, 64))
+        + field("dram", X["l_dram"], number("dram", 32 if rep else 16, 1, 4096, 512))
         + "</div>"
+        + (field("ip_odoo", X["l_ip_odoo"], ip("ip_odoo", "10.0.0.5"))
+           + field("ip_primary", X["l_ip_primary"], ip("ip_primary", "10.0.0.10"))
+           + field("ip_replica", X["l_ip_replica"], ip("ip_replica", "10.0.0.11")) if rep else "")
         + field("disk", X["l_disk"], '<select name="disk">' + opt("ssd", "SSD / NVMe", True) + opt("hdd", "HDD") + "</select>")
         + field("pgv", X["l_pgv"], '<select name="pgv">' + "".join(opt(v, v, v == "16") for v in ("13", "14", "15", "16", "17")) + "</select>")
         + field("fmt", X["l_fmt"], '<select name="fmt">' + opt("conf", X["o_conf"], True) + opt("alter", X["o_alter"]) + "</select>")
-        + f'<label class="pc-check pc-replica" hidden><input type="checkbox" name="replica"> <span>{E(X["l_replica"])}</span></label>'
+        + (f'<input type="checkbox" name="replica" checked hidden>' if rep else
+           f'<label class="pc-check pc-replica" hidden><input type="checkbox" name="replica"> <span>{E(X["l_replica"])}</span></label>')
         + "</form>"
     )
-    out = (
-        '<div class="pc-bar" aria-hidden="true"></div><p class="pc-sum"></p><ul class="pc-notes note" hidden></ul>'
-        f'<div class="pc-out"><figure class="code"><figcaption>{E(X["h_odoo"])}'
-        f'<button type="button" class="pc-copy" data-t=".pc-odoo">{E(X["copy"])}</button></figcaption><pre><code class="pc-odoo"></code></pre></figure>'
-        f'<figure class="code"><figcaption>{E(X["h_pg"])}'
-        f'<button type="button" class="pc-copy" data-t=".pc-pg">{E(X["copy"])}</button></figcaption><pre><code class="pc-pg"></code></pre></figure></div>'
-    )
-    how = "".join(f"<li>{E(x)}</li>" for x in X["how"])
+
+    def block(title, cls):
+        return (f'<figure class="code"><figcaption>{E(title)}'
+                f'<button type="button" class="pc-copy" data-t=".{cls}">{E(X["copy"])}</button></figcaption><pre><code class="{cls}"></code></pre></figure>')
+
+    out = ('<div class="pc-bar" aria-hidden="true"></div><p class="pc-sum"></p><ul class="pc-notes note" hidden></ul>'
+           '<div class="pc-out">' + block(X["h_odoo"], "pc-odoo")
+           + block(X["h_pg_primary"] if rep else X["h_pg"], "pc-pg")
+           + (block(X["h_pg_rep"], "pc-rep") + block(X["h_setup"], "pc-setup") if rep else "") + "</div>")
+    how = "".join(f"<li>{E(x)}</li>" for x in X["how"] + (X["how_rep"] if rep else []))
+    title = X["title_r"] if rep else X["title_s"] if sliders else X["title"]
+    links = [(SLUG, X["sw_num"]), (SLUG_S, X["sw_sl"]), (SLUG_R, X["sw_rep"])]
+    switch = " · ".join(f'<a href="{url(lang, sl)}">{E(t)}</a>' for sl, t in links if sl != {"fields": SLUG, "sliders": SLUG_S, "replica": SLUG_R}[mode])
     return (
-        f'<main class="sec"><div class="wrap pgcalc{" pc-sliders" if sliders else ""}"><h1>{E(X["title_s"] if sliders else X["title"])}</h1>'
-        f'<p class="intro">{E(X["intro"])}</p>'
-        f'<p class="pc-switch"><a href="{url(lang, SLUG if sliders else SLUG_S)}">{E(X["sw_num"] if sliders else X["sw_sl"])} →</a></p>'
+        f'<main class="sec"><div class="wrap pgcalc pc-{mode}"><h1>{E(title)}</h1>'
+        f'<p class="intro">{E(X["intro_r"] if rep else X["intro"])}</p>'
+        f'<p class="pc-switch">{switch}</p>'
         f'<script type="application/json" class="pc-data">{js}</script>'
         f'<noscript><p class="note">JavaScript</p></noscript>'
         f'<div class="pc-grid"><div>{form}</div><div>{out}</div></div>'
         f'<h2>{E(X["h_how"])}</h2><ul>{how}</ul><p class="note">{E(X["disclaimer"])}</p>'
-        f'<p><a href="{url(lang, "blog/" + ARTICLE + ".html")}">{E(X["more"])} →</a></p>'
-        "</div></main>"
+        f'<p><a href="{url(lang, "blog/" + ARTICLE + ".html")}">{E(X["more"])} →</a>'
+        + (f' · <a href="{url(lang, "blog/odoo-19-postgresql-read-replica.html")}">{E(X["more_rep"])} →</a>' if rep else "")
+        + "</p></div></main>"
     )
