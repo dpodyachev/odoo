@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PoWA for PostgreSQL behind Odoo: setup in Docker (remote mode), extensions, security and what to look at · Goldberg</title>
+<meta name="description" content="PoWA (PostgreSQL Workload Analyzer) shows which queries cost the most, what sessions wait for and which indexes are missing – with history. A working Docker setup in remote mode for a primary and a replica, the extensions on the database servers, a collector role without superuser, passwords outside the powa_servers table, and what to look for with Odoo.">
+<link rel="canonical" href="https://2027.pp.ua/en/blog/powa-postgresql-workload-analyzer-odoo-docker">
+<link rel="alternate" hreflang="de" href="https://2027.pp.ua/de/blog/powa-postgresql-workload-analyzer-odoo-docker">
+<link rel="alternate" hreflang="en" href="https://2027.pp.ua/en/blog/powa-postgresql-workload-analyzer-odoo-docker">
+<link rel="alternate" hreflang="fr" href="https://2027.pp.ua/fr/blog/powa-postgresql-workload-analyzer-odoo-docker">
+<link rel="alternate" hreflang="el" href="https://2027.pp.ua/el/blog/powa-postgresql-workload-analyzer-odoo-docker">
+<link rel="alternate" hreflang="uk" href="https://2027.pp.ua/uk/blog/powa-postgresql-workload-analyzer-odoo-docker">
+<link rel="alternate" hreflang="ru" href="https://2027.pp.ua/ru/blog/powa-postgresql-workload-analyzer-odoo-docker">
+<link rel="alternate" hreflang="x-default" href="https://2027.pp.ua/de/blog/powa-postgresql-workload-analyzer-odoo-docker">
+<meta property="og:title" content="PoWA for PostgreSQL behind Odoo: setup in Docker (remote mode), extensions, security and what to look at · Goldberg">
+<meta property="og:description" content="PoWA (PostgreSQL Workload Analyzer) shows which queries cost the most, what sessions wait for and which indexes are missing – with history. A working Docker setup in remote mode for a primary and a replica, the extensions on the database servers, a collector role without superuser, passwords outside the powa_servers table, and what to look for with Odoo.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2027.pp.ua/en/blog/powa-postgresql-workload-analyzer-odoo-docker">
+<meta name="theme-color" content="#3b2a4a">
+<meta name="msvalidate.01" content="D751EC3EE3CBDD643934E8536E0E6939">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="Site overview for AI assistants (llms.txt)">
+<link rel="alternate" type="text/markdown" href="/skill_odoo.md" title="Odoo operations skill for AI agents (Markdown)">
+<link rel="alternate" type="text/markdown" href="/skill_odoo_security.md" title="Odoo security skill for AI agents (Markdown)">
+<link rel="alternate" type="text/markdown" href="/skill_odoo_nginx.md" title="nginx for Odoo skill for AI agents (Markdown)">
+<link rel="stylesheet" href="/assets/style.css?v=659fcf17">
+<script src="/assets/theme.js?v=eec31096" defer></script>
+<script src="/assets/contacts.js?v=b8439ff0" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "PoWA for PostgreSQL behind Odoo: setup in Docker (remote mode), extensions, security and what to look at", "description": "PoWA (PostgreSQL Workload Analyzer) shows which queries cost the most, what sessions wait for and which indexes are missing – with history. A working Docker setup in remote mode for a primary and a replica, the extensions on the database servers, a collector role without superuser, passwords outside the powa_servers table, and what to look for with Odoo.", "datePublished": "2026-11-16", "inLanguage": "en", "author": {"@type": "Person", "name": "Dmytro Podiatschev", "url": "https://2027.pp.ua", "sameAs": ["https://www.linkedin.com/in/dpodyachev"]}, "mainEntityOfPage": "https://2027.pp.ua/en/blog/powa-postgresql-workload-analyzer-odoo-docker"}</script>
+</head>
+<body>
+<header class="top">
+<div class="wrap top-in">
+<a class="brand" href="/en/"><span class="logo">G</span><span>Goldberg<small>Odoo Services</small></span></a>
+<nav class="menu"><a class="nav-icon multi" href="/en/#services" title="Services" aria-label="Services"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7.8" stroke-width="3" stroke-dasharray="3 3.125" stroke-linecap="butt"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7z"/></svg></a><a class="nav-icon" href="/en/#dach" title="DATEV &amp; e-invoicing" aria-label="DATEV &amp; e-invoicing"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5M14 3l5 5v4M14 3v5h5"/><path d="M8.5 11h5M8.5 14.5h3"/><path d="m14.5 18.5 2 2 4-4.5"/></svg></a><a class="nav-icon radar" href="/en/#bot" title="Monitoring" aria-label="Monitoring"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.2" opacity=".55"/><g class="sweep"><path d="M12 12 18.5 5.5A9.2 9.2 0 0 1 21.2 12z" fill="currentColor" stroke="none" opacity=".28"/><path d="M12 12l6.5-6.5"/></g><circle cx="15.6" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon cur" href="/en/#prices" title="Pricing" aria-label="Pricing"><span aria-hidden="true">$</span></a><a class="nav-icon" href="/en/#about" title="About" aria-label="About"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/></svg></a><a class="nav-icon" href="/en/blog/" title="Blog &amp; how-tos" aria-label="Blog &amp; how-tos" aria-current=page><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></svg></a><a class="nav-icon" href="/en/publications" title="Publications" aria-label="Publications"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v9.5a2 2 0 0 1-4 0"/><path d="M7 9h7M7 12.5h7M7 16h4"/></svg></a><a class="nav-icon" href="/en/pg-odoo-calculator" title="PostgreSQL/Odoo calculator" aria-label="PostgreSQL/Odoo calculator"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2"/><rect x="8" y="5.5" width="8" height="4" rx=".6"/><path d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 16.3h.01M12 16.3h.01M15.5 16.3v2.2M8.5 19h3.5"/></svg></a><a class="nav-icon" href="/en/#contact" title="Contact" aria-label="Contact"><svg class="ico-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a></nav>
+<nav class="langs" aria-label="Language"><a href="/de/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="en" lang="en" title="English" aria-label="English" aria-current="true"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<button type="button" class="theme" hidden aria-label="Light / dark theme" title="Light / dark theme">🌙</button>
+</div>
+</header>
+<main class="sec blog"><article class="wrap narrow post"><p class="post-back"><a href="/en/blog/">← All articles</a></p><p class="post-meta">2026-11-16 · 6 min read · <span class="post-tag">PostgreSQL</span><span class="post-tag">PoWA</span><span class="post-tag">Monitoring</span><span class="post-tag">Docker</span><span class="post-tag">Odoo</span><span class="post-tag">Performance</span></p><h1>PoWA for PostgreSQL behind Odoo: setup in Docker (remote mode), extensions, security and what to look at</h1><p class="intro">PoWA (PostgreSQL Workload Analyzer) shows which queries cost the most, what sessions wait for and which indexes are missing – with history. A working Docker setup in remote mode for a primary and a replica, the extensions on the database servers, a collector role without superuser, passwords outside the powa_servers table, and what to look for with Odoo.</p><p><code>pg_stat_activity</code> shows what runs <b>now</b>; <code>pg_stat_statements</code> shows totals since the last reset. When users report “Odoo was slow yesterday between 10 and 11”, you need history – per query, with CPU, disk, waits and index advice. That is PoWA. This article is based on a real monitoring setup for a large Odoo database (hundreds of GB, primary + streaming replica + stage): what was set up, what we would change, and a clean configuration to copy.</p><p class="post-note">Short version: on each PostgreSQL server install the extensions, set <code>shared_preload_libraries</code> (restart!), create the database <code>powa</code> and a role with <code>pg_read_all_stats</code>; on a monitoring host run <code>powa-archivist</code> (repository), <code>powa-collector</code> and <code>powa-web</code> in Docker; register servers with <code>powa_register_server()</code> without a password (use <code>.pgpass</code>); publish powa-web only on localhost behind nginx or an SSH tunnel.</p><h2>What PoWA collects</h2><div class="tablewrap"><table class="post-table"><thead><tr><th>Extension</th><th>What it gives you</th><th>Odoo example</th></tr></thead><tbody><tr><td><code>pg_stat_statements</code></td><td>time, calls, rows per normalised query</td><td>which ORM <code>search_read</code> eats the most time</td></tr><tr><td><code>pg_stat_kcache</code></td><td>real CPU time and disk reads per query</td><td>CPU-bound (many small queries) vs. I/O-bound (<code>mail_message</code> scans)</td></tr><tr><td><code>pg_qualstats</code> + <code>hypopg</code></td><td>WHERE/JOIN predicates, index suggestions tested with hypothetical indexes</td><td>missing index on a <code>res_partner</code> or custom-model field</td></tr><tr><td><code>pg_wait_sampling</code></td><td>what sessions wait for</td><td><code>Lock: transactionid</code> = concurrent updates, <code>IO: DataFileRead</code> = cache too small</td></tr><tr><td><code>pg_track_settings</code></td><td>history of <code>postgresql.conf</code> changes</td><td>“since when is work_mem 64 MB?”</td></tr></tbody></table></div><h2>Architecture: remote mode</h2><p>Since PoWA 4 the snapshots are not stored on the production server itself (local mode) but by a separate <b>collector</b> in a <b>repository</b> database on another host. Advantages: no extra writes on the production database, one UI for primary, replica and stage, and the replica can be monitored too (it is read-only and could not store anything locally).</p><figure class="code"><figcaption>architecture (remote mode)</figcaption><pre><code> monitored PostgreSQL servers            monitoring host (Docker)
+ ┌──────────────────────────────┐        ┌────────────────────────────────────────┐
+ │ primary   10.0.0.10:5432     │◄──┐    │ powa-collector  ── every N s snapshot ─┐│
+ │  db &quot;powa&quot;: powa, pg_stat_*  │   ├────┤                                        ││
+ │ replica   10.0.0.11:5432     │◄──┘    │ powa-repository (PostgreSQL + powa) ◄──┘│
+ │ stage     10.0.0.20:5432     │◄───────┤                                         │
+ └──────────────────────────────┘        │ powa-web :8888 ──► nginx/SSH tunnel     │
+                                         └────────────────────────────────────────┘</code></pre></figure><h2>1. The monitored PostgreSQL servers</h2><p>The statistics are produced by extensions loaded into PostgreSQL at start. Packages come from the PGDG repository (apt.postgresql.org); replace 16 with your major version. The same <code>shared_preload_libraries</code> must be set on the replica – its config file is separate, extensions created on the primary replicate automatically.</p><figure class="code"><figcaption>bash · on every monitored PostgreSQL server (Ubuntu, PGDG repository)</figcaption><pre><code>sudo apt install postgresql-16-powa postgresql-16-pg-qualstats postgresql-16-pg-stat-kcache \
+                 postgresql-16-pg-wait-sampling postgresql-16-pg-track-settings postgresql-16-hypopg
+
+# postgresql.conf (or ALTER SYSTEM) – needs a RESTART of PostgreSQL
+shared_preload_libraries = &#x27;pg_stat_statements,pg_stat_kcache,pg_qualstats,pg_wait_sampling&#x27;
+track_io_timing = on
+pg_stat_statements.max = 10000
+pg_qualstats.sample_rate = 0.01          # sample 1 % of queries – enough for index advice, low overhead
+# &quot;powa&quot; itself is NOT needed in shared_preload_libraries on remote servers (only for local mode)
+
+sudo systemctl restart postgresql        # plan a window: Odoo loses its connections for a moment</code></pre></figure><p>The collector does not need a superuser: <code>pg_read_all_stats</code> lets it read the statistics of all sessions, plus execute rights on the PoWA functions. Create the database <code>powa</code> and the extensions on the primary only – the replica receives them via replication.</p><figure class="code"><figcaption>psql · database, extensions and role on the monitored server</figcaption><pre><code>CREATE DATABASE powa;
+\c powa
+CREATE EXTENSION pg_stat_statements;
+CREATE EXTENSION btree_gist;
+CREATE EXTENSION powa;
+CREATE EXTENSION pg_qualstats;
+CREATE EXTENSION pg_stat_kcache;
+CREATE EXTENSION pg_wait_sampling;
+CREATE EXTENSION pg_track_settings;
+
+-- index suggestions: hypopg in every Odoo database you want to optimise
+\c mydb
+CREATE EXTENSION hypopg;
+
+-- collector role: no superuser needed (PostgreSQL 10+)
+CREATE ROLE powa LOGIN PASSWORD &#x27;&lt;long random&gt;&#x27;;
+GRANT pg_read_all_stats TO powa;
+\c powa
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO powa;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO powa;</code></pre></figure><figure class="code"><figcaption>pg_hba.conf · only the monitoring host</figcaption><pre><code># TYPE   DATABASE  USER  ADDRESS          METHOD
+hostssl  powa      powa  10.0.0.50/32     scram-sha-256
+hostssl  mydb      powa  10.0.0.50/32     scram-sha-256    # for &quot;optimize&quot; / EXPLAIN in powa-web
+# then: SELECT pg_reload_conf();</code></pre></figure><h2>2. Monitoring host in Docker</h2><p>On the monitoring host three containers are enough. The PoWA project&#x27;s example compose contains two additional demo instances (<code>remote-primary</code>, <code>remote-standby</code>) – they only exist to show the UI with test data and can be removed.</p><figure class="code"><figcaption>docker-compose.yml · monitoring host</figcaption><pre><code>services:
+  powa-repository:
+    image: powateam/powa-archivist-16:5.3.0
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/repo_password    # not &#x27;trust&#x27;
+    secrets: [repo_password]
+    volumes:
+      - powa-data:/var/lib/postgresql/data
+      - ./register.sql:/register.sql:ro           # run once after the first start (see &quot;check&quot;)
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;psql -U postgres -AXtc &#x27;SELECT 1 FROM powa_servers LIMIT 1&#x27; powa&quot;]
+      interval: 10s
+
+  powa-collector:
+    image: powateam/powa-collector:1.3.2
+    restart: unless-stopped
+    environment:
+      PGPASSFILE: /run/secrets/pgpass          # passwords for the remote servers – not in powa_servers
+    secrets: [pgpass]
+    volumes:
+      - ./powa-collector.conf:/etc/powa-collector.conf:ro
+    depends_on:
+      powa-repository: { condition: service_healthy }
+
+  powa-web:
+    image: powateam/powa-web:5.3.1
+    restart: unless-stopped
+    volumes:
+      - ./powa-web.conf:/etc/powa-web.conf:ro
+    ports:
+      - &quot;127.0.0.1:8888:8888&quot;                  # only localhost – nginx or an SSH tunnel in front
+
+volumes:
+  powa-data:
+secrets:
+  repo_password: { file: ./secrets/repo_password }
+  pgpass:        { file: ./secrets/pgpass }     # chmod 600</code></pre></figure><figure class="code"><figcaption>register.sql · which servers to collect</figcaption><pre><code>-- frequency in seconds, retention: how long snapshots are kept
+SELECT powa_register_server(hostname =&gt; &#x27;10.0.0.10&#x27;, alias =&gt; &#x27;prod&#x27;,
+       username =&gt; &#x27;powa&#x27;, port =&gt; 5432, frequency =&gt; 300, retention =&gt; &#x27;14 days&#x27;::interval,
+       extensions =&gt; &#x27;{pg_stat_kcache,pg_qualstats,pg_wait_sampling,pg_track_settings}&#x27;);
+SELECT powa_register_server(hostname =&gt; &#x27;10.0.0.11&#x27;, alias =&gt; &#x27;replica&#x27;,
+       username =&gt; &#x27;powa&#x27;, port =&gt; 5432, frequency =&gt; 300, retention =&gt; &#x27;14 days&#x27;::interval,
+       extensions =&gt; &#x27;{pg_stat_kcache,pg_qualstats,pg_wait_sampling,pg_track_settings}&#x27;);
+-- no &quot;password =&gt;&quot; here: powa_servers would keep it in plain text.
+-- later changes: powa_configure_server(), powa_deactivate_server(), powa_delete_and_purge_server()</code></pre></figure><figure class="code"><figcaption>powa-collector.conf · powa-web.conf · secrets/pgpass</figcaption><pre><code>// /etc/powa-collector.conf
+{ &quot;repository&quot;: { &quot;dsn&quot;: &quot;postgresql://postgres@powa-repository:5432/powa&quot; },
+  &quot;use_server_alias&quot;: true, &quot;debug&quot;: false }
+
+# /etc/powa-web.conf  (Python syntax)
+servers = {
+  &#x27;repository&#x27;: { &#x27;host&#x27;: &#x27;powa-repository&#x27;, &#x27;port&#x27;: &#x27;5432&#x27;, &#x27;database&#x27;: &#x27;powa&#x27; }
+}   # no username/password here: log in in the web UI with a PostgreSQL role
+cookie_secret = &quot;&lt;long random&gt;&quot;
+address = &quot;0.0.0.0&quot;          # inside the container; published only on 127.0.0.1
+port = 8888
+url_prefix = &quot;/powa&quot;
+
+# secrets/pgpass   host:port:database:user:password
+10.0.0.10:5432:*:powa:&lt;password&gt;
+10.0.0.11:5432:*:powa:&lt;password&gt;
+powa-repository:5432:powa:postgres:&lt;repository password&gt;</code></pre></figure><ul><li><code>frequency</code>: 300 s is the default; with very large databases and many queries 600 s keeps the repository smaller.</li><li><code>retention</code>: 7–14 days are enough to answer “what happened yesterday / last week”; the repository grows with servers × queries × snapshots.</li><li><code>use_server_alias</code>: the UI shows <code>prod</code>/<code>replica</code> instead of IP addresses.</li><li>Repository and collector need no published ports – they talk inside the compose network.</li></ul><h2>3. Web UI and checks</h2><p>powa-web logs in with a PostgreSQL role (of the repository database). It sees query texts – including literal values in WHERE clauses, i.e. potentially personal data – so it must not be public.</p><figure class="code"><figcaption>nginx · powa-web under /powa/ with a password</figcaption><pre><code>location ^~ /powa/ {
+    auth_basic &quot;powa&quot;;
+    auth_basic_user_file /etc/nginx/.htpasswd_powa;
+    proxy_set_header Authorization &quot;&quot;;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_pass http://127.0.0.1:8888;
+}
+# or simply: ssh -L 8888:127.0.0.1:8888 monitoring-host  -&gt;  http://localhost:8888/powa/</code></pre></figure><figure class="code"><figcaption>bash · is it collecting?</figcaption><pre><code>docker compose up -d
+docker compose exec powa-repository psql -U postgres powa -f /register.sql   # once
+docker compose restart powa-collector &amp;&amp; docker compose logs -f powa-collector
+docker compose exec powa-repository psql -U postgres powa -c \
+  &quot;SELECT id, alias, hostname, frequency, retention, enabled FROM powa_servers;&quot;
+# last snapshot per server (errors must be empty)
+docker compose exec powa-repository psql -U postgres powa -c \
+  &quot;SELECT srvid, snapts, errors FROM powa_snapshot_metas ORDER BY srvid;&quot;
+# typical error in the collector log: &quot;extension pg_qualstats is not installed&quot; -&gt; CREATE EXTENSION on that server</code></pre></figure><h2>What to look at with Odoo</h2><ul><li><b>Queries per database</b> sorted by total time: typical Odoo candidates are <code>search_read</code>/<code>read_group</code> on <code>mail_message</code>, <code>mail_followers</code>, <code>res_partner</code>, and the reports of custom modules.</li><li><b>Calls vs. time</b>: thousands of fast queries per request = an N+1 problem in Python code (missing <code>prefetch</code>, <code>read()</code> in a loop), not a database problem.</li><li><b>Index suggestions</b> (pg_qualstats + hypopg): check the suggestion against Odoo – an index on a field is better declared in the model (<code>index=True</code> / <code>index=&#x27;trigram&#x27;</code> in Odoo 16+) than created by hand.</li><li><b>Waits</b>: <code>Lock: transactionid</code>/<code>tuple</code> = concurrent updates of the same records (crons, queue jobs) – see the serialization article; <code>IO: DataFileRead</code> = <code>shared_buffers</code> / RAM too small; <code>LWLock: WALWrite</code> = slow disk.</li><li><b>Replica</b>: if Odoo 18/19 sends read-only requests to the replica, compare its top queries with the primary.</li><li><b>Settings history</b>: the effect of a <code>work_mem</code> or <code>random_page_cost</code> change is visible on the timeline.</li></ul><h2>Found in a real setup</h2><ul><li><b>powa-web published on <code>0.0.0.0:8888</code></b> on a host with a public IP – the UI with all query texts was potentially reachable from the internet. Fix: <code>127.0.0.1:8888:8888</code> + nginx with password or SSH tunnel; and the cloud firewall.</li><li><b>Remote passwords in <code>powa_register_server(... password =&gt; &#x27;...&#x27;)</code></b> inside the compose file: stored in plain text in the file and in the <code>powa_servers</code> table, and the password was a simple word. Fix: no password in SQL, <code>.pgpass</code> in the collector, a long random password, rotate it.</li><li><b><code>POSTGRES_HOST_AUTH_METHOD: trust</code></b> for the repository: anyone in the Docker network gets superuser without a password. Fix: <code>POSTGRES_PASSWORD_FILE</code>.</li><li><b><code>*-git</code> images</b> (built from the development branch) and three copies of the compose file: use released, pinned versions (<code>powa-archivist-16:5.3.0</code>, <code>powa-collector:1.3.2</code>, <code>powa-web:5.3.1</code>) and keep the file in git without secrets.</li><li><b>Demo instances</b> <code>remote-primary</code>/<code>remote-standby</code> running next to the real servers – not needed, remove them.</li></ul><h2>Overhead</h2><p><code>pg_stat_statements</code> and <code>pg_wait_sampling</code> cost little. <code>pg_stat_kcache</code> adds a system call per query – negligible for Odoo&#x27;s query sizes. <code>pg_qualstats</code> is the most expensive – keep <code>sample_rate</code> low (0.01–0.1). The snapshots themselves are a few queries every <code>frequency</code> seconds. In practice the overhead on an Odoo production server is in the low single-digit percent range; test on stage first and compare with a load test.</p><h2>Links</h2><ul class="post-links"><li><a href="https://powa.readthedocs.io/" target="_blank" rel="noopener">PoWA documentation</a></li><li><a href="https://powa.readthedocs.io/en/latest/remote_setup.html" target="_blank" rel="noopener">PoWA: remote setup</a></li><li><a href="https://powa.readthedocs.io/en/latest/security.html" target="_blank" rel="noopener">PoWA: security (pg_read_all_stats, passwords)</a></li><li><a href="https://hub.docker.com/u/powateam" target="_blank" rel="noopener">PoWA Docker images (powateam)</a></li><li><a href="https://github.com/powa-team/pg_qualstats" target="_blank" rel="noopener">pg_qualstats</a></li><li><a href="https://github.com/HypoPG/hypopg" target="_blank" rel="noopener">HypoPG – hypothetical indexes</a></li><li><a href="/en/blog/postgresql-odoo-admin-cheat-sheet">Blog: PostgreSQL cheat sheet for Odoo admins</a></li><li><a href="/en/blog/postgresql-load-test-pgload-replica">Blog: pgload – load test for PostgreSQL and the replica</a></li><li><a href="/en/blog/odoo-could-not-serialize-access-concurrent-update">Blog: could not serialize access – concurrent updates in Odoo</a></li><li><a href="/en/blog/grafana-behind-nginx-subpath-odoo">Blog: Grafana behind nginx under a sub-path</a></li></ul><aside class="post-cta"><h2>Want me to do this for you?</h2><p>I&#x27;ll implement it in your system – on a test copy first, with rollback and a written record.</p><div class="cta ">
+<a class="btn primary" href="https://cal.com/dmytro-podiatschev-xvsnlm" target="_blank" rel="noopener">Book a call – 30 min free</a>
+<a class="soc-ico btn" data-ch="{telegram}" data-ct="Telegram: {telegram_handle}" title="Telegram" aria-label="Telegram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.5 2.8 10.7c-.9.4-.9 1.6.1 1.9l4.6 1.5 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.8 3.5c.7.5 1.7.1 1.9-.7L22.9 4.9c.2-1-.6-1.8-1.4-1.4z"/><path d="m7.5 14.1 10-6.6-7.6 8.1"/></svg></a>
+<a class="soc-ico btn ghost" data-ch="{whatsapp}" data-ct="WhatsApp" title="WhatsApp" aria-label="WhatsApp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.2A8.6 8.6 0 1 1 8 19.4z"/><path d="M9 8.6c.1 2.9 3.4 6.2 6.3 6.4l1.2-1.4-1.9-1-.9.8c-1-.5-2.3-1.8-2.8-2.8l.8-.9-1-1.9z"/></svg></a>
+<a class="soc-ico btn ghost" data-ch="tel:{phone}" data-ct="Tel.: {phone_display}" title="Tel." aria-label="Tel."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></a>
+<a class="soc-ico btn ghost" data-ch="mailto:{email}" data-ct="E-Mail: {email}" title="E-Mail" aria-label="E-Mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a>
+<a class="soc-ico btn ghost" href="https://www.linkedin.com/in/dpodyachev" title="LinkedIn" aria-label="LinkedIn" target="_blank" rel="noopener me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V17M8 7.3v.1M12 17v-6.5M12 13.3c0-1.6 1.1-2.8 2.5-2.8S17 11.5 17 13v4"/></svg></a>
+</div></aside><nav class="post-nav" aria-label="Blog &amp; how-tos"><a class="prev" href="/en/blog/odoo-17-python-3-14-docker" rel="prev"><small>← Previous article</small><span>Moving Odoo 17 to Python 3.14 – with docker-compose</span></a><a class="all" href="/en/blog/"><small>← All articles</small></a><a class="next" href="/en/blog/nginx-security-audit-odoo-hsts-cookies-x-frame-options" rel="next"><small>Next article →</small><span>nginx security audit in front of Odoo: HSTS, duplicate X-Frame-Options, session cookie without Secure/SameSite, old nginx</span></a></nav></article></main><footer class="foot">
+<div class="wrap foot-in">
+<div><strong>Goldberg · Odoo Services</strong><br>Odoo support, installation and integration for Germany, Austria and Switzerland.</div>
+<div class="foot-links">
+<a href="/en/blog/">Blog &amp; how-tos</a>
+<a href="/en/publications">Publications</a>
+<a href="/en/pg-odoo-calculator">PostgreSQL/Odoo calculator</a>
+<a href="/en/impressum">Legal notice</a>
+<a href="/en/datenschutz">Privacy</a>
+<span class="foot-soc"><a class="soc-ico" data-ch="mailto:{email}" data-ct="E-Mail: {email}" title="E-Mail" aria-label="E-Mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg></a><a class="soc-ico" data-ch="{telegram}" data-ct="Telegram: {telegram_handle}" title="Telegram" aria-label="Telegram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.5 2.8 10.7c-.9.4-.9 1.6.1 1.9l4.6 1.5 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.8 3.5c.7.5 1.7.1 1.9-.7L22.9 4.9c.2-1-.6-1.8-1.4-1.4z"/><path d="m7.5 14.1 10-6.6-7.6 8.1"/></svg></a><a class="soc-ico" data-ch="{whatsapp}" data-ct="WhatsApp" title="WhatsApp" aria-label="WhatsApp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.2A8.6 8.6 0 1 1 8 19.4z"/><path d="M9 8.6c.1 2.9 3.4 6.2 6.3 6.4l1.2-1.4-1.9-1-.9.8c-1-.5-2.3-1.8-2.8-2.8l.8-.9-1-1.9z"/></svg></a><a class="soc-ico" data-ch="tel:{phone}" data-ct="Tel.: {phone_display}" title="Tel." aria-label="Tel."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></a><a class="soc-ico" href="https://www.linkedin.com/in/dpodyachev" title="LinkedIn" aria-label="LinkedIn" target="_blank" rel="noopener me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V17M8 7.3v.1M12 17v-6.5M12 13.3c0-1.6 1.1-2.8 2.5-2.8S17 11.5 17 13v4"/></svg></a></span>
+</div>
+<nav class="langs" aria-label="Language"><a href="/de/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><img class="flag" src="/assets/flags/de.svg?v=a3d1184e" alt="" width="20" height="14"><span class="lc">DE</span></a><a href="/en/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="en" lang="en" title="English" aria-label="English" aria-current="true"><img class="flag" src="/assets/flags/gb.svg?v=04e16e73" alt="" width="20" height="14"><span class="lc">EN</span></a><a href="/fr/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="fr" lang="fr" title="Français" aria-label="Français"><img class="flag" src="/assets/flags/fr.svg?v=2b4b45c6" alt="" width="20" height="14"><span class="lc">FR</span></a><a href="/el/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="el" lang="el" title="Ελληνικά" aria-label="Ελληνικά"><img class="flag" src="/assets/flags/gr.svg?v=a4f6aa9b" alt="" width="20" height="14"><span class="lc">EL</span></a><a href="/uk/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="uk" lang="uk" title="Українська" aria-label="Українська"><img class="flag" src="/assets/flags/ua.svg?v=712eaed3" alt="" width="20" height="14"><span class="lc">UK</span></a><a href="/ru/blog/powa-postgresql-workload-analyzer-odoo-docker" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><img class="flag" src="/assets/flags/ru.svg?v=4e8f69d4" alt="" width="20" height="14"><span class="lc">RU</span></a></nav>
+<div class="small">© 2026 Goldberg. This website uses no cookies and no tracking.</div>
+</div>
+</footer>
+</body>
+</html>

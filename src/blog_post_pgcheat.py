@@ -221,6 +221,7 @@ shared_preload_libraries = 'pg_stat_statements'
 log_min_duration_statement = 2000"""),
     },
     "links": [
+        ("Blog: PoWA – query history, waits and index advice for PostgreSQL", "@blog:powa-postgresql-workload-analyzer-odoo-docker"),
         ("PostgreSQL/Odoo config calculator (this site)", "@page:pg-odoo-calculator.html"),
         ("PGTune", "https://pgtune.leopard.in.ua/"),
         ("PGConfig", "https://www.pgconfig.org/"),

@@ -802,3 +802,5 @@ from blog_post_security import SECURITY as _C15  # noqa: E402
 POSTS.append(_C15)
 from blog_post_grafana import GRAFANA as _C16, AUDIT as _C17  # noqa: E402  (все 6 языков внутри)
 POSTS += [_C16, _C17]
+from blog_post_powa import POWA as _C18  # noqa: E402  (все 6 языков внутри)
+POSTS.append(_C18)
