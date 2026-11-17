@@ -808,3 +808,5 @@ from blog_post_problems import PROBLEMS as _C19  # noqa: E402  (все 6 язы�
 POSTS.append(_C19)
 from blog_post_longrun import LONGRUN as _C20  # noqa: E402  (все 6 языков внутри)
 POSTS.append(_C20)
+from blog_post_tgbot import TGBOT as _C21  # noqa: E402  (все 6 языков внутри)
+POSTS.append(_C21)
