@@ -34,6 +34,7 @@
 <url><loc>https://2027.pp.ua/de/blog/odoo-production-hardening-housekeeping-monitoring</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/de/blog/telegram-bot-odoo-monitoring-deploy-stage-copy</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/de/blog/free-https-certbot-alternatives-nip-io-sslip-io-ip-certificates</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://2027.pp.ua/de/blog/odoo-list-db-false-db-name-queue-job-jobrunner</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/en/pg-odoo-calculator</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/en/pg-odoo-calculator-sliders</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/en/pg-odoo-calculator-replica</loc><lastmod>2026-11-17</lastmod></url>
@@ -68,6 +69,7 @@
 <url><loc>https://2027.pp.ua/en/blog/odoo-production-hardening-housekeeping-monitoring</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/en/blog/telegram-bot-odoo-monitoring-deploy-stage-copy</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/en/blog/free-https-certbot-alternatives-nip-io-sslip-io-ip-certificates</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://2027.pp.ua/en/blog/odoo-list-db-false-db-name-queue-job-jobrunner</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/pg-odoo-calculator</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/pg-odoo-calculator-sliders</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/pg-odoo-calculator-replica</loc><lastmod>2026-11-17</lastmod></url>
@@ -102,6 +104,7 @@
 <url><loc>https://2027.pp.ua/fr/blog/odoo-production-hardening-housekeeping-monitoring</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/blog/telegram-bot-odoo-monitoring-deploy-stage-copy</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/fr/blog/free-https-certbot-alternatives-nip-io-sslip-io-ip-certificates</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://2027.pp.ua/fr/blog/odoo-list-db-false-db-name-queue-job-jobrunner</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/el/pg-odoo-calculator</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/el/pg-odoo-calculator-sliders</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/el/pg-odoo-calculator-replica</loc><lastmod>2026-11-17</lastmod></url>
@@ -136,6 +139,7 @@
 <url><loc>https://2027.pp.ua/el/blog/odoo-production-hardening-housekeeping-monitoring</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/el/blog/telegram-bot-odoo-monitoring-deploy-stage-copy</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/el/blog/free-https-certbot-alternatives-nip-io-sslip-io-ip-certificates</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://2027.pp.ua/el/blog/odoo-list-db-false-db-name-queue-job-jobrunner</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/pg-odoo-calculator</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/pg-odoo-calculator-sliders</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/pg-odoo-calculator-replica</loc><lastmod>2026-11-17</lastmod></url>
@@ -170,6 +174,7 @@
 <url><loc>https://2027.pp.ua/uk/blog/odoo-production-hardening-housekeeping-monitoring</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/blog/telegram-bot-odoo-monitoring-deploy-stage-copy</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/uk/blog/free-https-certbot-alternatives-nip-io-sslip-io-ip-certificates</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://2027.pp.ua/uk/blog/odoo-list-db-false-db-name-queue-job-jobrunner</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/pg-odoo-calculator</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/pg-odoo-calculator-sliders</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/pg-odoo-calculator-replica</loc><lastmod>2026-11-17</lastmod></url>
@@ -204,4 +209,5 @@
 <url><loc>https://2027.pp.ua/ru/blog/odoo-production-hardening-housekeeping-monitoring</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/blog/telegram-bot-odoo-monitoring-deploy-stage-copy</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://2027.pp.ua/ru/blog/free-https-certbot-alternatives-nip-io-sslip-io-ip-certificates</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://2027.pp.ua/ru/blog/odoo-list-db-false-db-name-queue-job-jobrunner</loc><lastmod>2026-11-17</lastmod></url>
 </urlset>

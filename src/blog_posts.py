@@ -812,3 +812,5 @@ from blog_post_tgbot import TGBOT as _C21  # noqa: E402  (все 6 языков 
 POSTS.append(_C21)
 from blog_post_freessl import FREESSL as _C22  # noqa: E402  (все 6 языков внутри)
 POSTS.append(_C22)
+from blog_post_listdb import LISTDB as _C23  # noqa: E402  (все 6 языков внутри)
+POSTS.append(_C23)
