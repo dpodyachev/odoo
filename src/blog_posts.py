@@ -810,3 +810,5 @@ from blog_post_longrun import LONGRUN as _C20  # noqa: E402  (все 6 язык�
 POSTS.append(_C20)
 from blog_post_tgbot import TGBOT as _C21  # noqa: E402  (все 6 языков внутри)
 POSTS.append(_C21)
+from blog_post_freessl import FREESSL as _C22  # noqa: E402  (все 6 языков внутри)
+POSTS.append(_C22)
