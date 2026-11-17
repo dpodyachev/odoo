@@ -210,3 +210,73 @@ LISTDB["t"]["ru"] = _d(
      "**Копии на том же PostgreSQL** (копия stage, старая тестовая база), которых нет в `db_name`, job runner не обслуживает – на продакшне обычно именно это и нужно."],
     "Закрыть менеджер баз – правильно, но после каждого изменения `list_db`, `db_name` или `dbfilter` проверяйте очередь задач, а не только страницу входа: задачи, которые не выходят из pending, – это симптом. И держите `queue_job` обновлённым – в актуальной версии этой проблемы нет. Мы проверяем это в рамках сопровождения Odoo для компаний в Германии, Австрии и Швейцарии.",
     "Ссылки")
+
+
+# Вариант: пароль на менеджер баз в nginx (второй слой или вместо list_db = False – с оговорками)
+LISTDB["code"]["nginx"] = ("nginx · basic auth on the database manager (server block of Odoo)", """# ^~ : wins over regex locations further down (e.g. static files)
+location ^~ /web/database/ {
+    auth_basic           "Odoo database manager";
+    auth_basic_user_file /etc/nginx/.htpasswd_odoo;
+    proxy_pass           http://odoo;           # your upstream, same proxy headers as for /
+}
+
+# with list_db = True the list is ALSO available over RPC – close it or allow only known IPs
+location = /xmlrpc/2/db { deny all; }
+# /jsonrpc carries service "db" in the JSON body – nginx cannot filter that; if no integration uses /jsonrpc:
+# location = /jsonrpc { allow 203.0.113.10; deny all; proxy_pass http://odoo; }""")
+LISTDB["code"]["htpasswd"] = ("bash · create the password file", """# Debian / Ubuntu: only the small utils package, not the Apache web server
+sudo apt install apache2-utils           # RHEL / Alma / Rocky: sudo dnf install httpd-tools
+
+sudo htpasswd -c /etc/nginx/.htpasswd_odoo admin    # -c = create the file (overwrites it!) – first user only
+sudo htpasswd    /etc/nginx/.htpasswd_odoo second   # add or change a user
+sudo htpasswd -D /etc/nginx/.htpasswd_odoo second   # delete a user
+
+# without apache2-utils: an apr1 (MD5) hash with openssl
+printf 'admin:%s\\n' "$(openssl passwd -apr1)" | sudo tee -a /etc/nginx/.htpasswd_odoo
+
+sudo chown root:www-data /etc/nginx/.htpasswd_odoo && sudo chmod 640 /etc/nginx/.htpasswd_odoo
+sudo nginx -t && sudo systemctl reload nginx
+curl -s -o /dev/null -w '%{http_code}\\n' https://erp.example.com/web/database/manager    # 401 without password""")
+
+_NG = {
+    "en": ("Variant: a password in nginx", "Instead of – or better in addition to – `list_db = False`, the database manager can be closed with HTTP basic auth in nginx. The job runner is then not affected at all, because nginx only sees requests from outside. One password file can protect several services (we use the same one for Grafana).", [
+        "**`^~`** in the location makes it win over regex locations; without it, a regex location for static files or `/web` can catch `/web/database/…` first.",
+        "**`list_db = True` alone is not enough**: the database list is also served over RPC (`/xmlrpc/2/db`, and `/jsonrpc` with the service `db`). Basic auth on `/web/database/` does not cover those – block `/xmlrpc/2/db`, allow `/jsonrpc` only for integration IPs.",
+        "**`htpasswd -c` overwrites** an existing file – use it only for the first user.",
+        "**Hash**: the default of `htpasswd` (apr1/MD5) and `{SHA}` are supported by nginx everywhere; bcrypt (`-B`) only works if the system's `crypt()` supports it – test with `nginx -t` and a login.",
+        "**Our recommendation**: both layers – `list_db = False` + `db_name` in Odoo, and the password in nginx. The master password (`admin_passwd`) stays set and strong in any case."]),
+    "de": ("Variante: ein Passwort in nginx", "Statt – oder besser zusätzlich zu – `list_db = False` lässt sich der Datenbankmanager mit HTTP Basic Auth in nginx schließen. Der Job-Runner ist dann gar nicht betroffen, weil nginx nur Anfragen von außen sieht. Eine Passwortdatei kann mehrere Dienste schützen (wir nutzen dieselbe für Grafana).", [
+        "**`^~`** in der location sorgt dafür, dass sie vor regex-locations gewinnt; ohne es kann eine regex-location für statische Dateien oder `/web` `/web/database/…` zuerst abfangen.",
+        "**`list_db = True` allein reicht nicht**: die Datenbankliste gibt es auch per RPC (`/xmlrpc/2/db` und `/jsonrpc` mit dem Service `db`). Basic Auth auf `/web/database/` deckt das nicht ab – `/xmlrpc/2/db` sperren, `/jsonrpc` nur für IPs von Schnittstellen erlauben.",
+        "**`htpasswd -c` überschreibt** eine vorhandene Datei – nur für den ersten Benutzer.",
+        "**Hash**: der Standard von `htpasswd` (apr1/MD5) und `{SHA}` werden von nginx überall unterstützt; bcrypt (`-B`) nur, wenn `crypt()` des Systems es kann – mit `nginx -t` und einem Login testen.",
+        "**Unsere Empfehlung**: beide Ebenen – `list_db = False` + `db_name` in Odoo und das Passwort in nginx. Das Master-Passwort (`admin_passwd`) bleibt in jedem Fall gesetzt und stark."]),
+    "fr": ("Variante : un mot de passe dans nginx", "À la place de – ou mieux en plus de – `list_db = False`, on peut fermer le gestionnaire de bases avec une authentification HTTP basique dans nginx. Le job runner n'est alors pas touché du tout, car nginx ne voit que les requêtes venant de l'extérieur. Un seul fichier de mots de passe peut protéger plusieurs services (nous utilisons le même pour Grafana).", [
+        "**`^~`** dans la location la fait passer avant les locations regex ; sans lui, une location regex pour les fichiers statiques ou `/web` peut attraper `/web/database/…` d'abord.",
+        "**`list_db = True` seul ne suffit pas** : la liste des bases est aussi servie en RPC (`/xmlrpc/2/db`, et `/jsonrpc` avec le service `db`). L'authentification sur `/web/database/` ne couvre pas cela – bloquer `/xmlrpc/2/db`, n'autoriser `/jsonrpc` que pour les IP des intégrations.",
+        "**`htpasswd -c` écrase** un fichier existant – seulement pour le premier utilisateur.",
+        "**Hachage** : le défaut de `htpasswd` (apr1/MD5) et `{SHA}` sont pris en charge par nginx partout ; bcrypt (`-B`) seulement si le `crypt()` du système le gère – tester avec `nginx -t` et une connexion.",
+        "**Notre recommandation** : les deux couches – `list_db = False` + `db_name` dans Odoo, et le mot de passe dans nginx. Le mot de passe maître (`admin_passwd`) reste défini et robuste dans tous les cas."]),
+    "el": ("Εναλλακτική: κωδικός στο nginx", "Αντί για – ή καλύτερα επιπλέον του – `list_db = False`, ο διαχειριστής βάσεων μπορεί να κλειστεί με HTTP basic auth στο nginx. Ο job runner τότε δεν επηρεάζεται καθόλου, γιατί το nginx βλέπει μόνο αιτήματα από έξω. Ένα αρχείο κωδικών μπορεί να προστατεύει πολλές υπηρεσίες (χρησιμοποιούμε το ίδιο για το Grafana).", [
+        "Το **`^~`** στο location το κάνει να κερδίζει τα regex locations· χωρίς αυτό, ένα regex location για στατικά αρχεία ή για `/web` μπορεί να πιάσει πρώτο το `/web/database/…`.",
+        "**Το `list_db = True` μόνο του δεν αρκεί**: η λίστα βάσεων δίνεται και μέσω RPC (`/xmlrpc/2/db`, και `/jsonrpc` με την υπηρεσία `db`). Το basic auth στο `/web/database/` δεν τα καλύπτει – μπλοκάρετε το `/xmlrpc/2/db`, επιτρέψτε το `/jsonrpc` μόνο για IP διασυνδέσεων.",
+        "Το **`htpasswd -c` αντικαθιστά** υπάρχον αρχείο – μόνο για τον πρώτο χρήστη.",
+        "**Hash**: η προεπιλογή του `htpasswd` (apr1/MD5) και το `{SHA}` υποστηρίζονται από το nginx παντού· το bcrypt (`-B`) μόνο αν το υποστηρίζει το `crypt()` του συστήματος – δοκιμάστε με `nginx -t` και μια σύνδεση.",
+        "**Η σύστασή μας**: και τα δύο επίπεδα – `list_db = False` + `db_name` στο Odoo, και ο κωδικός στο nginx. Ο κύριος κωδικός (`admin_passwd`) μένει ορισμένος και ισχυρός σε κάθε περίπτωση."]),
+    "uk": ("Варіант: пароль у nginx", "Замість – а краще разом із – `list_db = False` менеджер баз можна закрити HTTP basic auth у nginx. Job runner тоді взагалі не зачіпається, бо nginx бачить лише запити ззовні. Один файл паролів може захищати кілька сервісів (ми використовуємо той самий для Grafana).", [
+        "**`^~`** у location робить його пріоритетнішим за regex-locations; без нього regex-location для статики чи `/web` може першим перехопити `/web/database/…`.",
+        "**Самого `list_db = True` недостатньо**: список баз віддається й через RPC (`/xmlrpc/2/db`, а також `/jsonrpc` із сервісом `db`). Basic auth на `/web/database/` цього не покриває – закрийте `/xmlrpc/2/db`, а `/jsonrpc` дозвольте лише IP інтеграцій.",
+        "**`htpasswd -c` перезаписує** наявний файл – лише для першого користувача.",
+        "**Хеш**: стандартний для `htpasswd` (apr1/MD5) і `{SHA}` nginx підтримує всюди; bcrypt (`-B`) – лише якщо його вміє `crypt()` системи; перевірте через `nginx -t` і вхід.",
+        "**Наша рекомендація**: обидва шари – `list_db = False` + `db_name` в Odoo і пароль у nginx. Майстер-пароль (`admin_passwd`) у будь-якому разі має бути заданий і надійний."]),
+    "ru": ("Вариант: пароль в nginx", "Вместо – а лучше вместе с – `list_db = False` менеджер баз можно закрыть HTTP basic auth в nginx. Job runner тогда вообще не затрагивается, потому что nginx видит только запросы снаружи. Один файл паролей может защищать несколько сервисов (мы используем тот же для Grafana).", [
+        "**`^~`** в location делает его приоритетнее regex-locations; без него regex-location для статики или `/web` может первым перехватить `/web/database/…`.",
+        "**Одного `list_db = True` недостаточно**: список баз отдаётся и через RPC (`/xmlrpc/2/db`, а также `/jsonrpc` с сервисом `db`). Basic auth на `/web/database/` этого не покрывает – закройте `/xmlrpc/2/db`, а `/jsonrpc` разрешите только IP интеграций.",
+        "**`htpasswd -c` перезаписывает** существующий файл – только для первого пользователя.",
+        "**Хэш**: стандартный для `htpasswd` (apr1/MD5) и `{SHA}` nginx поддерживает везде; bcrypt (`-B`) – только если его умеет `crypt()` системы; проверьте через `nginx -t` и вход.",
+        "**Наша рекомендация**: оба слоя – `list_db = False` + `db_name` в Odoo и пароль в nginx. Мастер-пароль (`admin_passwd`) в любом случае должен быть задан и надёжен."]),
+}
+for _lang, (_h, _p, _ul) in _NG.items():
+    _body = LISTDB["t"][_lang]["body"]
+    _i = _body.index(("code", "check")) + 1
+    _body[_i:_i] = [("h", _h), ("p", _p), ("code", "nginx"), ("code", "htpasswd"), ("ul", _ul)]
