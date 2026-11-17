@@ -400,3 +400,36 @@ FREESSL["t"]["ru"] = _f(
      "**Два таймера** (из пакета + свой) не вредят – certbot сам себя блокирует, – но путают; оставьте один."],
     "Для быстрого теста хватает имени от sslip.io или nip.io плюс certbot – настоящий HTTPS за минуты, без домена. Для IP без имени теперь есть 6-дневные сертификаты. Для рабочего Odoo – домен, certbot или альтернатива, автоматическое продление с hook перезагрузки и контроль срока действия. Мы настраиваем это для инсталляций Odoo компаний в Германии, Австрии и Швейцарии.",
     "Ссылки")
+
+
+# «Что выяснилось при проверке» (2026-11-17) – вставляется после таблицы DNS-ответов
+_FOUND = {
+    "en": ("What we found when checking (November 2026)", [
+        "**traefik.me** no longer hands out its free wildcard certificate (discontinued in 2025, per the author). Old guides that download `fullchain.pem`/`privkey.pem` from traefik.me no longer work – and that private key was public for everybody anyway, so it was only ever good for local tests.",
+        "**nip.io and sslip.io** are now run by the same people: after the death of nip.io's author in 2024, nip.io was transferred to the sslip.io maintainers in July 2025; `sslip.io` redirects to `nip.io`, and both accept the same formats, including IPv6 with dashes.",
+        "**ipq.co** is not a wildcard service: `1.2.3.4.ipq.co` returns NXDOMAIN. You create a name (`myname.ipq.co` or `fdns.uk`) in its web form, and it becomes an ordinary A record."]),
+    "de": ("Was sich bei der Prüfung ergab (November 2026)", [
+        "**traefik.me** verteilt sein kostenloses Wildcard-Zertifikat nicht mehr (laut Autor 2025 eingestellt). Alte Anleitungen, die `fullchain.pem`/`privkey.pem` von traefik.me laden, funktionieren nicht mehr – und dieser private Schlüssel war ohnehin für alle öffentlich, taugte also nur für lokale Tests.",
+        "**nip.io und sslip.io** werden heute von denselben Leuten betrieben: nach dem Tod des nip.io-Autors 2024 ging nip.io im Juli 2025 an die sslip.io-Betreiber; `sslip.io` leitet auf `nip.io` weiter, beide verstehen dieselben Formate, auch IPv6 mit Bindestrichen.",
+        "**ipq.co** ist kein Wildcard-Dienst: `1.2.3.4.ipq.co` liefert NXDOMAIN. Man legt einen Namen (`meinname.ipq.co` oder `fdns.uk`) im Webformular an, daraus wird ein gewöhnlicher A-Record."]),
+    "fr": ("Ce que la vérification a montré (novembre 2026)", [
+        "**traefik.me** ne distribue plus son certificat wildcard gratuit (arrêté en 2025 selon l'auteur). Les anciens guides qui téléchargent `fullchain.pem`/`privkey.pem` depuis traefik.me ne fonctionnent plus – et cette clé privée était de toute façon publique pour tous, donc bonne seulement pour des tests locaux.",
+        "**nip.io et sslip.io** sont désormais gérés par les mêmes personnes : après le décès de l'auteur de nip.io en 2024, nip.io a été transféré aux mainteneurs de sslip.io en juillet 2025 ; `sslip.io` redirige vers `nip.io`, et les deux acceptent les mêmes formats, y compris l'IPv6 avec des tirets.",
+        "**ipq.co** n'est pas un service wildcard : `1.2.3.4.ipq.co` renvoie NXDOMAIN. On crée un nom (`monnom.ipq.co` ou `fdns.uk`) dans son formulaire web, et il devient un enregistrement A ordinaire."]),
+    "el": ("Τι βρήκαμε στον έλεγχο (Νοέμβριος 2026)", [
+        "Το **traefik.me** δεν διανέμει πλέον το δωρεάν wildcard πιστοποιητικό του (σταμάτησε το 2025 κατά τον δημιουργό). Παλιοί οδηγοί που κατεβάζουν `fullchain.pem`/`privkey.pem` από το traefik.me δεν λειτουργούν πια – και αυτό το ιδιωτικό κλειδί ήταν έτσι κι αλλιώς δημόσιο για όλους, άρα χρήσιμο μόνο για τοπικές δοκιμές.",
+        "Τα **nip.io και sslip.io** τα διαχειρίζονται πλέον οι ίδιοι άνθρωποι: μετά τον θάνατο του δημιουργού του nip.io το 2024, το nip.io μεταβιβάστηκε στους διαχειριστές του sslip.io τον Ιούλιο του 2025· το `sslip.io` ανακατευθύνει στο `nip.io`, και τα δύο δέχονται τις ίδιες μορφές, και IPv6 με παύλες.",
+        "Το **ipq.co** δεν είναι υπηρεσία wildcard: το `1.2.3.4.ipq.co` επιστρέφει NXDOMAIN. Δημιουργείτε ένα όνομα (`toonomamou.ipq.co` ή `fdns.uk`) στη φόρμα web του και γίνεται κανονική εγγραφή A."]),
+    "uk": ("Що з'ясувалося під час перевірки (листопад 2026)", [
+        "**traefik.me** більше не роздає безкоштовний wildcard-сертифікат (за словами автора, припинено у 2025). Старі інструкції, що завантажують `fullchain.pem`/`privkey.pem` з traefik.me, уже не працюють – а той приватний ключ і так був публічним для всіх, тож годився лише для локальних тестів.",
+        "**nip.io і sslip.io** тепер ведуть одні й ті самі люди: після смерті автора nip.io у 2024 році nip.io у липні 2025 передали власникам sslip.io; `sslip.io` перенаправляє на `nip.io`, обидва розуміють однакові формати, зокрема IPv6 через дефіси.",
+        "**ipq.co** – не wildcard-сервіс: `1.2.3.4.ipq.co` повертає NXDOMAIN. Ім'я (`myname.ipq.co` або `fdns.uk`) створюється вручну у вебформі й стає звичайним A-записом."]),
+    "ru": ("Что выяснилось при проверке (ноябрь 2026)", [
+        "**traefik.me** больше не раздаёт бесплатный wildcard-сертификат (по словам автора, прекращено в 2025). Старые инструкции, которые скачивают `fullchain.pem`/`privkey.pem` с traefik.me, уже не работают – а тот приватный ключ и так был публичным для всех, так что годился только для локальных тестов.",
+        "**nip.io и sslip.io** теперь ведут одни и те же люди: после смерти автора nip.io в 2024 году nip.io в июле 2025 передали владельцам sslip.io; `sslip.io` перенаправляет на `nip.io`, оба понимают одинаковые форматы, в том числе IPv6 через дефисы.",
+        "**ipq.co** – не wildcard-сервис: `1.2.3.4.ipq.co` возвращает NXDOMAIN. Имя (`myname.ipq.co` или `fdns.uk`) создаётся вручную в веб-форме и становится обычной A-записью."]),
+}
+for _lang, (_h, _items) in _FOUND.items():
+    _body = FREESSL["t"][_lang]["body"]
+    _i = _body.index(("code", "dns")) + 1
+    _body[_i:_i] = [("h", _h), ("ul", _items)]
