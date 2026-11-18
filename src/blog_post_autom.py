@@ -68,7 +68,7 @@ def _d(title, summary, intro, note, h_model, model_ul, autos, h_sum, sum_table, 
         if i == 3:
             body.append(("code", "stage"))
     body += [("h", h_sum), ("table", sum_table), ("code", "savings"),
-             ("h", h_demand), ("p", demand_p), ("table", demand_table),
+             ("h", h_demand, "contractor-checklist"), ("p", demand_p), ("table", demand_table),
              ("h", h_end), ("p", closing), ("links", links)]
     return {"title": title, "summary": summary, "body": body}
 
@@ -400,3 +400,23 @@ AUTOM["t"]["uk"] = _d(
     "Висновок",
     "Odoo на власному сервері дорогий лише тоді, коли люди роблять те, що можуть робити скрипти. Дванадцять автоматизацій коштують виконавцю один раз 15–25 днів і заощаджують малій компанії приблизно половину поточних витрат – за п'ять років близько 18 000 €, тож власний сервер виявляється дешевшим за Odoo.sh. Замовнику не треба розуміти кожен скрипт: досить вимагати перелічені вище результати й регулярно їх перевіряти. Так ми будуємо проєкти Odoo для компаній у Німеччині, Австрії та Швейцарії.",
     "Посилання")
+
+
+# Анонс на главной (build.index) – ведёт на таблицу «что требовать от исполнителя».
+ANNOUNCE = {
+    "slug": AUTOM["slug"], "anchor": "contractor-checklist",
+    "t": {
+        "de": ("Neu", "Was Sie vom Odoo-Dienstleister verlangen sollten – und wie Sie es prüfen.",
+               "14 Punkte für weniger Budget und bessere Qualität: Repository, Backups mit Wiederherstellungstest, Staging, Tests, Dokumentation, Ausstieg.", "Zur Checkliste"),
+        "en": ("New", "What to demand from your Odoo contractor – and how to check it.",
+               "14 points for a lower budget and better quality: repository, backups with restore tests, staging, tests, documentation, exit.", "To the checklist"),
+        "fr": ("Nouveau", "Ce qu'il faut exiger de votre prestataire Odoo – et comment le vérifier.",
+               "14 points pour un budget plus bas et une meilleure qualité : dépôt, sauvegardes testées, préproduction, tests, documentation, sortie.", "Vers la liste (en anglais)"),
+        "el": ("Νέο", "Τι να ζητάτε από τον συνεργάτη Odoo – και πώς να το ελέγχετε.",
+               "14 σημεία για μικρότερο κόστος και καλύτερη ποιότητα: αποθετήριο, δοκιμασμένα αντίγραφα ασφαλείας, staging, δοκιμές, τεκμηρίωση, αποχώρηση.", "Στη λίστα (στα αγγλικά)"),
+        "uk": ("Нове", "Що вимагати від виконавця Odoo – і як це перевірити.",
+               "14 пунктів для меншого бюджету й кращої якості: репозиторій, бекапи з перевіркою відновлення, тестова копія, тести, документація, умови виходу.", "До чек-листа"),
+        "ru": ("Новое", "Что требовать от исполнителя Odoo – и как это проверить.",
+               "14 пунктов для меньшего бюджета и лучшего качества: репозиторий, бэкапы с проверкой восстановления, тестовая копия, тесты, документация, условия выхода.", "К чек-листу"),
+    },
+}

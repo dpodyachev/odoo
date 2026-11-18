@@ -496,6 +496,12 @@ def index(T, lang):
 </div>
 </section>
 """)
+    an = BP.ANNOUNCE                                     # анонс статьи под первым экраном (blog_posts.ANNOUNCE)
+    if an:
+        A = an["t"][lang]
+        s.append(f'<section class="announce"><div class="wrap announce-in"><span class="announce-tag">{E(A[0])}</span>'
+                 f'<div><b>{E(A[1])}</b> <span>{E(A[2])}</span></div>'
+                 f'<a class="announce-link" href="{url(lang, "blog/" + an["slug"] + ".html")}#{an["anchor"]}">{E(A[3])} →</a></div></section>\n')
     cards = "".join(f'<article class="card">{icon(ic)}<h3>{E(t)}</h3><p>{E(x)}</p></article>'
                     for ic, t, x in T["services"])
     s.append(f"""<section id="services" class="sec extra">
@@ -808,7 +814,8 @@ def blog_post(T, lang, post):
         if kind == "p":
             out.append(f"<p>{inline(b[1])}</p>")
         elif kind == "h":
-            out.append(f"<h2>{inline(b[1])}</h2>")
+            hid = f' id="{E(b[2])}"' if len(b) > 2 else ""      # ("h", текст, якорь) – якорь для ссылок извне
+            out.append(f"<h2{hid}>{inline(b[1])}</h2>")
         elif kind == "note":
             out.append(f'<p class="post-note">{inline(b[1])}</p>')
         elif kind in ("ul", "ol"):

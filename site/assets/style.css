@@ -500,3 +500,11 @@ html.lb-open { overflow: hidden; }
 .learn-cols h3 { font-size: .95rem; margin: 10px 0 4px; color: var(--muted); }
 .learn-cols ul { margin: 0; padding-left: 18px; }
 .learn-cols li { margin: 3px 0; }
+
+/* Анонс под первым экраном главной */
+.announce { background: var(--brand-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.announce-in { display: flex; align-items: center; gap: 14px 18px; padding-top: 14px; padding-bottom: 14px; flex-wrap: wrap; }
+.announce-in > div { flex: 1 1 320px; }
+.announce-in span { color: var(--muted); }
+.announce-tag { background: var(--accent); color: #fff !important; font-weight: 700; font-size: .78rem; padding: 3px 10px; border-radius: 99px; }
+.announce-link { font-weight: 700; white-space: nowrap; }
