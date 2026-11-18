@@ -1,6 +1,7 @@
 # Страница «Odoo lernen»: видеокурсы Odoo eLearning, документация Odoo 18 и наши инструкции, по разделам. 6 языков.
 # Ссылки проверены 2026-11-18 (curl 200). Курсы: www.odoo.com/slides/<slug> – видео на английском с субтитрами,
 # интерфейс сайта есть на de_DE, fr_FR, uk_UA, ru_RU (el – английский). Документация Odoo 18: en, de, fr (ru/uk/el – нет).
+# Проверка ссылок (курс переехал / 404): python3 src/check_learn_links.py
 # Новый курс/ссылку: добавить в CATS; новый раздел – ключ в CATS и название/описание в CAT_TX для всех 6 языков.
 
 SLUG = "learn.html"
@@ -46,7 +47,7 @@ CATS = [
                   ("planning-60", "Planning")],
      [("applications/services/project.html", "Project"), ("applications/services/field_service.html", "Field Service"),
       ("applications/services/helpdesk.html", "Helpdesk")], []),
-    ("web", [("website-ecommerce-25", "Website & eCommerce"), ("ecommerce-26", "eCommerce"), ("marketing-27", "Marketing"),
+    ("web", [("website-ecommerce-25", "Website & eCommerce"), ("marketing-27", "Marketing"),
              ("events-63", "Events"), ("surveys-62", "Surveys")],
      [("applications/websites/website.html", "Website"), ("applications/websites/ecommerce.html", "eCommerce"),
       ("applications/marketing/email_marketing.html", "Email Marketing")], []),
