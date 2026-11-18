@@ -814,3 +814,5 @@ from blog_post_freessl import FREESSL as _C22  # noqa: E402  (все 6 язык�
 POSTS.append(_C22)
 from blog_post_listdb import LISTDB as _C23  # noqa: E402  (все 6 языков внутри)
 POSTS.append(_C23)
+from blog_post_vpsbench import VPSBENCH as _C24  # noqa: E402  (все 6 языков внутри)
+POSTS.append(_C24)
