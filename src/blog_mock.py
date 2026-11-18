@@ -52,7 +52,7 @@ def chat(title, path, msgs):
     s = [_frame(h, title, path)]
     for i, (tm, txt, kind) in enumerate(msgs):
         y = 46 + 46 * i
-        x, w = (W - 470, 456) if kind == "me" else (14, 520)
+        x, w = (W - 470, 456) if kind == "me" else (14, 600)
         s.append(f'<rect x="{x}" y="{y}" width="{w}" height="36" rx="12" class="mk-b-{kind}"/>')
         s.append(_t(x + 14, y + 23, txt, "mk-tx", 13))
         s.append(_t(x + w - 10, y + 23, tm, "mk-mu", 11, anchor="end"))
