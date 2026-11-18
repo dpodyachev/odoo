@@ -60,7 +60,7 @@ CATS = [
                 ("technical-training-introduction-to-development-318", "Introduction to development")],
      [("applications/studio.html", "Studio"), ("developer/tutorials.html", "Developer tutorials")], []),
     ("admin", [("masterclass-odoo-sh-500", "Masterclass Odoo.sh")], [],
-     ["odoo-docker-compose-extra-addons-nginx", "odoo-stage-restore-stop-cron-jobs", "certbot-nginx-auto-renewal",
+     ["odoo-automation-savings-backup-monitoring-staging-upgrade-contractor-checklist", "odoo-docker-compose-extra-addons-nginx", "odoo-stage-restore-stop-cron-jobs", "certbot-nginx-auto-renewal",
       "odoo-server-security-logs-secrets-ports-encryption", "odoo-production-hardening-housekeeping-monitoring",
       "telegram-bot-odoo-monitoring-deploy-stage-copy", "odoo-main-problems-limitations-devops-tips"]),
 ]

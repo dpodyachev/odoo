@@ -830,3 +830,5 @@ from blog_post_odoosap import ODOOSAP as _C30  # noqa: E402  (en, de, ru, uk; fr
 POSTS.append(_C30)
 from blog_post_help import HELPMAIL as _C31, HELPBOT as _C32, HELPPRINT as _C33  # noqa: E402  (все 6 языков внутри)
 POSTS += [_C31, _C32, _C33]
+from blog_post_autom import AUTOM as _C34  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+POSTS.append(_C34)
