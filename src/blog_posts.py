@@ -824,3 +824,5 @@ from blog_post_costs import COSTS as _C27  # noqa: E402  (en, de, ru, uk; fr/el 
 POSTS.append(_C27)
 from blog_post_mailint import MAILINT as _C28  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
 POSTS.append(_C28)
+from blog_post_mailpw import MAILPW as _C29  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+POSTS.append(_C29)
