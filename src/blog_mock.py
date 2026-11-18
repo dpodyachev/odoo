@@ -23,24 +23,26 @@ def _frame(h, title, path):
 
 def app(title, path, side, active, rows, note=None):
     """side: пункты меню слева; active: индекс выделенного; rows: [(слева, справа, выделить?)] – таблица справа."""
+    sw = max(150, 8 * max(len(x) for x in side) + 30)          # ширина меню по самой длинной подписи
     h = max(70 + 30 * len(side), 70 + 32 * len(rows)) + (34 if note else 0)
-    s = [_frame(h, title, path), f'<path d="M170 34v{h - 35}" class="mk-ln"/>']
+    s = [_frame(h, title, path), f'<path d="M{sw + 16} 34v{h - 35}" class="mk-ln"/>']
     for i, it in enumerate(side):
         y = 58 + 30 * i
         if i == active:
-            s.append(f'<rect x="8" y="{y - 17}" width="154" height="26" rx="6" class="mk-hl"/>')
+            s.append(f'<rect x="8" y="{y - 17}" width="{sw}" height="26" rx="6" class="mk-hl"/>')
         s.append(_t(20, y, it, "mk-tx" if i == active else "mk-mu", 13, "700" if i == active else None))
+    x0 = sw + 28
     for i, r in enumerate(rows):
         left, right, hl = r[0], r[1], len(r) > 2 and r[2]
         y = 60 + 32 * i
         if hl:
-            s.append(f'<rect x="182" y="{y - 19}" width="{W - 196}" height="28" rx="6" class="mk-hl"/>')
-        s.append(_t(194, y, left, "mk-tx", 13, "700" if i == 0 else None))
+            s.append(f'<rect x="{x0 - 12}" y="{y - 19}" width="{W - x0 - 2}" height="28" rx="6" class="mk-hl"/>')
+        s.append(_t(x0, y, left, "mk-tx", 13, "700" if i == 0 else None))
         s.append(_t(W - 26, y, right, "mk-ok" if hl else "mk-mu", 13, "700" if hl else None, anchor="end"))
         if i == 0:
-            s.append(f'<path d="M182 {y + 10}h{W - 196}" class="mk-ln"/>')
+            s.append(f'<path d="M{x0 - 12} {y + 10}h{W - x0 - 2}" class="mk-ln"/>')
     if note:
-        s.append(_t(194, h - 16, "➜ " + note, "mk-ac", 13, "700"))
+        s.append(_t(x0, h - 16, "➜ " + note, "mk-ac", 13, "700"))
     return "".join(s) + "</svg>"
 
 

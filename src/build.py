@@ -754,7 +754,11 @@ def inline(text):
     t = re.sub(r"\[([^\]]+)\]\(@blog:([a-z0-9-]+(?:#[a-z0-9-]+)?)\)", r'<a href="\2">\1</a>', t)
     t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2" target="_blank" rel="noopener">\1</a>', t)
     t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
-    return re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+    t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+    # *курсив* (названия меню) – только вне <code>, чтобы не трогать «*» в командах
+    parts = re.split(r"(<code>.*?</code>)", t)
+    return "".join(x if x.startswith("<code>") else re.sub(r"(?<![\w*])\*(?=\S)([^*<]+?)(?<=\S)\*(?![\w*])", r"<i>\1</i>", x)
+                   for x in parts)
 
 
 def post_lang(post, lang):
