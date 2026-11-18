@@ -826,3 +826,5 @@ from blog_post_mailint import MAILINT as _C28  # noqa: E402  (en, de, ru, uk; fr
 POSTS.append(_C28)
 from blog_post_mailpw import MAILPW as _C29  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
 POSTS.append(_C29)
+from blog_post_odoosap import ODOOSAP as _C30  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+POSTS.append(_C30)
