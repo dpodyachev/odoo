@@ -832,3 +832,5 @@ from blog_post_help import HELPMAIL as _C31, HELPBOT as _C32, HELPPRINT as _C33 
 POSTS += [_C31, _C32, _C33]
 from blog_post_autom import AUTOM as _C34, ANNOUNCE  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
 POSTS.append(_C34)
+from blog_post_checkhow import CHECKHOW as _C35  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+POSTS.append(_C35)

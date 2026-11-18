@@ -508,3 +508,23 @@ html.lb-open { overflow: hidden; }
 .announce-in span { color: var(--muted); }
 .announce-tag { background: var(--accent); color: #fff !important; font-weight: 700; font-size: .78rem; padding: 3px 10px; border-radius: 99px; }
 .announce-link { font-weight: 700; white-space: nowrap; }
+
+/* Схемы экранов в инструкциях (blog_mock.py) */
+.mock-fig { margin: 18px 0 22px; }
+.mock-fig figcaption { color: var(--muted); font-size: .9rem; margin-top: 6px; }
+svg.mock { width: 100%; height: auto; display: block; }
+.mk-bg { fill: var(--card); stroke: var(--line); stroke-width: 1.5; }
+.mk-ln { stroke: var(--line); stroke-width: 1.2; fill: none; }
+.mk-dot { fill: var(--line); }
+.mk-tx { fill: var(--ink); }
+.mk-mu { fill: var(--muted); }
+.mk-ac { fill: var(--brand); }
+.mk-ok { fill: #1a8f4c; }
+:root[data-theme="dark"] .mk-ok { fill: #4cd187; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mk-ok { fill: #4cd187; } }
+.mk-hl { fill: var(--brand-soft); stroke: var(--accent); stroke-width: 1.2; }
+.mk-b-ok { fill: rgba(26, 143, 76, .12); stroke: rgba(26, 143, 76, .45); }
+.mk-b-warn { fill: rgba(214, 140, 0, .13); stroke: rgba(214, 140, 0, .5); }
+.mk-b-bad { fill: rgba(200, 40, 40, .12); stroke: rgba(200, 40, 40, .5); }
+.mk-b-me { fill: var(--brand-soft); stroke: var(--accent); }
+.refs { font-size: .92rem; color: var(--muted); }

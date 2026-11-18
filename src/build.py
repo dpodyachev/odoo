@@ -750,6 +750,9 @@ def legal_page(T, lang, page, key):
 def inline(text):
     """Экранирование + `код` и **жирный** в текстах статей."""
     t = E(text)
+    # [текст](url) – ссылки в тексте; "@blog:slug#якорь" → ссылка внутри блога (относительная)
+    t = re.sub(r"\[([^\]]+)\]\(@blog:([a-z0-9-]+(?:#[a-z0-9-]+)?)\)", r'<a href="\2">\1</a>', t)
+    t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2" target="_blank" rel="noopener">\1</a>', t)
     t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
     return re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
 
@@ -816,6 +819,11 @@ def blog_post(T, lang, post):
         elif kind == "h":
             hid = f' id="{E(b[2])}"' if len(b) > 2 else ""      # ("h", текст, якорь) – якорь для ссылок извне
             out.append(f"<h2{hid}>{inline(b[1])}</h2>")
+        elif kind == "svg":                                   # ("svg", ключ в post["svg"], подпись)
+            out.append(f'<figure class="mock-fig">{post["svg"][b[1]]}<figcaption>{inline(b[2])}</figcaption></figure>')
+        elif kind == "refs":                                  # ("refs", подпись, [(текст, url)]) – ссылки внутри раздела
+            out.append(f'<p class="refs"><b>{E(b[1])}:</b> ' + " · ".join(
+                f'<a href="{E(u)}" target="_blank" rel="noopener">{E(t)} ↗</a>' for t, u in b[2]) + "</p>")
         elif kind == "note":
             out.append(f'<p class="post-note">{inline(b[1])}</p>')
         elif kind in ("ul", "ol"):

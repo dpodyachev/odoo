@@ -420,3 +420,14 @@ ANNOUNCE = {
                "14 пунктов для меньшего бюджета и лучшего качества: репозиторий, бэкапы с проверкой восстановления, тестовая копия, тесты, документация, условия выхода.", "К чек-листу"),
     },
 }
+
+# Ссылки «→ пошагово» в колонке «как проверить» – на разделы статьи-пояснения (blog_post_checkhow.py).
+from blog_post_checkhow import SLUG as _CH_SLUG, ANCHORS as _CH_ANCHORS  # noqa: E402
+
+_STEP = {"en": "→ step by step", "de": "→ Schritt für Schritt", "ru": "→ пошагово", "uk": "→ покроково"}
+for _lang, _tx in AUTOM["t"].items():
+    _i = next(k for k, b in enumerate(_tx["body"]) if b[0] == "h" and len(b) > 2 and b[2] == "contractor-checklist")
+    _tab = _tx["body"][_i + 2][1]
+    assert _tx["body"][_i + 2][0] == "table" and len(_tab) == 15
+    for _row, _a in zip(_tab[1:], _CH_ANCHORS):
+        _row[1] = f"{_row[1]} [{_STEP[_lang]}](@blog:{_CH_SLUG}#{_a})"
