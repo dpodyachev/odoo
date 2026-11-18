@@ -279,3 +279,116 @@ ODOOSAP["t"]["uk"] = _d(
      "**Обидва: люди** – навчання й перші місяці після запуску коштують більше часу, ніж будь-яка ліцензія."],
     "Для перукарні, пекарні чи автосервісу SAP – не надійний, а дорогий вибір: у два–чотири рази дорожче за Odoo, а потрібні цим бізнесам функції (запис, каса, автосервіс) у SAP є лише в доповненнях. На оптовому складі SAP Business One удома – і все одно дорожчий; він окупається, коли SAP вимагає група чи банк. Візьміть скрипт вище, підставте справжні пропозиції й порівнюйте три роки, а не перший рахунок. Ми впроваджуємо Odoo для малих компаній у Німеччині, Австрії та Швейцарії й на запит порахуємо ваш випадок.",
     "Посилання")
+
+
+# --- Добавлено по вопросу: а self-hosted Odoo (Community) + работа внешних специалистов? ---
+ODOOSAP["code"]["selfhost"] = ("python3 · Odoo Community on your own server, 3 years – same day rate, assumptions to replace", """DAY, VPS, ADMIN_H, RATE, SETUP = 1000, 25, 2, 90, 2   # day rate, server €/month, admin h/month, €/h, server setup days
+cases = {   # Odoo implementation days (as above) + extra days for what Community lacks
+  "Hair salon":       (2, 3),    # online booking and certified till (TSE) – third-party/OCA modules
+  "Bakery":           (6, 3),    # TSE for the tills
+  "Warehouse":        (10, 4),   # scanner app (OCA stock_barcodes), DATEV export (OCA) – the external API is free
+  "Car repair shop":  (8, 1),    # vehicle fields as a small module instead of Studio
+}
+for name, (days, gap) in cases.items():
+    run = 36 * (VPS + ADMIN_H * RATE)            # server + updates, backups, monitoring by a specialist
+    setup = (SETUP + days + gap) * DAY
+    print(f"{name:16} run {run}  setup+implementation {setup}  = {run + setup}")
+
+# Hair salon       run 7380  setup+implementation 7000   = 14380
+# Bakery           run 7380  setup+implementation 11000  = 18380
+# Warehouse        run 7380  setup+implementation 16000  = 23380
+# Car repair shop  run 7380  setup+implementation 11000  = 18380""")
+
+_SH = {
+    "en": ("Odoo on your own server (Community): cheaper?",
+           "The Community edition costs no licence – but someone has to install the server, take care of backups, updates and monitoring, and fill the gaps where Community lacks Enterprise apps. In a small company that is usually an external specialist. With the same day rate, a server for 25 € a month and 2 hours of administration per month at 90 €:",
+           [["Business", "Odoo Online (Enterprise)", "Odoo Community, own server", "SAP Business One"],
+            ["Hair salon", "3,673 €", "14,380 €", "12,788 €"],
+            ["Bakery", "8,509 €", "18,380 €", "33,504 €"],
+            ["Warehouse / wholesale (10 users)", "25,084 €", "23,380 €", "66,872 €"],
+            ["Car repair shop", "12,525 €", "18,380 €", "25,044 €"]],
+           ["**Small teams pay more with their own server**: administration costs about 205 € a month regardless of the number of users. Odoo Online Standard costs 24.90 € per user – own hosting only pays off from about **8 users** (Standard) or **5 users** (Custom).",
+            "**The warehouse is the exception**: 10 users on the Custom plan – here Community is already cheaper, and the external API is free.",
+            "**If you administer yourself** (an IT person in the company), 6,480 € of the 7,380 € running costs disappear – then Community is the cheapest option everywhere. But the responsibility for backups stays with you.",
+            "**What Community lacks** costs days: online booking, the certified till with TSE for Germany, the scanner app, Studio. There are OCA or third-party modules for most of it – check each one before deciding.",
+            "**Version upgrades**: Odoo Online upgrades for you; on your own server a new major version means a migration project (OpenUpgrade) of several days. Not in the numbers above – plan it every 2–3 years.",
+            "**Odoo Enterprise on your own server** is possible with the Custom plan – licence as above plus the costs of your own server; that rarely pays off for small companies."],
+           "python3 · selfhost",
+           "What external specialists do – and what you should get in writing",
+           ["**Server setup** (1–2 days): VPS in Germany, Docker or packages, nginx with HTTPS, PostgreSQL, mail, firewall.",
+            "**Backups** to a second location with a tested restore – ask for the restore test, not only for the backup.",
+            "**Monitoring and updates**: who notices if Odoo is down, who installs security updates, and how fast.",
+            "**Implementation**: data import, settings, DATEV, documents, training – the days from the tables above.",
+            "**Fixed scope and handover**: list of services, access data in your hands, documentation – so that you can change the service provider."]),
+    "de": ("Odoo auf eigenem Server (Community): günstiger?",
+           "Die Community-Edition kostet keine Lizenz – aber jemand muss den Server aufsetzen, sich um Backups, Updates und Monitoring kümmern und die Lücken füllen, wo Community die Enterprise-Apps fehlen. In einer kleinen Firma ist das meist ein externer Dienstleister. Mit gleichem Tagessatz, einem Server für 25 € im Monat und 2 Stunden Administration pro Monat zu 90 €:",
+           [["Betrieb", "Odoo Online (Enterprise)", "Odoo Community, eigener Server", "SAP Business One"],
+            ["Friseursalon", "3.673 €", "14.380 €", "12.788 €"],
+            ["Bäckerei", "8.509 €", "18.380 €", "33.504 €"],
+            ["Lager / Großhandel (10 Anwender)", "25.084 €", "23.380 €", "66.872 €"],
+            ["Kfz-Werkstatt", "12.525 €", "18.380 €", "25.044 €"]],
+           ["**Kleine Teams zahlen mit eigenem Server mehr**: Die Administration kostet etwa 205 € im Monat, egal wie viele Anwender. Odoo Online Standard kostet 24,90 € pro Anwender – eigenes Hosting lohnt sich erst ab etwa **8 Anwendern** (Standard) bzw. **5 Anwendern** (Custom).",
+            "**Das Lager ist die Ausnahme**: 10 Anwender im Custom-Plan – hier ist Community schon günstiger, und die externe API ist frei.",
+            "**Wer selbst administriert** (eine IT-Person im Haus), spart 6.480 € der 7.380 € Betriebskosten – dann ist Community überall die günstigste Option. Die Verantwortung für Backups bleibt aber bei Ihnen.",
+            "**Was Community fehlt**, kostet Tage: Online-Buchung, die zertifizierte Kasse mit TSE für Deutschland, die Scanner-App, Studio. Für das meiste gibt es OCA- oder Drittanbieter-Module – jedes vor der Entscheidung prüfen.",
+            "**Versions-Upgrades**: Odoo Online aktualisiert für Sie; auf eigenem Server ist eine neue Hauptversion ein Migrationsprojekt (OpenUpgrade) von mehreren Tagen. Nicht in den Zahlen oben – alle 2–3 Jahre einplanen.",
+            "**Odoo Enterprise auf eigenem Server** geht mit dem Custom-Plan – Lizenz wie oben plus die Kosten des eigenen Servers; für kleine Firmen lohnt sich das selten."],
+           "python3 · selfhost",
+           "Was externe Dienstleister machen – und was Sie schriftlich haben sollten",
+           ["**Server-Einrichtung** (1–2 Tage): VPS in Deutschland, Docker oder Pakete, nginx mit HTTPS, PostgreSQL, Mail, Firewall.",
+            "**Backups** an einen zweiten Ort mit getesteter Wiederherstellung – nach dem Wiederherstellungstest fragen, nicht nur nach dem Backup.",
+            "**Monitoring und Updates**: Wer merkt, wenn Odoo ausfällt, wer spielt Sicherheitsupdates ein, und wie schnell.",
+            "**Einführung**: Datenimport, Einstellungen, DATEV, Belege, Schulung – die Tage aus den Tabellen oben.",
+            "**Festumfang und Übergabe**: Leistungsliste, Zugangsdaten in Ihrer Hand, Dokumentation – damit Sie den Dienstleister wechseln können."]),
+    "ru": ("Odoo на своём сервере (Community): дешевле?",
+           "Редакция Community не стоит лицензии – но кто-то должен поставить сервер, следить за бэкапами, обновлениями и мониторингом и закрыть пробелы там, где Community не хватает приложений Enterprise. В маленькой компании это обычно внешний специалист. При той же ставке дня, сервере за 25 € в месяц и 2 часах администрирования в месяц по 90 €:",
+           [["Бизнес", "Odoo Online (Enterprise)", "Odoo Community, свой сервер", "SAP Business One"],
+            ["Парикмахерская", "3673 €", "14 380 €", "12 788 €"],
+            ["Пекарня", "8509 €", "18 380 €", "33 504 €"],
+            ["Склад / опт (10 пользователей)", "25 084 €", "23 380 €", "66 872 €"],
+            ["Автосервис", "12 525 €", "18 380 €", "25 044 €"]],
+           ["**Маленьким командам свой сервер обходится дороже**: администрирование стоит около 205 € в месяц независимо от числа пользователей. Odoo Online Standard – 24,90 € за пользователя; свой хостинг окупается примерно с **8 пользователей** (Standard) или **5 пользователей** (Custom).",
+            "**Склад – исключение**: 10 пользователей на плане Custom – здесь Community уже дешевле, а внешний API бесплатный.",
+            "**Если администрировать самим** (есть свой ИТ-специалист), из 7380 € текущих затрат уходят 6480 € – тогда Community везде самый дешёвый вариант. Но ответственность за бэкапы остаётся на вас.",
+            "**Чего нет в Community**, стоит дней: онлайн-запись, сертифицированная касса с TSE для Германии, приложение для сканеров, Studio. Для большей части есть модули OCA или сторонние – проверять каждый до решения.",
+            "**Переход на новую версию**: Odoo Online обновляет сам; на своём сервере новая основная версия – это проект миграции (OpenUpgrade) на несколько дней. В цифрах выше не учтено – закладывать раз в 2–3 года.",
+            "**Odoo Enterprise на своём сервере** возможен с планом Custom – лицензия как выше плюс затраты на свой сервер; малым компаниям это редко выгодно."],
+           "python3 · selfhost",
+           "Что делают внешние специалисты – и что стоит получить письменно",
+           ["**Настройка сервера** (1–2 дня): VPS в Германии, Docker или пакеты, nginx с HTTPS, PostgreSQL, почта, файрвол.",
+            "**Бэкапы** во второе место с проверенным восстановлением – спрашивать тест восстановления, а не только бэкап.",
+            "**Мониторинг и обновления**: кто заметит, если Odoo упал, кто ставит обновления безопасности и как быстро.",
+            "**Внедрение**: импорт данных, настройки, DATEV, документы, обучение – дни из таблиц выше.",
+            "**Фиксированный объём и передача**: список работ, доступы у вас, документация – чтобы можно было сменить подрядчика."]),
+    "uk": ("Odoo на власному сервері (Community): дешевше?",
+           "Редакція Community не коштує ліцензії – але хтось має поставити сервер, стежити за бекапами, оновленнями й моніторингом і закрити прогалини там, де Community бракує застосунків Enterprise. У маленькій компанії це зазвичай зовнішній фахівець. За тієї ж ставки дня, сервера за 25 € на місяць і 2 годин адміністрування на місяць по 90 €:",
+           [["Бізнес", "Odoo Online (Enterprise)", "Odoo Community, власний сервер", "SAP Business One"],
+            ["Перукарня", "3673 €", "14 380 €", "12 788 €"],
+            ["Пекарня", "8509 €", "18 380 €", "33 504 €"],
+            ["Склад / опт (10 користувачів)", "25 084 €", "23 380 €", "66 872 €"],
+            ["Автосервіс", "12 525 €", "18 380 €", "25 044 €"]],
+           ["**Малим командам власний сервер обходиться дорожче**: адміністрування коштує близько 205 € на місяць незалежно від кількості користувачів. Odoo Online Standard – 24,90 € за користувача; власний хостинг окупається приблизно з **8 користувачів** (Standard) або **5 користувачів** (Custom).",
+            "**Склад – виняток**: 10 користувачів на плані Custom – тут Community вже дешевший, а зовнішній API безкоштовний.",
+            "**Якщо адмініструвати самим** (є свій ІТ-фахівець), із 7380 € поточних витрат зникають 6480 € – тоді Community скрізь найдешевший варіант. Але відповідальність за бекапи залишається на вас.",
+            "**Чого немає в Community**, коштує днів: онлайн-запис, сертифікована каса з TSE для Німеччини, застосунок для сканерів, Studio. Для більшості є модулі OCA або сторонні – перевіряти кожен до рішення.",
+            "**Перехід на нову версію**: Odoo Online оновлює сам; на власному сервері нова основна версія – це проєкт міграції (OpenUpgrade) на кілька днів. У цифрах вище не враховано – закладати раз на 2–3 роки.",
+            "**Odoo Enterprise на власному сервері** можливий з планом Custom – ліцензія як вище плюс витрати на власний сервер; малим компаніям це рідко вигідно."],
+           "python3 · selfhost",
+           "Що роблять зовнішні фахівці – і що варто отримати письмово",
+           ["**Налаштування сервера** (1–2 дні): VPS у Німеччині, Docker або пакети, nginx з HTTPS, PostgreSQL, пошта, файрвол.",
+            "**Бекапи** в друге місце з перевіреним відновленням – питати тест відновлення, а не лише бекап.",
+            "**Моніторинг і оновлення**: хто помітить, якщо Odoo впав, хто ставить оновлення безпеки й як швидко.",
+            "**Впровадження**: імпорт даних, налаштування, DATEV, документи, навчання – дні з таблиць вище.",
+            "**Фіксований обсяг і передача**: перелік робіт, доступи у вас, документація – щоб можна було змінити підрядника."]),
+}
+
+for _lang, (_h, _p, _tab, _ul, _code, _h2, _ul2) in _SH.items():
+    _b = ODOOSAP["t"][_lang]["body"]
+    _i = [k for k, blk in enumerate(_b) if blk[0] == "table"][1] + 1     # after the result table
+    _b[_i:_i] = [("h", _h), ("p", _p), ("table", _tab), ("code", "selfhost"), ("ul", _ul), ("h", _h2), ("ul", _ul2)]
+
+for _lang, _s in {"en": " Plus: Odoo Community on your own server with an external specialist – when it pays off.",
+                  "de": " Dazu: Odoo Community auf eigenem Server mit externem Dienstleister – wann es sich lohnt.",
+                  "ru": " Плюс: Odoo Community на своём сервере с внешним специалистом – когда это окупается.",
+                  "uk": " Плюс: Odoo Community на власному сервері із зовнішнім фахівцем – коли це окупається."}.items():
+    ODOOSAP["t"][_lang]["summary"] += _s
