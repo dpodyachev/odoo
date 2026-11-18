@@ -392,3 +392,153 @@ for _lang, _s in {"en": " Plus: Odoo Community on your own server with an extern
                   "ru": " Плюс: Odoo Community на своём сервере с внешним специалистом – когда это окупается.",
                   "uk": " Плюс: Odoo Community на власному сервері із зовнішнім фахівцем – коли це окупається."}.items():
     ODOOSAP["t"][_lang]["summary"] += _s
+
+
+# --- Приложение: свой сервер vs Odoo.sh (и Odoo Online для сравнения) по годам 1..5, 5 пользователей ---
+ODOOSAP["code"]["years"] = ("python3 · 5 users, years 1–5: own server (Community / Enterprise), Odoo.sh, Odoo Online – replace the assumptions", """DAY, HOUR, USERS = 1000, 90, 5
+CUSTOM, STANDARD = (35.90, 44.90), (19.90, 24.90)                       # €/user/month, yearly billing: 1st year, then regular
+def lic(y, p=CUSTOM): return USERS * 12 * (p[0] if y == 1 else p[1])
+V = {   # item: (Community own server, Enterprise own server, Odoo.sh, Odoo Online for reference)   – per year, y = 1..5
+  "Server / project setup":          lambda y: (2*DAY, 2*DAY, DAY//2, 0) if y == 1 else (0,)*4,
+  "Implementation (configuration, data)": lambda y: (8*DAY, 6*DAY, 6*DAY, 6*DAY) if y == 1 else (0,)*4,
+  "Training":                        lambda y: (2*DAY,)*4 if y == 1 else (DAY//2,)*4,
+  "Licence (Custom / Standard, 5 users)":       lambda y: (0, lic(y), lic(y), lic(y, STANDARD)),
+  "Hosting":                         lambda y: (12*30, 12*30, 12*74, 0),     # VPS 25 + off-site backup 5 | 1 worker, 10 GB, 1 staging
+  "Administration (updates, backups, monitoring)": lambda y: (24*HOUR, 24*HOUR, 6*HOUR, 0),
+  "Support cases (bot, mail, printing …)":         lambda y: (16*HOUR, 12*HOUR, 8*HOUR, 8*HOUR),
+  "Upgrade to a new Odoo version":   lambda y: (5*DAY, 2*DAY, 1500, 500) if y == 3 else (0,)*4,
+}
+tot = [[0]*4 for _ in range(5)]
+for item, f in V.items():
+    for y in range(1, 6):
+        for k, v in enumerate(f(y)): tot[y-1][k] += v
+cum = [0]*4
+for y, t in enumerate(tot, 1):
+    cum = [c + v for c, v in zip(cum, t)]
+    print(f"year {y}: " + "  ".join(f"{v:7.0f}" for v in t) + "   cumulative " + "  ".join(f"{c:7.0f}" for c in cum))
+
+# year 1:   15960    15754    12802     9914
+# year 2:    4460     6794     5342     2714
+# year 3:    9460     8794     6842     3214   (version upgrade)
+# year 4:    4460     6794     5342     2714
+# year 5:    4460     6794     5342     2714   -> 5 years: 38800  44930  35670  21270""")
+
+_Y = [["1", "15,960", "15,754", "12,802", "9,914"], ["2", "4,460", "6,794", "5,342", "2,714"],
+      ["3 (new version)", "9,460", "8,794", "6,842", "3,214"], ["4", "4,460", "6,794", "5,342", "2,714"],
+      ["5", "4,460", "6,794", "5,342", "2,714"], ["**5 years**", "**38,800**", "**44,930**", "**35,670**", "**21,270**"]]
+
+
+_AP = {
+    "en": dict(
+        h="Appendix: own server or Odoo.sh – years 1 to 5, everything included",
+        p="Odoo.sh is Odoo's own platform for Odoo Enterprise with custom modules: GitHub, staging copies, backups in three locations, monitoring – Odoo runs the servers, you or your partner run the code. It needs the Custom plan. Example: a company with 5 users that needs its own modules (otherwise Odoo Online is enough – we show it for reference). Odoo.sh prices from public price overviews with yearly billing: 57.60 per worker, 0.20 per GB and 14.40 per staging copy per month (USD values; check the euro price in the calculator on odoo.com/pricing). Day rate 1,000 €, hour 90 €.",
+        items=[["Cost item", "Community, own server", "Enterprise, own server", "Odoo.sh", "Odoo Online (reference)"],
+               ["Server / project setup (once)", "2 days – 2,000 €", "2,000 €", "½ day – 500 € (project, GitHub, domain)", "—"],
+               ["Implementation: settings, data import, documents (once)", "8 days – 8,000 € (2 days for missing Enterprise apps)", "6 days – 6,000 €", "6,000 €", "6,000 €"],
+               ["Training", "2 days – 2,000 €, then ½ day a year", "same", "same", "same"],
+               ["Licence, 5 users", "0 €", "Custom: 2,154 € in year 1, then 2,694 €", "same", "Standard: 1,194 €, then 1,494 €"],
+               ["Hosting per year", "360 € (VPS 25 € + off-site backup 5 € a month)", "360 €", "888 € (1 worker, 10 GB, 1 staging)", "included"],
+               ["Administration per year: updates, backups, monitoring", "24 h – 2,160 €", "2,160 €", "6 h – 540 € (builds, module updates)", "—"],
+               ["Support cases per year", "16 h – 1,440 €", "12 h – 1,080 €", "8 h – 720 €", "8 h – 720 €"],
+               ["New Odoo version (year 3)", "5 days – 5,000 € (OpenUpgrade)", "2,000 € (Odoo upgrade service + tests)", "1,500 € (upgrade on staging, tests)", "500 € (tests)"]],
+        years=("Year", "1", "5 years", ","),
+        ycols=["Year", "Community, own server", "Enterprise, own server", "Odoo.sh", "Odoo Online"],
+        sup_h="The small things: who fixes what",
+        sup=["**\"The bot stopped working\"** (Telegram notifications, an integration): own server – the specialist checks process, log and token and restarts; Odoo.sh – if it is your own module, your partner; Odoo support only covers the standard. Either way: billed by the hour unless you have a flat rate.",
+             "**\"Mail does not work\"**: own server – SPF/DKIM/DMARC in DNS, a relay or Gmail/Outlook (app password or OAuth), and many VPS providers block outgoing port 25; Odoo.sh / Online – Odoo's mail servers are included, you only set the DNS records for your domain.",
+             "**\"Odoo is slow or down\"**: own server – disk full, too few workers, PostgreSQL; you notice it only with monitoring. Odoo.sh – Odoo monitors 24/7; slow own modules stay your partner's job.",
+             "**\"Certificate expired\", \"backup missing\"**: own server – certbot renewal and restore tests are part of administration; Odoo.sh / Online – automatic.",
+             "**\"Error after an update\"** in standard Odoo: Enterprise (all variants except Community) – Odoo support is included in the licence; Community – only your partner or the OCA community.",
+             "**Training** is not a one-off: new employees, new functions, the new version – plan half a day a year. Short videos of your own processes save the most time.",
+             "**Agree on support in writing**: reaction time (e.g. 4 hours on working days), monthly flat rate or hourly rate, who has which access, how emergencies are reported."],
+        con=["Over 5 years with 5 users: **Odoo Online 21,270 €**, **Odoo.sh 35,670 €**, Community on your own server 38,800 €, Enterprise on your own server 44,930 €.",
+             "**Odoo.sh beats your own server** although hosting costs more: administration, certificates, backups and upgrades are cheaper there. It is the right place when you need your own modules.",
+             "**Community on your own server** pays off with in-house IT, more users (each additional Custom user costs about 539 € a year) or when the data must stay on your own server.",
+             "**Enterprise on your own server** is the most expensive variant – only for special requirements (data location, integration into your own network)."]),
+    "de": dict(
+        h="Anhang: eigener Server oder Odoo.sh – Jahr 1 bis 5, alles inklusive",
+        p="Odoo.sh ist Odoos eigene Plattform für Odoo Enterprise mit eigenen Modulen: GitHub, Staging-Kopien, Backups an drei Standorten, Monitoring – Odoo betreibt die Server, Sie oder Ihr Partner den Code. Voraussetzung ist der Custom-Plan. Beispiel: eine Firma mit 5 Anwendern, die eigene Module braucht (sonst reicht Odoo Online – zum Vergleich mit aufgeführt). Odoo.sh-Preise aus öffentlichen Preisübersichten bei jährlicher Zahlung: 57,60 pro Worker, 0,20 pro GB und 14,40 pro Staging-Kopie im Monat (USD-Werte; Euro-Preis im Rechner auf odoo.com/pricing prüfen). Tagessatz 1.000 €, Stunde 90 €.",
+        items=[["Kostenposition", "Community, eigener Server", "Enterprise, eigener Server", "Odoo.sh", "Odoo Online (Vergleich)"],
+               ["Server- / Projekteinrichtung (einmalig)", "2 Tage – 2.000 €", "2.000 €", "½ Tag – 500 € (Projekt, GitHub, Domain)", "—"],
+               ["Einführung: Einstellungen, Datenimport, Belege (einmalig)", "8 Tage – 8.000 € (2 Tage für fehlende Enterprise-Apps)", "6 Tage – 6.000 €", "6.000 €", "6.000 €"],
+               ["Schulung", "2 Tage – 2.000 €, danach ½ Tag pro Jahr", "gleich", "gleich", "gleich"],
+               ["Lizenz, 5 Anwender", "0 €", "Custom: 2.154 € im 1. Jahr, danach 2.694 €", "gleich", "Standard: 1.194 €, danach 1.494 €"],
+               ["Hosting pro Jahr", "360 € (VPS 25 € + externes Backup 5 € im Monat)", "360 €", "888 € (1 Worker, 10 GB, 1 Staging)", "inklusive"],
+               ["Administration pro Jahr: Updates, Backups, Monitoring", "24 h – 2.160 €", "2.160 €", "6 h – 540 € (Builds, Modul-Updates)", "—"],
+               ["Supportfälle pro Jahr", "16 h – 1.440 €", "12 h – 1.080 €", "8 h – 720 €", "8 h – 720 €"],
+               ["Neue Odoo-Version (Jahr 3)", "5 Tage – 5.000 € (OpenUpgrade)", "2.000 € (Odoo-Upgrade-Service + Tests)", "1.500 € (Upgrade auf Staging, Tests)", "500 € (Tests)"]],
+        years=("Jahr", "3 (neue Version)", "5 Jahre", "."),
+        ycols=["Jahr", "Community, eigener Server", "Enterprise, eigener Server", "Odoo.sh", "Odoo Online"],
+        sup_h="Die Kleinigkeiten: wer repariert was",
+        sup=["**„Der Bot funktioniert nicht mehr“** (Telegram-Benachrichtigungen, eine Integration): eigener Server – der Dienstleister prüft Prozess, Log und Token und startet neu; Odoo.sh – ist es ein eigenes Modul, Ihr Partner; der Odoo-Support deckt nur den Standard. So oder so: nach Stunden, wenn keine Pauschale vereinbart ist.",
+             "**„Die Mail geht nicht“**: eigener Server – SPF/DKIM/DMARC im DNS, ein Relay oder Gmail/Outlook (App-Passwort oder OAuth), und viele VPS-Anbieter sperren ausgehenden Port 25; Odoo.sh / Online – Odoos Mailserver sind inklusive, Sie setzen nur die DNS-Einträge Ihrer Domain.",
+             "**„Odoo ist langsam oder weg“**: eigener Server – Platte voll, zu wenige Worker, PostgreSQL; bemerkt wird es nur mit Monitoring. Odoo.sh – Odoo überwacht rund um die Uhr; langsame eigene Module bleiben Sache Ihres Partners.",
+             "**„Zertifikat abgelaufen“, „Backup fehlt“**: eigener Server – certbot-Erneuerung und Wiederherstellungstests gehören zur Administration; Odoo.sh / Online – automatisch.",
+             "**„Fehler nach einem Update“** im Standard: Enterprise (alle Varianten außer Community) – Odoo-Support ist in der Lizenz enthalten; Community – nur Ihr Partner oder die OCA-Community.",
+             "**Schulung** ist keine Einmalsache: neue Mitarbeiter, neue Funktionen, die neue Version – einen halben Tag pro Jahr einplanen. Kurze Videos der eigenen Abläufe sparen am meisten Zeit.",
+             "**Support schriftlich vereinbaren**: Reaktionszeit (z. B. 4 Stunden an Werktagen), Monatspauschale oder Stundensatz, wer welche Zugänge hat, wie Notfälle gemeldet werden."],
+        con=["Über 5 Jahre mit 5 Anwendern: **Odoo Online 21.270 €**, **Odoo.sh 35.670 €**, Community auf eigenem Server 38.800 €, Enterprise auf eigenem Server 44.930 €.",
+             "**Odoo.sh schlägt den eigenen Server**, obwohl das Hosting mehr kostet: Administration, Zertifikate, Backups und Upgrades sind dort günstiger. Es ist der richtige Ort, wenn Sie eigene Module brauchen.",
+             "**Community auf eigenem Server** lohnt sich mit eigener IT im Haus, mehr Anwendern (jeder weitere Custom-Anwender kostet etwa 539 € im Jahr) oder wenn die Daten auf dem eigenen Server bleiben müssen.",
+             "**Enterprise auf eigenem Server** ist die teuerste Variante – nur bei besonderen Anforderungen (Datenstandort, Einbindung ins eigene Netz)."]),
+    "ru": dict(
+        h="Приложение: свой сервер или Odoo.sh – годы с 1-го по 5-й, всё включено",
+        p="Odoo.sh – собственная платформа Odoo для Odoo Enterprise со своими модулями: GitHub, тестовые копии (staging), бэкапы в трёх местах, мониторинг – серверы обслуживает Odoo, код – вы или ваш партнёр. Нужен план Custom. Пример: компания на 5 пользователей, которой нужны свои модули (иначе хватит Odoo Online – он приведён для сравнения). Цены Odoo.sh – из публичных обзоров цен при оплате за год: 57,60 за worker, 0,20 за ГБ и 14,40 за тестовую копию в месяц (значения в USD; цену в евро проверить в калькуляторе на odoo.com/pricing). Ставка дня 1000 €, час 90 €.",
+        items=[["Статья затрат", "Community, свой сервер", "Enterprise, свой сервер", "Odoo.sh", "Odoo Online (для сравнения)"],
+               ["Настройка сервера / проекта (разово)", "2 дня – 2000 €", "2000 €", "½ дня – 500 € (проект, GitHub, домен)", "—"],
+               ["Внедрение: настройки, импорт данных, документы (разово)", "8 дней – 8000 € (2 дня на недостающие приложения Enterprise)", "6 дней – 6000 €", "6000 €", "6000 €"],
+               ["Обучение", "2 дня – 2000 €, потом ½ дня в год", "так же", "так же", "так же"],
+               ["Лицензия, 5 пользователей", "0 €", "Custom: 2154 € в 1-й год, потом 2694 €", "так же", "Standard: 1194 €, потом 1494 €"],
+               ["Хостинг в год", "360 € (VPS 25 € + внешний бэкап 5 € в месяц)", "360 €", "888 € (1 worker, 10 ГБ, 1 staging)", "включён"],
+               ["Администрирование в год: обновления, бэкапы, мониторинг", "24 ч – 2160 €", "2160 €", "6 ч – 540 € (сборки, обновления модулей)", "—"],
+               ["Обращения в поддержку в год", "16 ч – 1440 €", "12 ч – 1080 €", "8 ч – 720 €", "8 ч – 720 €"],
+               ["Новая версия Odoo (3-й год)", "5 дней – 5000 € (OpenUpgrade)", "2000 € (сервис обновления Odoo + тесты)", "1500 € (обновление на staging, тесты)", "500 € (тесты)"]],
+        years=("Год", "3 (новая версия)", "5 лет", " "),
+        ycols=["Год", "Community, свой сервер", "Enterprise, свой сервер", "Odoo.sh", "Odoo Online"],
+        sup_h="Мелочи: кто что чинит",
+        sup=["**«Бот перестал работать»** (уведомления в Telegram, интеграция): свой сервер – специалист проверяет процесс, лог и токен и перезапускает; Odoo.sh – если это ваш модуль, то ваш партнёр; поддержка Odoo покрывает только стандарт. В любом случае – почасово, если не договорились об абонентской плате.",
+             "**«Почта не работает»**: свой сервер – SPF/DKIM/DMARC в DNS, релей или Gmail/Outlook (пароль приложения или OAuth), а многие VPS-провайдеры блокируют исходящий порт 25; Odoo.sh / Online – почтовые серверы Odoo включены, вы только прописываете DNS-записи своего домена.",
+             "**«Odoo тормозит или лежит»**: свой сервер – закончился диск, мало воркеров, PostgreSQL; заметно только при мониторинге. Odoo.sh – Odoo следит круглосуточно; медленные собственные модули – забота вашего партнёра.",
+             "**«Истёк сертификат», «нет бэкапа»**: свой сервер – продление certbot и тесты восстановления входят в администрирование; Odoo.sh / Online – автоматически.",
+             "**«Ошибка после обновления»** в стандартном Odoo: Enterprise (все варианты, кроме Community) – поддержка Odoo входит в лицензию; Community – только ваш партнёр или сообщество OCA.",
+             "**Обучение** – не разовое: новые сотрудники, новые функции, новая версия – закладывать полдня в год. Больше всего времени экономят короткие видео своих процессов.",
+             "**Поддержку оформить письменно**: время реакции (например, 4 часа в рабочие дни), абонентская плата или почасовая ставка, у кого какие доступы, как сообщать об аварии."],
+        con=["За 5 лет на 5 пользователей: **Odoo Online 21 270 €**, **Odoo.sh 35 670 €**, Community на своём сервере 38 800 €, Enterprise на своём сервере 44 930 €.",
+             "**Odoo.sh выгоднее своего сервера**, хотя хостинг дороже: администрирование, сертификаты, бэкапы и обновления версий там дешевле. Это правильное место, когда нужны свои модули.",
+             "**Community на своём сервере** окупается при своём ИТ-специалисте, большем числе пользователей (каждый следующий пользователь Custom – около 539 € в год) или когда данные обязаны оставаться на своём сервере.",
+             "**Enterprise на своём сервере** – самый дорогой вариант, только при особых требованиях (где хранятся данные, работа во внутренней сети)."]),
+    "uk": dict(
+        h="Додаток: власний сервер чи Odoo.sh – роки з 1-го по 5-й, усе включено",
+        p="Odoo.sh – власна платформа Odoo для Odoo Enterprise зі своїми модулями: GitHub, тестові копії (staging), бекапи в трьох місцях, моніторинг – сервери обслуговує Odoo, код – ви або ваш партнер. Потрібен план Custom. Приклад: компанія на 5 користувачів, якій потрібні свої модулі (інакше вистачить Odoo Online – наведено для порівняння). Ціни Odoo.sh – з публічних оглядів цін при оплаті за рік: 57,60 за worker, 0,20 за ГБ і 14,40 за тестову копію на місяць (значення в USD; ціну в євро перевірити в калькуляторі на odoo.com/pricing). Ставка дня 1000 €, година 90 €.",
+        items=[["Стаття витрат", "Community, власний сервер", "Enterprise, власний сервер", "Odoo.sh", "Odoo Online (для порівняння)"],
+               ["Налаштування сервера / проєкту (разово)", "2 дні – 2000 €", "2000 €", "½ дня – 500 € (проєкт, GitHub, домен)", "—"],
+               ["Впровадження: налаштування, імпорт даних, документи (разово)", "8 днів – 8000 € (2 дні на відсутні застосунки Enterprise)", "6 днів – 6000 €", "6000 €", "6000 €"],
+               ["Навчання", "2 дні – 2000 €, потім ½ дня на рік", "так само", "так само", "так само"],
+               ["Ліцензія, 5 користувачів", "0 €", "Custom: 2154 € у 1-й рік, потім 2694 €", "так само", "Standard: 1194 €, потім 1494 €"],
+               ["Хостинг на рік", "360 € (VPS 25 € + зовнішній бекап 5 € на місяць)", "360 €", "888 € (1 worker, 10 ГБ, 1 staging)", "включено"],
+               ["Адміністрування на рік: оновлення, бекапи, моніторинг", "24 год – 2160 €", "2160 €", "6 год – 540 € (збірки, оновлення модулів)", "—"],
+               ["Звернення в підтримку на рік", "16 год – 1440 €", "12 год – 1080 €", "8 год – 720 €", "8 год – 720 €"],
+               ["Нова версія Odoo (3-й рік)", "5 днів – 5000 € (OpenUpgrade)", "2000 € (сервіс оновлення Odoo + тести)", "1500 € (оновлення на staging, тести)", "500 € (тести)"]],
+        years=("Рік", "3 (нова версія)", "5 років", " "),
+        ycols=["Рік", "Community, власний сервер", "Enterprise, власний сервер", "Odoo.sh", "Odoo Online"],
+        sup_h="Дрібниці: хто що лагодить",
+        sup=["**«Бот перестав працювати»** (сповіщення в Telegram, інтеграція): власний сервер – фахівець перевіряє процес, лог і токен і перезапускає; Odoo.sh – якщо це ваш модуль, то ваш партнер; підтримка Odoo покриває лише стандарт. У будь-якому разі – погодинно, якщо не домовилися про абонплату.",
+             "**«Пошта не працює»**: власний сервер – SPF/DKIM/DMARC у DNS, релей або Gmail/Outlook (пароль застосунку чи OAuth), а багато VPS-провайдерів блокують вихідний порт 25; Odoo.sh / Online – поштові сервери Odoo включені, ви лише прописуєте DNS-записи свого домену.",
+             "**«Odoo гальмує або лежить»**: власний сервер – закінчився диск, мало воркерів, PostgreSQL; помітно лише з моніторингом. Odoo.sh – Odoo стежить цілодобово; повільні власні модулі – турбота вашого партнера.",
+             "**«Сплив сертифікат», «немає бекапу»**: власний сервер – подовження certbot і тести відновлення входять в адміністрування; Odoo.sh / Online – автоматично.",
+             "**«Помилка після оновлення»** у стандартному Odoo: Enterprise (усі варіанти, крім Community) – підтримка Odoo входить у ліцензію; Community – лише ваш партнер або спільнота OCA.",
+             "**Навчання** – не разове: нові працівники, нові функції, нова версія – закладати пів дня на рік. Найбільше часу заощаджують короткі відео власних процесів.",
+             "**Підтримку оформити письмово**: час реакції (наприклад, 4 години в робочі дні), абонплата чи погодинна ставка, у кого які доступи, як повідомляти про аварію."],
+        con=["За 5 років на 5 користувачів: **Odoo Online 21 270 €**, **Odoo.sh 35 670 €**, Community на власному сервері 38 800 €, Enterprise на власному сервері 44 930 €.",
+             "**Odoo.sh вигідніший за власний сервер**, хоча хостинг дорожчий: адміністрування, сертифікати, бекапи й оновлення версій там дешевші. Це правильне місце, коли потрібні свої модулі.",
+             "**Community на власному сервері** окупається з власним ІТ-фахівцем, більшою кількістю користувачів (кожен наступний користувач Custom – близько 539 € на рік) або коли дані мають залишатися на власному сервері.",
+             "**Enterprise на власному сервері** – найдорожчий варіант, лише за особливих вимог (де зберігаються дані, робота у внутрішній мережі)."]),
+}
+
+for _lang, _a in _AP.items():
+    _yh, _y3, _tot, _sep = _a["years"]
+    _rows = [[r[0]] + [v.replace(",", _sep) for v in r[1:]] for r in _Y]
+    _rows[2][0], _rows[5][0] = _y3, f"**{_tot}**"
+    _b = ODOOSAP["t"][_lang]["body"]
+    _b[-1:-1] = [("h", _a["h"]), ("p", _a["p"]), ("table", _a["items"]), ("table", [_a["ycols"]] + _rows),
+                 ("code", "years"), ("h", _a["sup_h"]), ("ul", _a["sup"]), ("ul", _a["con"])]
