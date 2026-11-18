@@ -492,3 +492,11 @@ html.lb-open { overflow: hidden; }
 @media (max-width: 760px) { .pc-grid { grid-template-columns: 1fr; } }
 .pc-grid > div { min-width: 0; }
 .pc-form, .pc-f { min-width: 0; } .pc-f select, .pc-f input { max-width: 100%; min-width: 0; width: 100%; box-sizing: border-box; } .pc-range input { width: auto; }
+
+/* Odoo lernen */
+.learn-toc .post-tag { text-decoration: none; }
+.learn-cat { scroll-margin-top: 80px; }
+.learn-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 6px 22px; }
+.learn-cols h3 { font-size: .95rem; margin: 10px 0 4px; color: var(--muted); }
+.learn-cols ul { margin: 0; padding-left: 18px; }
+.learn-cols li { margin: 3px 0; }
