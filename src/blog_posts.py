@@ -836,3 +836,5 @@ from blog_post_checkhow import CHECKHOW as _C35  # noqa: E402  (en, de, ru, uk; 
 POSTS.append(_C35)
 from blog_post_pgdump import PGDUMP as _C36  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
 POSTS.append(_C36)
+from blog_post_packs import PACKS_POST as _C37  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+POSTS.append(_C37)

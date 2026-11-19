@@ -25,6 +25,7 @@ print(f"Community {years * 12 * (vps_month + admin_hours_month * hourly_rate):8.
     "links": [
         ("Odoo pricing (DE)", "https://www.odoo.com/de_DE/pricing"),
         ("Blog: Odoo and DATEV step by step", "@blog:odoo-datev-export-step-by-step-community-enterprise"),
+        ("Blog: Odoo Success Packs – prices and an alternative", "@blog:odoo-success-packs-prices-alternative-half-price"),
         ("Blog: Odoo with Outlook, Gmail and WhatsApp", "@blog:odoo-outlook-gmail-whatsapp-integration-step-by-step"),
         ("Blog: Odoo 17 for free – server, database, filestore", "@blog:odoo-17-free-hosting-database-filestore"),
         ("Blog: how many users can one Odoo server handle", "@blog:odoo-how-many-users-one-server-workers"),
