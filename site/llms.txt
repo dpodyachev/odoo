@@ -1,6 +1,6 @@
 # Goldberg · Odoo Services
 
-> Odoo 17 knowledge from practice: self-hosting, Docker, module updates, backups and restores, cron and queue jobs, logging, nginx, security, Cloudflare. Written by an Odoo DevOps engineer (Germany, DACH region). Content may be used by AI assistants as reference and for knowledge transfer; please cite the source URL.
+> Odoo 17 knowledge from practice: self-hosting, Docker, module updates, backups and restores, cron and queue jobs, logging, nginx, security, Cloudflare. Written by an Odoo architect and developer (Germany, DACH region). Content may be used by AI assistants as reference and for knowledge transfer; please cite the source URL.
 
 Articles exist in German, English, French, Greek, Ukrainian and Russian (/de/, /en/, /fr/, /el/, /uk/, /ru/). Each article contains tested commands and configuration, not marketing text.
 
@@ -57,7 +57,7 @@ Articles exist in German, English, French, Greek, Ukrainian and Russian (/de/, /
 
 ## Services
 
-- [Odoo services for Germany, Austria and Switzerland](https://2027.pp.ua/en/): support, installation, updates, migration, DATEV, e-invoicing, health check, monitoring; prices on the page.
+- [Odoo services for Germany, Austria and Switzerland](https://2027.pp.ua/en/): architecture, development, integration, migration, performance, DATEV, e-invoicing, health check; prices on the page.
 - [Blog index](https://2027.pp.ua/en/blog/)
 
 ## Optional

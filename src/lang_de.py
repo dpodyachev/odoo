@@ -1,39 +1,19 @@
 T = {
-    "meta_title": "Odoo Support, Installation & Integration für DACH – Goldberg Odoo Services",
-    "meta_desc": "Odoo-Betreuung für Unternehmen in Deutschland, Österreich und der Schweiz: Installation, Support, "
-                 "Fehlerbehebung, Updates, DATEV, E-Rechnung (XRechnung/ZUGFeRD), Shopware, JTL, DHL, DPD. Festpreise, remote aus Stuttgart.",
+    "meta_title": 'Odoo-Architektur, Entwicklung & Migration für DACH – Goldberg Odoo Services',
+    "meta_desc": 'Odoo für Unternehmen in Deutschland, Österreich und der Schweiz: Architektur, Entwicklung eigener Module, Integrationen (DATEV, E-Rechnung, Shopware, JTL, DHL, DPD), Migrationen und Performance. Festpreise, remote aus Stuttgart.',
     "nav": {"services": "Leistungen", "dach": "DATEV & E-Rechnung", "bot": "Monitoring", "prices": "Preise",
             "about": "Über mich", "blog": 'Blog & How-tos', "contact": "Kontakt"},
-    "kicker": "Odoo · Deutschland · Österreich · Schweiz",
-    "h1": "Odoo-Betreuung, <span>die einfach läuft.</span>",
-    "sub": "Installation, Support, Fehlerbehebung und Integrationen für Odoo Community und Enterprise – "
-           "remote aus Stuttgart, mit Festpreisen und einem festen Ansprechpartner.",
+    "kicker": 'Odoo-Architektur · Entwicklung · Integration · Migration · Performance',
+    "h1": 'Odoo, <span>das einfach läuft.</span>',
+    "sub": 'Architektur, Entwicklung, Integrationen, Migrationen und Performance für Odoo Community und Enterprise – remote aus Stuttgart für Deutschland, Österreich und die Schweiz, mit Festpreisen und einem festen Ansprechpartner.',
     "cta_book": "Termin buchen – 30 Min. kostenlos",
     "badges": ["Festpreise statt Überraschungen", "Monitoring rund um die Uhr", "Updates ohne Ausfall",
                "Odoo 14 bis 19", "DSGVO-konform mit AV-Vertrag"],
     "hero_card": ["Odoo erreichbar", "Backup erfolgreich", "Festplatte – Warnung", "Fehler im Log heute",
                   "Ihr Server, rund um die Uhr im Blick"],
     "services_title": "Leistungen",
-    "services_intro": "Vom ersten Server bis zur laufenden Betreuung – alles aus einer Hand, ohne Agentur-Overhead.",
-    "services": [
-        ("install", "Installation & Einrichtung",
-         "Odoo auf Ihrem Server oder in der Cloud: Docker, PostgreSQL, SSL, Reverse-Proxy, E-Mail, automatische Backups. "
-         "Sauber dokumentiert und an Sie übergeben."),
-        ("support", "Support & Wartung",
-         "Sicherheits-Updates, Backups mit Wiederherstellungstest, Überwachung, Benutzerfragen und kleine Anpassungen – "
-         "monatlich planbar."),
-        ("fix", "Fehlerbehebung",
-         "Odoo startet nicht, ist langsam, das Update bricht ab, E-Mails gehen nicht raus? Schnelle Analyse der Logs, "
-         "klare Ursache, nachhaltige Lösung."),
-        ("update", "Updates & Migration",
-         "Modul-Updates ohne Stillstand, Versionswechsel (z. B. 14 → 17) – immer zuerst auf einer Kopie getestet, "
-         "mit Rückweg, falls etwas schiefgeht."),
-        ("integration", "Integration",
-         "DATEV, E-Rechnung, Online-Shops, Versanddienstleister, Banken und eigene Schnittstellen (REST, XML-RPC)."),
-        ("server", "Server & DevOps",
-         "Linux, Docker, nginx, PostgreSQL: Performance-Tuning, Absicherung (Ports, Zugänge, Zertifikate), "
-         "Speicherplatz und Log-Rotation."),
-    ],
+    "services_intro": 'Von der Architektur bis zur Weiterentwicklung – technische Arbeit an Ihrem Odoo ohne Agentur-Overhead. Lizenzen: direkt bei Odoo S.A. · Anwender-Support: über Partner.',
+    "services": [('install', 'Architektur & Einrichtung', 'Konzept für Module, Datenfluss und Server – dann die Umsetzung: Odoo auf Ihrem Server (Vertrag auf Ihren Namen), Docker, PostgreSQL, SSL, Backups. Sauber dokumentiert und an Sie übergeben.'), ('support', 'Entwicklung & Anpassung', 'Eigene Module und Erweiterungen in Python und OWL, Berichte, Automatisierungen – versioniert in Git, getestet auf einer Kopie, mit Rückweg.'), ('fix', 'Fehleranalyse', 'Odoo startet nicht, ist langsam, das Update bricht ab, E-Mails gehen nicht raus? Analyse der Logs und der Datenbank, klare Ursache, nachhaltige Lösung.'), ('update', 'Updates & Migration', 'Updates als geplantes Projekt: zuerst auf einer Testkopie, dann in Produktion mit Rückweg. Versionswechsel (z. B. 14 → 17) inklusive Anpassung eigener Module.'), ('integration', 'Integration & Schnittstellen', 'DATEV, E-Rechnung, Online-Shops, Versanddienstleister, Banken und eigene Schnittstellen (REST, XML-RPC) – konzipiert, entwickelt und getestet.'), ('server', 'Performance & Sicherheit', 'PostgreSQL- und Worker-Tuning, Lasttests, Analyse langsamer Abfragen, Absicherung von Server und Zugängen – gemessen vor und nach jeder Maßnahme.')],
     "dach_title": "Was Odoo in Deutschland, Österreich und der Schweiz können muss",
     "dach_intro": "Die Standard-Installation reicht hier selten. Diese Themen richte ich für Sie ein – und halte sie aktuell.",
     "dach": [
@@ -55,12 +35,11 @@ T = {
         ('Workshops & Entwicklung', 'CRM, Lager, Fertigung, Verkauf und Buchhaltung auf Ihr Unternehmen zuschneiden – Anpassungen, wo der Standard nicht reicht.'),
         ('Test', 'Testläufe mit echten Abläufen: Belegfluss, korrekte Buchungen, Rechnungen, Schnittstellen.'),
         ('Schulung', 'Schulung für Anwender und Key-User, kurze Anleitungen für den Alltag.'),
-        ('Go-live & Betreuung', 'Schrittweiser Start in den Produktivbetrieb, danach Monitoring, Updates und Support.'),
+        ('Go-live & Begleitung', 'Schrittweiser Start in den Produktivbetrieb, danach Monitoring, Updates als Projekt und Weiterentwicklung.'),
     ],
     "yearly": 'Bei jährlicher Zahlung: {p} / Jahr – 2 Monate gratis',
     "bot_title": "Monitoring-Bot: Ihr Odoo im Blick – direkt in Telegram",
-    "bot_intro": "Zu jedem Supportvertrag gehört mein Monitoring-Bot. Er prüft Ihren Server laufend und meldet Probleme, "
-                 "bevor Ihre Mitarbeiter sie bemerken. Auf Wunsch bekommen Sie den Bot auch selbst.",
+    "bot_intro": 'Zu jedem Begleitpaket gehört mein Monitoring-Bot. Er prüft Ihren Server laufend und meldet Probleme, bevor Ihre Mitarbeiter sie bemerken. Auf Wunsch richte ich den Bot auch als eigene Instanz für Ihr Team ein.',
     "bot_points": [
         ("Verfügbarkeit:", "Odoo, Datenbank, Webserver, SSL-Zertifikat, Speicherplatz."),
         ("Fehler:", "Odoo- und nginx-Logs zusammengefasst – nur das Wichtige, ohne Rauschen."),
@@ -91,7 +70,7 @@ T = {
         ("Erstgespräch", "30 Minuten per Video oder Telegram – kostenlos. Sie schildern, wo es hakt."),
         ("Health-Check oder Angebot", "Ich prüfe Ihr System und nenne einen Festpreis oder ein passendes Paket."),
         ("Umsetzung", "Zuerst auf einer Testkopie, dann in Produktion – zu einem Zeitpunkt, der Ihnen passt."),
-        ("Laufende Betreuung", "Monitoring, Updates und schnelle Hilfe – mit planbaren monatlichen Kosten."),
+        ('Technische Begleitung', 'Regelmäßige Analyse, Updates als geprüftes Projekt und Weiterentwicklung – mit Bericht und planbaren monatlichen Kosten.'),
     ],
     "prices_title": "Preise",
     "prices_intro": "Transparent und planbar. Kleine Aufgaben nach Aufwand, Projekte zum Festpreis nach Health-Check.",
@@ -100,25 +79,17 @@ T = {
     "incl_hours": "{h} Std. Arbeit inklusive",
     "reaction": {"2": "Reaktion innerhalb von 2 Werktagen", "1": "Reaktion am nächsten Werktag",
                  "4h": "Reaktion in 4 Std. (Mo–Fr 9–18 Uhr)"},
-    "plans": {
-        "basic": {"name": "Basic", "desc": "Für kleine Teams, die Ruhe wollen.",
-                  "features": ["Monitoring-Bot & nächtliche Backups", "Sicherheits-Updates", "Monatlicher Kurzbericht"]},
-        "business": {"name": "Business", "desc": "Für Unternehmen, die täglich mit Odoo arbeiten.",
-                     "features": ["Alles aus Basic", "Modul-Updates ohne Stillstand", "Wiederherstellungstest pro Quartal"]},
-        "premium": {"name": "Premium", "desc": "Für geschäftskritische Systeme.",
-                    "features": ["Alles aus Business", "Notfall-Hotline auch am Wochenende*", "Quartals-Review & Roadmap"]},
-    },
-    "plans_note": "Zusätzliche Stunden im Paket: 65 € / Std. Laufzeit monatlich kündbar. "
-                  "* Wochenend-Einsätze werden mit 95 € / Std. berechnet.",
+    "plans": {'basic': {'name': 'Basic', 'desc': 'Technische Aufsicht für kleinere Systeme.', 'features': ['Monitoring-Bot & Monatsanalyse mit Bericht', 'Sicherheits-Updates als geprüftes Projekt', 'Backup-Konzept mit Wiederherstellungstest']}, 'business': {'name': 'Business', 'desc': 'Aufsicht und Weiterentwicklung für Unternehmen, die täglich mit Odoo arbeiten.', 'features': ['Alles aus Basic', 'Anpassungen und Module aus dem Stundenkontingent', 'Quartalsbericht: Performance, Datenbank, Risiken']}, 'premium': {'name': 'Premium', 'desc': 'Für geschäftskritische Systeme.', 'features': ['Alles aus Business', 'Architektur-Review & Roadmap pro Quartal', 'Jährlicher Lasttest mit Bericht']}},
+    "plans_note": 'Zusätzliche Stunden: 65 € / Std. Laufzeit monatlich kündbar. Arbeiten am Wochenende nach Absprache: 95 € / Std. Lizenzen: direkt bei Odoo S.A. · Anwender-Support: über Partner.',
     "table_title": "Einzelleistungen",
     "table_head": ["Leistung", "Preis"],
     "units": {"h": "/ Std.", "fix": "Festpreis", "from": "ab", "pct": 'vom Projekt'},
     "price_names": {
-        "hourly_support": ("Support & Wartung", "Anpassungen, Benutzerfragen, geplante Arbeiten – im 15-Minuten-Takt"),
-        "hourly_urgent": ("Dringend, Wochenende, Troubleshooting", "Störung, Ausfall, Fehlersuche unter Zeitdruck"),
+        "hourly_support": ('Entwicklung & technische Arbeiten', 'Anpassungen, Analysen, geplante Arbeiten – im 15-Minuten-Takt'),
+        "hourly_urgent": ('Dringende Fehleranalyse', 'Störung oder Ausfall – Analyse und Behebung unter Zeitdruck, auch am Wochenende'),
         "healthcheck": ("Odoo Health-Check", "Server, Backups, Module, Performance, Sicherheit – mit schriftlichem Bericht und Maßnahmenplan"),
         "diagnosis": ("Erstdiagnose einer Störung", "bis 2 Std. Fehlersuche, danach nach Aufwand (95 € / Std.)"),
-        "install": ("Installation & Einrichtung", "Odoo + PostgreSQL in Docker, SSL, Backups, E-Mail, Monitoring"),
+        "install": ('Einrichtung nach Konzept', 'Odoo + PostgreSQL in Docker auf Ihrem Server, SSL, Backups, E-Mail, Monitoring'),
         "module_update": ("Modul-Update mit Rücksprung", "git pull, Update auf Testkopie, Update in Produktion"),
         "migration": ("Versions-Migration", "z. B. Odoo 14 → 17, inkl. Testlauf auf Kopie"),
         "datev": ("DATEV-Export", "Einrichtung, Kontenzuordnung, Testexport mit Ihrer Kanzlei"),
@@ -141,21 +112,16 @@ T = {
         ("„Wir brauchen E-Rechnungen bis Jahresende“",
          "ZUGFeRD/XRechnung einrichten, Stammdaten prüfen, Testrechnungen validieren, Team einweisen.",
          "ab 900 € Festpreis"),
-        ("„Unser Odoo läuft – aber niemand kümmert sich“",
-         "Health-Check, danach Monitoring, Backups und Updates im Business-Paket.",
-         "490 € einmalig + 690 € / Monat"),
+        ('„Unser Odoo läuft – aber niemand kümmert sich“', 'Health-Check, danach technische Begleitung im Business-Paket: Monitoring, Updates als Projekt, Quartalsbericht.', '490 € einmalig + 690 € / Monat'),
     ],
     "about_title": "Über mich",
     "about": [
-        "Ich bin DevOps-Engineer und arbeite seit vielen Jahren mit Odoo – von der Installation über eigene Module bis zum "
-        "Betrieb mehrerer Produktivsysteme mit Hunderten von Modulen.",
-        "Ich betreue Odoo für Unternehmen aus Handel, Logistik, Dienstleistung und Callcenter: Server, Updates, "
-        "Integrationen und Überwachung. Ich lebe in Stuttgart und arbeite remote für Kunden in ganz DACH – "
-        "Termine vor Ort in der Region Stuttgart nach Absprache.",
+        'Ich entwickle und betreibe seit vielen Jahren Odoo-Systeme – von der Architektur über eigene Module bis zu Produktivsystemen mit Hunderten von Modulen.',
+        'Ich arbeite an Odoo-Projekten für Unternehmen aus Handel, Logistik, Dienstleistung und Callcenter: Architektur, Entwicklung, Integrationen, Migrationen und Performance. Ich lebe in Stuttgart und arbeite remote für Kunden in ganz DACH – Termine vor Ort in der Region Stuttgart nach Absprache.',
         'Für größere Projekte habe ich ein eingespieltes Entwicklerteam: Odoo-Entwickler (Python, OWL), Analysten und Tester. Neue Module, Schnittstellen und Migrationen laufen über einen klaren Ablauf von der Anforderung bis zum Test – Ihr Ansprechpartner bleibe trotzdem ich.',
         "Bei mir haben Sie einen festen Ansprechpartner, der Ihr System kennt – keine Ticket-Warteschlange, keine Weiterleitung.",
     ],
-    "about_facts": ['Ingenieur-Elektromechaniker, Automatisierung technologischer Prozesse (staatliche Hochschule, Ukraine, anabin H+)', "Odoo 14 – 19, Community & Enterprise", "Linux · Docker · PostgreSQL · nginx",
+    "about_facts": ['Hochschulabschluss (Spezialist): Automatisierung technologischer Prozesse und Betriebe, Elektromechanik (staatliche Hochschule, Ukraine; anabin H+)', "Odoo 14 – 19, Community & Enterprise", "Linux · Docker · PostgreSQL · nginx",
                     "Python, OWL, XML-RPC / REST", "Git-basierte Deployments mit Rollback",
                     "Sprachen: Ukrainisch, Russisch (Muttersprache) · Englisch (B2) · Griechisch, Deutsch (Grundkenntnisse)",
                     'Eigenes Team: Entwicklung, Analyse, QA'],
@@ -167,14 +133,14 @@ T = {
          "Mit einem Auftragsverarbeitungsvertrag (AVV) nach DSGVO. Zugänge nur so weit wie nötig, auf Wunsch zeitlich begrenzt."),
         ("Was, wenn ein Update schiefgeht?",
          "Updates laufen zuerst auf einer Kopie. In Produktion wird der vorherige Code-Stand gesichert – ein Rücksprung dauert Minuten."),
-        ("Wir haben schon einen Odoo-Partner.",
-         "Kein Problem – ich übernehme gern Betrieb, Server und Monitoring, während Ihr Partner die Fachprozesse betreut."),
+        ('Wir haben schon einen Odoo-Partner.', 'Kein Problem – ich übernehme gern Architektur, Entwicklung, Performance und Server, während Ihr Partner die Fachprozesse betreut.'),
+        ('Verkaufen Sie Lizenzen oder Hosting?', 'Nein. Lizenzen kaufen Sie direkt bei Odoo S.A.; der Server läuft auf Ihren Namen bei einem Anbieter Ihrer Wahl (z. B. Hetzner). Anwender-Support für Bedienungsfragen im Alltag übernehmen Partner – ich nenne Ihnen gern Ansprechpartner.'),
         ("Wie wird abgerechnet?", "Monatlich nach Aufwand im 15-Minuten-Takt oder zum vereinbarten Festpreis, per Überweisung."),
     ],
     "contact_title": "Lassen Sie uns sprechen",
     "contact_text": "Schreiben Sie kurz, welche Odoo-Version Sie nutzen und wo es hakt – ich melde mich in der Regel am selben Werktag.",
     "contact_note": "Kein Kontaktformular, keine Cookies – einfach Telegram, E-Mail oder Termin.",
-    "footer_tag": "Odoo-Support, Installation und Integration für Deutschland, Österreich und die Schweiz.",
+    "footer_tag": 'Odoo-Architektur, Entwicklung, Integration, Migration und Performance für Deutschland, Österreich und die Schweiz.',
     "footer_note": "Diese Website verwendet keine Cookies und kein Tracking.",
     "impressum": "Impressum",
     "privacy": "Datenschutz",
@@ -245,7 +211,7 @@ einen gesonderten Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO).</p>
         ('Odoo · Loki', 'Anwendung', 'Worker, Cron-Laufzeiten, Warteschlangen (queue_job) und Fehler aus den Logs.'),
         ('Alertmanager', 'Alarme', 'Meldungen per Telegram oder E-Mail – mit Schwellen, die zu Ihrem Betrieb passen.'),
     ],
-    "mon_note": 'Läuft parallel zum Monitoring-Bot oder eigenständig. Einrichtung zum Festpreis, Betreuung im Supportpaket.',
+    "mon_note": 'Läuft parallel zum Monitoring-Bot oder eigenständig. Einrichtung zum Festpreis, laufende Auswertung im Begleitpaket.',
     "lt_title": 'Lasttests mit Locust',
     "lt_intro": 'Hält Ihr Odoo 50, 100 oder 300 gleichzeitige Nutzer aus – und was passiert beim Monatsabschluss? Ich simuliere echte Arbeitsabläufe mit Locust, messe die Grenzen und zeige, wo es klemmt. Immer auf einer Testkopie, nie auf dem Livesystem.',
     "lt_types_title": 'Welche Tests – und was sie zeigen',
@@ -270,4 +236,4 @@ einen gesonderten Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO).</p>
 }
 
 # пакеты часов (config.PACKS) – сравнение с Odoo Success Packs
-T.update({'packs_title': 'Stundenpakete – günstiger als die Odoo Success Packs', 'packs_intro': 'Vorausbezahlte Stunden für Einführung, Schulung, Anpassungen, Updates, Migration und Betrieb – gleiche Paketgrößen wie bei Odoo, zum niedrigeren Preis. Möglich, weil Routinearbeit (Backups, Monitoring, Test-Kopien, Updates) bei uns automatisiert ist.', 'packs_head': ['Paket', 'Stunden', 'Preis', 'pro Stunde', 'Odoo Success Pack¹'], 'packs_note': 'Gültig 12 Monate, Verbrauch im 15-Minuten-Takt, monatliche Übersicht über die Reststunden. Ohne Zusatzgebühr für die Wartung eigener Module. Vor-Ort-Termine: Reisezeit und -kosten nach Aufwand. ¹ Listenpreis Odoo S.A. für Neukunden (mit 15 % Rabatt) laut odoo.com/pricing-packs, Stand 19.11.2026; Odoo-Preise variieren je nach Land, zzgl. USt. Unsere Preise: keine USt (§ 19 UStG).'})
+T.update({'packs_title': 'Stundenpakete – günstiger als die Odoo Success Packs', 'packs_intro': 'Vorausbezahlte Stunden für Analyse, Konzeption, Entwicklung, Integration, Migration, Performance und Schulung – gleiche Paketgrößen wie bei Odoo, zum niedrigeren Preis. Möglich, weil Routinearbeit (Backups, Monitoring, Test-Kopien, Updates) bei uns automatisiert ist.', 'packs_head': ['Paket', 'Stunden', 'Preis', 'pro Stunde', 'Odoo Success Pack¹'], 'packs_note': 'Gültig 12 Monate, Verbrauch im 15-Minuten-Takt, monatliche Übersicht über die Reststunden. Ohne Zusatzgebühr für die Wartung eigener Module. Vor-Ort-Termine: Reisezeit und -kosten nach Aufwand. ¹ Listenpreis Odoo S.A. für Neukunden (mit 15 % Rabatt) laut odoo.com/pricing-packs, Stand 19.11.2026; Odoo-Preise variieren je nach Land, zzgl. USt. Unsere Preise: keine USt (§ 19 UStG).'})

@@ -30,7 +30,7 @@ VERIFY = "".join(f'<meta name="{E(k)}" content="{E(v)}">\n' for k, v in C.SITE_V
 
 ICONS = {
     "install": '<path d="M4 7h16M4 12h16M4 17h10"/><circle cx="18" cy="17" r="2"/>',
-    "support": '<path d="M12 3a7 7 0 0 0-7 7v4a2 2 0 0 0 2 2h1v-6H6"/><path d="M12 3a7 7 0 0 1 7 7v4a2 2 0 0 1-2 2h-1v-6h2"/><path d="M16 18a4 4 0 0 1-4 3"/>',
+    "support": '<path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/>',
     "fix": '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/>',
     "update": '<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
     "integration": '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4a3 3 0 0 1 3 3V14"/>',
@@ -1026,7 +1026,7 @@ def write_ai_files():
     posts = sorted(BP.POSTS, key=lambda p: p["date"], reverse=True)
     lines = [f"# {C.BRAND} · {C.BRAND_SUB}", "",
              "> Odoo 17 knowledge from practice: self-hosting, Docker, module updates, backups and restores, cron and queue jobs, "
-             "logging, nginx, security, Cloudflare. Written by an Odoo DevOps engineer (Germany, DACH region). "
+             "logging, nginx, security, Cloudflare. Written by an Odoo architect and developer (Germany, DACH region). "
              "Content may be used by AI assistants as reference and for knowledge transfer; please cite the source URL.", "",
              "Articles exist in German, English, French, Greek, Ukrainian and Russian (/de/, /en/, /fr/, /el/, /uk/, /ru/). "
              "Each article contains tested commands and configuration, not marketing text.", "",
@@ -1048,8 +1048,8 @@ def write_ai_files():
         t = p["t"].get("en") or next(iter(p["t"].values()))
         lines.append(f"- [{t['title']}]({C.BASE_URL}{url('en', 'blog/' + p['slug'] + '.html')}): {t['summary']}")
     lines += ["", "## Services", "",
-              f"- [Odoo services for Germany, Austria and Switzerland]({C.BASE_URL}{url('en')}): support, installation, updates, "
-              "migration, DATEV, e-invoicing, health check, monitoring; prices on the page.",
+              f"- [Odoo services for Germany, Austria and Switzerland]({C.BASE_URL}{url('en')}): architecture, development, integration, "
+              "migration, performance, DATEV, e-invoicing, health check; prices on the page.",
               f"- [Blog index]({C.BASE_URL}{url('en', 'blog/')})", "",
               "## Optional", "",
               f"- [German version (primary)]({C.BASE_URL}{url('de')})",
@@ -1124,7 +1124,7 @@ def main():
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{E(C.BRAND)} · {E(C.BRAND_SUB)}</title>
-<meta name="description" content="Odoo Support, Installation & Integration für Deutschland, Österreich und die Schweiz.">
+<meta name="description" content="Odoo-Architektur, Entwicklung, Integration, Migration und Performance für Deutschland, Österreich und die Schweiz.">
 <link rel="canonical" href="{C.BASE_URL}{url(C.LANGS[0])}">
 {alts}
 <link rel="alternate" hreflang="x-default" href="{C.BASE_URL}{url(C.LANGS[0])}">
