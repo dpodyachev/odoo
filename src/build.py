@@ -445,6 +445,20 @@ class SalesUser(HttpUser):
                         name="PDF quotation")"""
 
 
+def packs(T, lang):
+    """Пакеты часов (config.PACKS) с ценой за час и сравнением с Odoo Success Packs; пусто, если PACKS = []."""
+    if not getattr(C, "PACKS", None):
+        return ""
+    num = lambda p: float(p.replace("€", "").replace(" ", "").replace("\u00a0", ""))
+    rows = "".join(f'<tr><td><b>{E(n)}</b></td><td>{h}</td><td class="pr"><b>{E(p)}</b></td>'
+                   f'<td class="pr">{f"{num(p) / h:.2f}".replace(".", "." if lang == "en" else ",")} €</td><td class="pr odoo-pr">{E(o)}</td></tr>'
+                   for n, h, p, o in C.PACKS)
+    hd = "".join(f"<th>{E(x)}</th>" for x in T["packs_head"])
+    return (f'<h3 class="sub" id="packs">{E(T["packs_title"])}</h3><p class="intro">{E(T["packs_intro"])}</p>'
+            f'<div class="tablewrap"><table class="prices packs"><thead><tr>{hd}</tr></thead><tbody>{rows}</tbody></table></div>'
+            f'<p class="note">{E(T["packs_note"])}</p>')
+
+
 def offer(T):
     """Плашка Einstiegsangebot; пусто, если OFFER=None или срок прошёл."""
     o = getattr(C, "OFFER", None)
@@ -633,6 +647,7 @@ def index(T, lang):
 {offer(T)}
 <div class="plans">{"".join(plans)}</div>
 <p class="note center">{E(T["plans_note"])}</p>
+{packs(T, lang)}
 <h3 class="sub">{E(T["table_title"])}</h3>
 <div class="tablewrap"><table class="prices">
 <thead><tr><th>{E(T["table_head"][0])}</th><th>{E(T["table_head"][1])}</th></tr></thead>

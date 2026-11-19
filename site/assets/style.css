@@ -551,3 +551,6 @@ svg.mock { width: 100%; height: auto; display: block; }
 @media (max-width: 960px) { .m-search { display: inline-flex; margin-left: auto; } .m-search + .langs { margin-left: 8px; } }
 @media (max-width: 420px) { .top-in { gap: 6px; } .m-search + .langs { margin-left: 2px; } .top .langs { gap: 0; } }
 @media (max-width: 400px) { .brand > span:not(.logo) { display: none; } }
+/* пакеты часов */
+.packs td, .packs th { white-space: nowrap; }
+.packs .odoo-pr { color: var(--muted); }
