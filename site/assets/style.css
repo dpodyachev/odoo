@@ -538,3 +538,16 @@ svg.mock { width: 100%; height: auto; display: block; }
 .qa-ctx { color: var(--muted); font-size: .95rem; }
 .qa-a ul { margin: .4rem 0 .6rem 1.2rem; }
 .qa-item:target { outline: 2px solid var(--brand); outline-offset: 4px; }
+/* Поиск (search.html) */
+.search-form { display: flex; gap: .5rem; margin: 1rem 0 .4rem; }
+.search-form input { flex: 1; min-width: 0; font: inherit; font-size: 1.05rem; padding: .65rem .8rem; border: 1px solid var(--line, #ccc);
+  border-radius: 10px; background: var(--card, #fff); color: inherit; }
+.search-form input:focus { outline: 2px solid var(--brand); outline-offset: 1px; }
+.search-hint { margin-bottom: 1.2rem; }
+.search-hit h2 { font-size: 1.1rem; margin: 0 0 .2rem; }
+.search-sec { margin: 0 0 .3rem; }
+.search-url { opacity: .7; }
+.m-search { display: none; }
+@media (max-width: 960px) { .m-search { display: inline-flex; margin-left: auto; } .m-search + .langs { margin-left: 8px; } }
+@media (max-width: 420px) { .top-in { gap: 6px; } .m-search + .langs { margin-left: 2px; } .top .langs { gap: 0; } }
+@media (max-width: 400px) { .brand > span:not(.logo) { display: none; } }

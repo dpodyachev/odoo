@@ -20,6 +20,8 @@ import calc_page as CP  # noqa: E402
 import pubs_page as PP  # noqa: E402
 import learn_page as LP  # noqa: E402
 import qa_page as QA  # noqa: E402
+import search_index as SI  # noqa: E402
+import search_page as SP  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(HERE), "site")
 E = html.escape
@@ -166,6 +168,7 @@ def header(T, lang, page):
         "pubs": svg(PP.ICON),
         "learn": svg(LP.ICON),
         "qa": svg(QA.ICON),
+        "search": svg(SP.ICON),
     }
     items = []
     for k, v in T["nav"].items():   # калькулятор PostgreSQL/Odoo – сразу после блога
@@ -173,10 +176,11 @@ def header(T, lang, page):
         if k == "blog":
             items.append(("learn", LP.TX[lang]["nav"]))
             items.append(("qa", QA.TX[lang]["nav"]))
+            items.append(("search", SP.TX[lang]["nav"]))
             items.append(("pubs", PP.TX[lang]["nav"]))
             items.append(("calc", CP.TX[lang]["nav"]))
-    hrefs = {"blog": url(lang, "blog/"), "calc": url(lang, CP.SLUG), "pubs": url(lang, PP.SLUG), "learn": url(lang, LP.SLUG), "qa": url(lang, QA.SLUG)}
-    current = {"blog": page.startswith("blog/"), "calc": page in (CP.SLUG, CP.SLUG_S, CP.SLUG_R), "pubs": page == PP.SLUG, "learn": page == LP.SLUG, "qa": page == QA.SLUG}
+    hrefs = {"blog": url(lang, "blog/"), "calc": url(lang, CP.SLUG), "pubs": url(lang, PP.SLUG), "learn": url(lang, LP.SLUG), "qa": url(lang, QA.SLUG), "search": url(lang, SP.SLUG)}
+    current = {"blog": page.startswith("blog/"), "calc": page in (CP.SLUG, CP.SLUG_S, CP.SLUG_R), "pubs": page == PP.SLUG, "learn": page == LP.SLUG, "qa": page == QA.SLUG, "search": page == SP.SLUG}
     cls = {"services": "nav-icon multi", "prices": "nav-icon cur", "bot": "nav-icon radar"}
     nav = "".join(
         f'<a class="{cls.get(k, "nav-icon")}" href="{hrefs.get(k, url(lang) + "#" + k)}" '
@@ -186,6 +190,7 @@ def header(T, lang, page):
 <div class="wrap top-in">
 <a class="brand" href="{url(lang)}"><span class="logo">G</span><span>{E(C.BRAND)}<small>{E(C.BRAND_SUB)}</small></span></a>
 <nav class="menu">{nav}</nav>
+<a class="m-search nav-icon" href="{url(lang, SP.SLUG)}" title="{E(SP.TX[lang]["nav"])}" aria-label="{E(SP.TX[lang]["nav"])}">{icons["search"]}</a>
 {langswitch(lang, page)}
 <button type="button" class="theme" hidden aria-label="{E(T["theme_toggle"])}" title="{E(T["theme_toggle"])}">🌙</button>
 </div>
@@ -1072,6 +1077,15 @@ def main():
         for post in BP.POSTS:
             write(f"{lang}/blog/{post['slug']}.html", blog_post(T, lang, post))
             pages.append(url(lang, f"blog/{post['slug']}.html"))
+    # поиск: индекс из английских страниц (уже записаны выше), затем страница поиска на каждом языке
+    print("search index:", SI.build(OUT, os.path.join(OUT, "assets"), C.LANGS))
+    for lang in C.LANGS:
+        T = importlib.import_module(f"lang_{lang}").T
+        X = SP.TX[lang]
+        write(f"{lang}/{SP.SLUG}", head(T, lang, SP.SLUG, f'{X["title"]} · {C.BRAND}', X["hint"]).replace(
+                  '</head>', '<meta name="robots" content="noindex, follow">\n</head>', 1)
+              + header(T, lang, SP.SLUG) + SP.page_html(lang, E, asset("/assets/search-index.json"), asset("/assets/search.js"))
+              + footer(T, lang, SP.SLUG))
     for lang in C.LANGS:
         write(f"test/{lang}/index.html", test_page(lang))
         write(f"test2/{lang}/index.html", test2_page(lang))
