@@ -834,3 +834,5 @@ from blog_post_autom import AUTOM as _C34, ANNOUNCE  # noqa: E402  (en, de, ru, 
 POSTS.append(_C34)
 from blog_post_checkhow import CHECKHOW as _C35  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
 POSTS.append(_C35)
+from blog_post_pgdump import PGDUMP as _C36  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+POSTS.append(_C36)
