@@ -19,6 +19,7 @@ import test_pages as TP  # noqa: E402
 import calc_page as CP  # noqa: E402
 import pubs_page as PP  # noqa: E402
 import learn_page as LP  # noqa: E402
+import qa_page as QA  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(HERE), "site")
 E = html.escape
@@ -164,16 +165,18 @@ def header(T, lang, page):
         "calc": svg(CP.CALC_ICON),
         "pubs": svg(PP.ICON),
         "learn": svg(LP.ICON),
+        "qa": svg(QA.ICON),
     }
     items = []
     for k, v in T["nav"].items():   # калькулятор PostgreSQL/Odoo – сразу после блога
         items.append((k, v))
         if k == "blog":
             items.append(("learn", LP.TX[lang]["nav"]))
+            items.append(("qa", QA.TX[lang]["nav"]))
             items.append(("pubs", PP.TX[lang]["nav"]))
             items.append(("calc", CP.TX[lang]["nav"]))
-    hrefs = {"blog": url(lang, "blog/"), "calc": url(lang, CP.SLUG), "pubs": url(lang, PP.SLUG), "learn": url(lang, LP.SLUG)}
-    current = {"blog": page.startswith("blog/"), "calc": page in (CP.SLUG, CP.SLUG_S, CP.SLUG_R), "pubs": page == PP.SLUG, "learn": page == LP.SLUG}
+    hrefs = {"blog": url(lang, "blog/"), "calc": url(lang, CP.SLUG), "pubs": url(lang, PP.SLUG), "learn": url(lang, LP.SLUG), "qa": url(lang, QA.SLUG)}
+    current = {"blog": page.startswith("blog/"), "calc": page in (CP.SLUG, CP.SLUG_S, CP.SLUG_R), "pubs": page == PP.SLUG, "learn": page == LP.SLUG, "qa": page == QA.SLUG}
     cls = {"services": "nav-icon multi", "prices": "nav-icon cur", "bot": "nav-icon radar"}
     nav = "".join(
         f'<a class="{cls.get(k, "nav-icon")}" href="{hrefs.get(k, url(lang) + "#" + k)}" '
@@ -239,6 +242,7 @@ def footer(T, lang, page):
 <div class="foot-links">
 <a href="{url(lang, 'blog/')}">{E(T["nav"]["blog"])}</a>
 <a href="{url(lang, LP.SLUG)}">{E(LP.TX[lang]["nav"])}</a>
+<a href="{url(lang, QA.SLUG)}">{E(QA.TX[lang]["nav"])}</a>
 <a href="{url(lang, PP.SLUG)}">{E(PP.TX[lang]["nav"])}</a>
 <a href="{url(lang, CP.SLUG)}">{E(CP.TX[lang]["nav"])}</a>
 <a href="{url(lang, 'impressum.html')}">{E(T["impressum"])}</a>
@@ -1058,6 +1062,10 @@ def main():
         write(f"{lang}/{LP.SLUG}", head(T, lang, LP.SLUG, f'{X["title"]} · {C.BRAND}', X["intro"]) + header(T, lang, LP.SLUG)
               + LP.page_html(lang, E, url, {p["slug"]: p for p in BP.POSTS}) + footer(T, lang, LP.SLUG))
         pages.append(url(lang, LP.SLUG))
+        X = QA.TX[lang]
+        write(f"{lang}/{QA.SLUG}", head(T, lang, QA.SLUG, f'{X["title"]} · {C.BRAND}', X["intro"]) + header(T, lang, QA.SLUG)
+              + QA.page_html(lang, E, url, inline, fmt_date) + QA.jsonld(lang, C.BASE_URL, url) + footer(T, lang, QA.SLUG))
+        pages.append(url(lang, QA.SLUG))
         pages += [url(lang), url(lang, "impressum.html"), url(lang, "datenschutz.html")]
         write(f"{lang}/blog/index.html", blog_index(T, lang))
         pages.append(url(lang, "blog/"))

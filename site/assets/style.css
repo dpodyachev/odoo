@@ -528,3 +528,13 @@ svg.mock { width: 100%; height: auto; display: block; }
 .mk-b-bad { fill: rgba(200, 40, 40, .12); stroke: rgba(200, 40, 40, .5); }
 .mk-b-me { fill: var(--brand-soft); stroke: var(--accent); }
 .refs { font-size: .92rem; color: var(--muted); }
+/* Вопросы и ответы (qa.html) */
+.qa-toc ol { margin: .4rem 0 1.2rem 1.2rem; padding: 0; }
+.qa-toc li { margin: .25rem 0; }
+.qa-item { scroll-margin-top: 80px; }
+.qa-item h2 { font-size: 1.2rem; }
+.qa-anchor { color: var(--muted); text-decoration: none; font-weight: 400; }
+.qa-anchor:hover { color: var(--brand); }
+.qa-ctx { color: var(--muted); font-size: .95rem; }
+.qa-a ul { margin: .4rem 0 .6rem 1.2rem; }
+.qa-item:target { outline: 2px solid var(--brand); outline-offset: 4px; }
