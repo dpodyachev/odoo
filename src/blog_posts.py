@@ -838,3 +838,8 @@ from blog_post_pgdump import PGDUMP as _C36  # noqa: E402  (en, de, ru, uk; fr/e
 POSTS.append(_C36)
 from blog_post_packs import PACKS_POST as _C37  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
 POSTS.append(_C37)
+from blog_post_stock import STOCK_POST as _C38  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+from blog_post_switch import SWITCH_POST as _C39  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+from blog_post_apps import APPS_POST as _C40  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+POSTS += [_C38, _C39, _C40]
+# Статьи 38–40 (25.11.2026): темы по мотивам блога git.gmbh (склад, переход со старой ERP, модули) – тексты свои.
