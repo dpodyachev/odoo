@@ -843,3 +843,9 @@ from blog_post_switch import SWITCH_POST as _C39  # noqa: E402  (en, de, ru, uk;
 from blog_post_apps import APPS_POST as _C40  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
 POSTS += [_C38, _C39, _C40]
 # Статьи 38–40 (25.11.2026): темы по мотивам блога git.gmbh (склад, переход со старой ERP, модули) – тексты свои.
+from blog_post_oracle import ORACLE_POST as _C41  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+from blog_post_flow import FLOW_POST as _C42  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+from blog_post_usefulmods import USEFULMODS_POST as _C43  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+from blog_post_sapecc import SAPECC_POST as _C44  # noqa: E402  (en, de, ru, uk; fr/el – английская версия)
+POSTS += [_C41, _C42, _C43, _C44]
+# Статьи 41–44 (25.11.2026): Oracle → Odoo, связывание процессов, полезные модули по областям, SAP ECC 2027.
