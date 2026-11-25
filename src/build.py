@@ -661,14 +661,24 @@ def index(T, lang):
 """)
     facts = "".join(f"<li>{E(f)}</li>" for f in T["about_facts"])
     paras = "".join(f"<p>{E(p)}</p>" for p in T["about"])
+    name = C.OWNER_NAME.split(" –")[0]
+    person = json.dumps({"@context": "https://schema.org", "@type": "Person", "name": name, "url": C.BASE_URL,
+                         "image": C.BASE_URL + "/assets/img/portrait.webp", "jobTitle": T["about_job"],
+                         "address": {"@type": "PostalAddress", "addressLocality": "Stuttgart", "addressCountry": "DE"},
+                         "sameAs": [x for x in (getattr(C, "LINKEDIN", ""),) if x]}, ensure_ascii=False).replace("</", "<\\/")
     s.append(f"""<section id="about" class="sec alt extra">
 <div class="wrap about-in">
 <div>
-<h2>{E(T["about_title"])}</h2>
+<div class="about-head"><img class="portrait" src="{asset("/assets/img/portrait.webp")}" alt="{E(name)}" width="160" height="160" loading="lazy">
+<h2>{E(T["about_title"])}</h2></div>
 {paras}
+<h3 class="sub" id="experience">{E(T["exp_title"])}</h3>
+<figure class="exp-fig"><img src="{asset("/assets/img/xray.webp")}" alt="{E(T["exp_alt"])}" width="960" height="567" loading="lazy">
+<figcaption>{E(T["exp_caption"])}</figcaption></figure>
 </div>
 <ul class="facts">{facts}</ul>
 </div>
+<script type="application/ld+json">{person}</script>
 <div class="wrap">{europe_map(T)}</div>
 </section>
 """)
@@ -873,6 +883,7 @@ def blog_post(T, lang, post):
     ld = json.dumps({"@context": "https://schema.org", "@type": "BlogPosting", "headline": tx["title"],
                      "description": tx["summary"], "datePublished": post["date"], "inLanguage": pl,
                      "author": {"@type": "Person", "name": C.OWNER_NAME.split(" –")[0], "url": C.BASE_URL,
+                                "image": C.BASE_URL + "/assets/img/portrait.webp",
                                 "sameAs": [x for x in (getattr(C, "LINKEDIN", ""),) if x]},
                      "mainEntityOfPage": C.BASE_URL + url(lang, page)}, ensure_ascii=False).replace("</", "<\\/")
     return (head(T, lang, page, f'{tx["title"]} · {C.BRAND}', tx["summary"]).replace(

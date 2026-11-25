@@ -114,6 +114,10 @@ T = {
          "à partir de 900 € prix fixe"),
         ("« Notre Odoo tourne – mais personne ne s'en occupe »", 'Bilan de santé, puis suivi technique dans la formule Business : supervision, mises à jour en tant que projet, rapport trimestriel.', '490 € une fois + 690 € / mois'),
     ],
+    "about_job": "Développeur et consultant Odoo",
+    "exp_title": "Expérience : de la production à l'ERP",
+    "exp_alt": "Système d'inspection par rayons X GE Phoenix PCBA Analyzer 160 pour cartes électroniques",
+    "exp_caption": "Auparavant : production électronique – contrôle des cartes électroniques par rayons X (GE Phoenix PCBA Analyzer 160). C'est pourquoi je connais la production, le contrôle qualité et l'entrepôt pas seulement par la documentation d'Odoo.",
     "about_title": "À propos",
     "about": [
         "Je développe et exploite des systèmes Odoo depuis de nombreuses années – de l'architecture aux modules sur mesure, jusqu'aux systèmes de production comptant des centaines de modules.",

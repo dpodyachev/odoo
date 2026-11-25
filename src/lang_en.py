@@ -114,6 +114,10 @@ T = {
          "from €900 fixed price"),
         ('“Our Odoo runs – but nobody looks after it”', 'Health check, then technical oversight in the Business plan: monitoring, updates as a project, quarterly report.', '€490 once + €690 / month'),
     ],
+    "about_job": "Odoo developer and consultant",
+    "exp_title": "Experience: from manufacturing to ERP",
+    "exp_alt": "X-ray inspection system GE Phoenix PCBA Analyzer 160 for circuit boards",
+    "exp_caption": "Earlier: electronics manufacturing – X-ray inspection of circuit boards (GE Phoenix PCBA Analyzer 160). That is why I know production, quality control and the warehouse not only from the Odoo documentation.",
     "about_title": "About me",
     "about": [
         'I have been developing and running Odoo systems for many years – from architecture and custom modules to production systems with hundreds of modules.',

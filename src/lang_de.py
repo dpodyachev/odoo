@@ -114,6 +114,10 @@ T = {
          "ab 900 € Festpreis"),
         ('„Unser Odoo läuft – aber niemand kümmert sich“', 'Health-Check, danach technische Begleitung im Business-Paket: Monitoring, Updates als Projekt, Quartalsbericht.', '490 € einmalig + 690 € / Monat'),
     ],
+    "about_job": "Odoo-Entwickler und -Berater",
+    "exp_title": "Erfahrung: von der Fertigung zum ERP",
+    "exp_alt": "Röntgenprüfanlage GE Phoenix PCBA Analyzer 160 für Leiterplatten",
+    "exp_caption": "Früher: Elektronikfertigung – Röntgenprüfung von Leiterplatten (GE Phoenix PCBA Analyzer 160). Fertigung, Qualitätsprüfung und Lager kenne ich deshalb nicht nur aus der Odoo-Dokumentation.",
     "about_title": "Über mich",
     "about": [
         'Ich entwickle und betreibe seit vielen Jahren Odoo-Systeme – von der Architektur über eigene Module bis zu Produktivsystemen mit Hunderten von Modulen.',
