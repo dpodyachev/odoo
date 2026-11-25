@@ -663,7 +663,7 @@ def index(T, lang):
     paras = "".join(f"<p>{E(p)}</p>" for p in T["about"])
     name = C.OWNER_NAME.split(" –")[0]
     person = json.dumps({"@context": "https://schema.org", "@type": "Person", "name": name, "url": C.BASE_URL,
-                         "image": C.BASE_URL + "/assets/img/portrait.webp", "jobTitle": T["about_job"],
+                         "image": C.BASE_URL + asset("/assets/img/portrait.webp"), "jobTitle": T["about_job"],
                          "address": {"@type": "PostalAddress", "addressLocality": "Stuttgart", "addressCountry": "DE"},
                          "sameAs": [x for x in (getattr(C, "LINKEDIN", ""),) if x]}, ensure_ascii=False).replace("</", "<\\/")
     s.append(f"""<section id="about" class="sec alt extra">
@@ -883,7 +883,7 @@ def blog_post(T, lang, post):
     ld = json.dumps({"@context": "https://schema.org", "@type": "BlogPosting", "headline": tx["title"],
                      "description": tx["summary"], "datePublished": post["date"], "inLanguage": pl,
                      "author": {"@type": "Person", "name": C.OWNER_NAME.split(" –")[0], "url": C.BASE_URL,
-                                "image": C.BASE_URL + "/assets/img/portrait.webp",
+                                "image": C.BASE_URL + asset("/assets/img/portrait.webp"),
                                 "sameAs": [x for x in (getattr(C, "LINKEDIN", ""),) if x]},
                      "mainEntityOfPage": C.BASE_URL + url(lang, page)}, ensure_ascii=False).replace("</", "<\\/")
     return (head(T, lang, page, f'{tx["title"]} · {C.BRAND}', tx["summary"]).replace(
